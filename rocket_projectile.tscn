@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://rqonbly2ymu8"]
+
+[ext_resource type="Script" path="res://rocket_projectile.gd" id="1_80kbd"]
+[ext_resource type="ArrayMesh" uid="uid://bu4kaojj6gik0" path="res://AngryRocket3.obj" id="1_bprth"]
+[ext_resource type="PackedScene" uid="uid://cav45f268cxd7" path="res://rocket_thruster.tscn" id="3_8jcr2"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ncjk6"]
+points = PackedVector3Array(-1.73195, -0.793289, -0.487797, 1.66042, 1.93202, 0.035443, 1.66042, 1.93202, -0.0472523, 1.66042, -1.96152, -0.0472523, -1.67191, -0.203972, 0.940719, -1.6022, 0.252454, -0.962241, 1.41351, -0.35277, 0.932978, 1.43957, -0.280273, -0.954967, -3.51719, 0.0241183, 0.0335054, -1.58794, 0.61999, 0.77857, -1.66401, -0.875497, 0.40569, -1.59761, 0.934594, -0.347441, 1.43441, 0.325859, 0.94114, -1.58576, -0.498484, -0.862023, 1.46095, 0.252754, -0.963313, 1.41183, -1.96152, 0.118138, -1.59967, 0.937824, 0.336794, -1.59203, -0.503579, 0.859231, -1.59428, 0.475558, -0.874275, -1.66705, -0.95481, -0.118514, -1.59625, 0.325859, 0.94114, 1.41183, 1.93202, -0.0472523, -3.46085, -0.0531081, -0.0444358, 1.66042, -1.96152, 0.118138, -1.59754, -0.280273, -0.954967, -1.58868, 0.695476, -0.716644, 1.42649, 0.475558, -0.874275, 1.49435, -1.96152, -0.0472523, 1.39239, -0.498484, -0.862023, -1.58862, 0.770448, 0.629889, -1.6599, -0.795956, 0.551917, -3.49766, 0.0238178, -0.0450101)
+
+[node name="RocketProjectile" type="RigidBody3D"]
+gravity_scale = 0.2
+script = ExtResource("1_80kbd")
+
+[node name="RocketProjectileMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+mesh = ExtResource("1_bprth")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_ncjk6")
+
+[node name="RocketThruster" parent="." instance=ExtResource("3_8jcr2")]
+transform = Transform3D(-3.27835e-08, 0, 0.75, 0, 0.75, 0, -0.75, 0, -3.27835e-08, 0.200156, 0, 0)

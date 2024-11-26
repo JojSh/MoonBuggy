@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://bo10mdmhrt3t4"
+path="res://.godot/imported/beam-cylinder-1-mesh.obj-8500b1a691214e51b0ee9ad9105f2ecc.mesh"
+
+[deps]
+
+files=["res://.godot/imported/beam-cylinder-1-mesh.obj-8500b1a691214e51b0ee9ad9105f2ecc.mesh"]
+
+source_file="res://meshes/beam-cylinder-1-mesh.obj"
+dest_files=["res://.godot/imported/beam-cylinder-1-mesh.obj-8500b1a691214e51b0ee9ad9105f2ecc.mesh", "res://.godot/imported/beam-cylinder-1-mesh.obj-8500b1a691214e51b0ee9ad9105f2ecc.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false
