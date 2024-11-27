@@ -1,5 +1,6 @@
-[gd_scene load_steps=27 format=3 uid="uid://cfp77dx8lxb0i"]
+[gd_scene load_steps=28 format=3 uid="uid://cfp77dx8lxb0i"]
 
+[ext_resource type="PackedScene" uid="uid://cktcilqmb8mdx" path="res://FPSDisplay.tscn" id="1_nyho8"]
 [ext_resource type="Texture2D" uid="uid://0snyqnypvtk6" path="res://icon.svg" id="2_gc8uk"]
 [ext_resource type="Script" path="res://LevelSphereParent.gd" id="2_lx3i3"]
 [ext_resource type="Material" uid="uid://cme2hqx1ya8pj" path="res://glowy_yellow.tres" id="3_h4blv"]
@@ -71,6 +72,8 @@ data = PackedVector3Array(-0.0001, -0.2451, -4.978, -0.0001, -0.4894, -4.9601, 0
 [node name="item" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0272, 0.638045, 31.644)
 mesh = SubResource("PrismMesh_8lyl6")
+
+[node name="FPSDisplay" parent="." instance=ExtResource("1_nyho8")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_umg0y")
