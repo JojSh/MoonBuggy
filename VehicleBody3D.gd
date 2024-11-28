@@ -12,6 +12,7 @@ var _initial_gravity_point: Vector3
 @onready var desired_engine_pitch: float = $EngineSound.pitch_scale
 
 @export var player_number : int
+@export var player_colour : String
 @export var engine_force_value := 40.0
 @export var move_speed := 80.0
 ## Strength of the impulse applied upwards for the player's jump.
@@ -39,6 +40,8 @@ const MAX_INVERSION_RETRY_TIME := 1.0
 
 @onready var _start_position := global_transform.origin
 #@onready var central_point_marker = $CentralPointMarker
+
+@onready var rocket_launcher = $RocketLauncher
 
 func _ready ():
 	connect("body_entered", Callable(self, "_on_body_entered"))
@@ -107,13 +110,13 @@ func _on_body_entered(body):
 func _physics_process(delta: float):
 	DebugDraw.draw_line(global_transform.origin, _closest_gravity_point, Color.GREEN)
 
-	if Input.is_action_just_pressed("p1_reset_to_start_pos"):
+	if Input.is_action_just_pressed(str("p", player_number, "_reset_to_start_pos")):
 		self.position = Vector3(0, 1, 0)
 		self.rotation = Vector3(0, 0, 0)
 		linear_velocity = Vector3(0, 0, 0)
 		update_new_center_of_gravity_point(_initial_gravity_point)
 
-	if Input.is_action_just_pressed("p1_flip"):
+	if Input.is_action_just_pressed(str("p", player_number, "_flip")):
 		var desired_up = (global_transform.origin - _closest_gravity_point).normalized()
 		global_transform.origin += desired_up * 1
 		switch_on_orientation()
@@ -122,7 +125,7 @@ func _physics_process(delta: float):
 		_tick_orientation_timer(delta)
 		_orient_buggy_to_direction(delta)
 
-	if Input.is_action_just_pressed("p1_toggle_camera"):
+	if Input.is_action_just_pressed(str("p", player_number, "_toggle_camera")):
 		if $Camera1.current:
 			$Camera2.current = true
 		elif $Camera2.current:
@@ -130,7 +133,7 @@ func _physics_process(delta: float):
 		else:
 			$Camera1.current = true
 
-	if Input.is_action_pressed("p1_boost_jump") and can_boost:
+	if Input.is_action_pressed(str("p", player_number, "_boost_jump")) and can_boost:
 		if boost_timer < MAX_BOOST_DURATION:
 			var up_direction = global_transform.basis.y
 			apply_central_impulse(up_direction * jump_initial_impulse)
@@ -143,12 +146,12 @@ func _physics_process(delta: float):
 			boost_timer += delta
 		elif boost_timer >= MAX_BOOST_DURATION:
 			stop_boost()
-	elif Input.is_action_just_released("p1_boost_jump"):
+	elif Input.is_action_just_released(str("p", player_number, "_boost_jump")):
 		stop_boost()
 
 	var fwd_mps := (linear_velocity * transform.basis).x
 
-	_steer_target = Input.get_axis(&"p1_turn_right", &"p1_turn_left")
+	_steer_target = Input.get_axis(str("p", player_number, "_turn_right"), str("p", player_number, "_turn_left"))
 	_steer_target *= STEER_LIMIT
 
 	# Engine sound simulation (not realistic, as this car script has no notion of gear or engine RPM).
@@ -165,7 +168,7 @@ func _physics_process(delta: float):
 			Input.start_joy_vibration(joypad, 0.0, 0.5, 0.1)
 
 	# Automatically accelerate when using touch controls (reversing overrides acceleration).
-	if DisplayServer.is_touchscreen_available() or Input.is_action_pressed(&"p1_accelerate"):
+	if DisplayServer.is_touchscreen_available() or Input.is_action_pressed(str("p", player_number, "_accelerate")):
 		# Increase engine force at low speeds to make the initial acceleration faster.
 		var speed := linear_velocity.length()
 		if speed < 5.0 and not is_zero_approx(speed):
@@ -175,11 +178,11 @@ func _physics_process(delta: float):
 
 		if not DisplayServer.is_touchscreen_available():
 			# Apply analog throttle factor for more subtle acceleration if not fully holding down the trigger.
-			engine_force *= Input.get_action_strength(&"p1_accelerate")
+			engine_force *= Input.get_action_strength(str("p", player_number, "_accelerate"))
 	else:
 		engine_force = 0.0
 
-	if Input.is_action_pressed(&"p1_reverse"):
+	if Input.is_action_pressed(str("p", player_number, "_reverse")):
 		# Increase engine force at low speeds to make the initial reversing faster.
 		var speed := linear_velocity.length()
 		if speed < 5.0 and not is_zero_approx(speed):
@@ -188,11 +191,14 @@ func _physics_process(delta: float):
 			engine_force = -engine_force_value * BRAKE_STRENGTH
 
 		# Apply analog brake factor for more subtle braking if not fully holding down the trigger.
-		engine_force *= Input.get_action_strength(&"p1_reverse")
+		engine_force *= Input.get_action_strength(str("p", player_number, "_reverse"))
 
 	steering = move_toward(steering, _steer_target, STEER_SPEED * delta)
 
 	previous_speed = linear_velocity.length()
+
+	if Input.is_action_just_pressed(str("p", player_number, "_fire")):
+		rocket_launcher.fire_rocket()
 
 func _tick_orientation_timer (delta: float):
 	_orientation_duration += delta
