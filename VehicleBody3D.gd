@@ -12,7 +12,7 @@ var _initial_gravity_point: Vector3
 @onready var desired_engine_pitch: float = $EngineSound.pitch_scale
 
 @export var player_number : int
-@export var player_colour : String
+@export var player_colour : StandardMaterial3D
 @export var engine_force_value := 40.0
 @export var move_speed := 80.0
 ## Strength of the impulse applied upwards for the player's jump.
@@ -45,6 +45,13 @@ const MAX_INVERSION_RETRY_TIME := 1.0
 
 func _ready ():
 	connect("body_entered", Callable(self, "_on_body_entered"))
+	if player_number == 2:
+		print(player_colour)
+		print($Body)
+		print($Body is MeshInstance3D)
+
+	if player_colour != null and $Body is MeshInstance3D:
+		$Body.set_surface_override_material(0, player_colour)
 
 func update_new_center_of_gravity_point (point):
 	# If this is the first gravity point we've received, store it as initial

@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://cfp77dx8lxb0i"]
+[gd_scene load_steps=29 format=3 uid="uid://cfp77dx8lxb0i"]
 
 [ext_resource type="PackedScene" uid="uid://cktcilqmb8mdx" path="res://FPSDisplay.tscn" id="1_nyho8"]
 [ext_resource type="Texture2D" uid="uid://0snyqnypvtk6" path="res://icon.svg" id="2_gc8uk"]
@@ -9,6 +9,8 @@
 [ext_resource type="Material" uid="uid://dnqxiy84bf34s" path="res://glowy_green.tres" id="6_7n6r3"]
 [ext_resource type="Material" uid="uid://coug284mb8bhx" path="res://glowy_red.tres" id="6_uhbxe"]
 [ext_resource type="PackedScene" uid="uid://tp634kdqbfd" path="res://PlayerBuggy.tscn" id="8_jsgp5"]
+[ext_resource type="Material" uid="uid://cf4w258oi4pca" path="res://car-green.tres" id="10_luqu7"]
+[ext_resource type="Material" uid="uid://c53pgeng2ewby" path="res://car-gold.tres" id="10_stv4k"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jgvv4"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -328,13 +330,15 @@ gravity_direction = Vector3(0, 0, 0)
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 shape = SubResource("SphereShape3D_uaobl")
 
-[node name="PlayerBuggy" parent="." instance=ExtResource("8_jsgp5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -49, 13.453)
-player_number = 1
-
 [node name="PlayerBuggy2" parent="." instance=ExtResource("8_jsgp5")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -49, 4.74081)
 player_number = 2
+player_colour = ExtResource("10_stv4k")
+
+[node name="PlayerBuggy" parent="." instance=ExtResource("8_jsgp5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -49, 13.453)
+player_number = 1
+player_colour = ExtResource("10_luqu7")
 
 [connection signal="body_entered" from="LevelSphere1 - StaticBody3D2/Area3D" to="LevelSphere1 - StaticBody3D2" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="LevelSphere2 - StaticBody3D/Area3D" to="LevelSphere2 - StaticBody3D" method="_on_area_3d_body_entered"]
