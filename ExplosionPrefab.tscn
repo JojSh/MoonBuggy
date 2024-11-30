@@ -6,7 +6,7 @@
 [ext_resource type="Material" uid="uid://7ig6rty5eqvd" path="res://Shaders/InternalCloudMaterial.tres" id="4_8400x"]
 [ext_resource type="Material" uid="uid://ca4h3786y6aau" path="res://Shaders/ShockwaveMaterial.tres" id="5_5wau6"]
 [ext_resource type="Material" uid="uid://c82veycg0l5xj" path="res://Shaders/PrimaryCloudMaterial.tres" id="6_y6gpw"]
-[ext_resource type="Shader" path="res://Shaders/SmokeShader.gdshader" id="7_reuh8"]
+[ext_resource type="Shader" path="res://Shaders/SmokeShaderTranslucent.gdshader" id="7_n78qm"]
 [ext_resource type="NoiseTexture3D" uid="uid://bwydqh15qmvxa" path="res://Shaders/NoiseResource.tres" id="8_ncem4"]
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1julr"]
@@ -244,7 +244,7 @@ sub_emitter_frequency = 100.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fn2x5"]
 render_priority = 0
-shader = ExtResource("7_reuh8")
+shader = ExtResource("7_n78qm")
 shader_parameter/NoiseTexturePower = 0.111
 shader_parameter/NoiseTextureSoftness = 0.161
 shader_parameter/ColorTint = Color(0.0941176, 0.0941176, 0.0941176, 1)
@@ -362,15 +362,16 @@ collision_bounce = 1.0
 libraries = {
 "": SubResource("AnimationLibrary_1julr")
 }
-autoplay = "PlayExplosion"
 
 [node name="PrimaryExplosion" type="GPUParticles3D" parent="Explosion"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 material_override = ExtResource("6_y6gpw")
 cast_shadow = 2
 gi_mode = 0
+emitting = false
 amount = 6
 lifetime = 4.0
+one_shot = true
 explosiveness = 1.0
 randomness = 0.5
 visibility_aabb = AABB(-4, -7.51011, -4, 8, 15.0202, 8)
@@ -452,6 +453,7 @@ gi_mode = 0
 emitting = false
 amount = 1000
 lifetime = 3.0
+one_shot = true
 explosiveness = 1.0
 visibility_aabb = AABB(-13.7171, -6.4924, -11.8444, 27.4342, 12.9848, 23.6889)
 process_material = SubResource("ParticleProcessMaterial_kn3jr")

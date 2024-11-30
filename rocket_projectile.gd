@@ -45,7 +45,7 @@ func _set_up_collision_detection ():
 func _apply_explosive_force (collision_position):
 		# Apply explosion force
 	var explosion_radius = 7.5  # Adjust radius as needed
-	var explosion_force = 500.0  # Adjust force as needed
+	var explosion_force = 750.0  # Adjust force as needed
 	# Get all bodies in explosion radius
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsShapeQueryParameters3D.new()
