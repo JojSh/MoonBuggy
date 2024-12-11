@@ -7,11 +7,12 @@ func fire_rocket():
 	get_parent().add_child(rocket_projectile)
 	rocket_projectile.global_transform = $RocketMesh.global_transform
 	
-	# Get references to the child nodes
-	var projectile_mesh = rocket_projectile.get_node("RocketProjectileMesh")
-	var collision_shape = rocket_projectile.get_node("CollisionShape3D")
+	# Get references to the inner container and its children
+	var rocket_projectile_inner = rocket_projectile.get_node("RocketProjectileInner")
+	var projectile_mesh = rocket_projectile_inner.get_node("RocketProjectileMesh")
+	var collision_shape = rocket_projectile_inner.get_node("CollisionShape3D")
 	
-	rocket_projectile.fire_thruster()
+	rocket_projectile_inner.fire_thruster()
 	
 	# Create tween for scaling animation using current scales
 	var mesh_initial_scale = projectile_mesh.scale
@@ -23,5 +24,5 @@ func fire_rocket():
 	tween.parallel().tween_property(collision_shape, "scale", collision_initial_scale * 2.5, 0.2)
 	
 	# Calculate launch force in the rocket's forward direction
-	var launch_impulse = -rocket_projectile.global_transform.basis.x * 100
-	rocket_projectile.apply_central_impulse(launch_impulse)
+	var launch_impulse = -rocket_projectile_inner.global_transform.basis.x * 100
+	rocket_projectile_inner.apply_central_impulse(launch_impulse)
