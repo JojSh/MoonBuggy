@@ -79,6 +79,16 @@ script = ExtResource("1_06hsa")
 
 [node name="PlayerContainer" type="Node3D" parent="."]
 
+[node name="PlayerBuggy2" parent="PlayerContainer" instance=ExtResource("8_jsgp5")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -49, 4.74081)
+player_number = 2
+player_colour = ExtResource("10_stv4k")
+
+[node name="PlayerBuggy" parent="PlayerContainer" instance=ExtResource("8_jsgp5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -49, 13.453)
+player_number = 1
+player_colour = ExtResource("10_luqu7")
+
 [node name="AudioListener3DBetweenPlayers" type="AudioListener3D" parent="."]
 
 [node name="DebugSphere" type="MeshInstance3D" parent="AudioListener3DBetweenPlayers"]
@@ -107,11 +117,6 @@ audio_listener_enable_3d = true
 size = Vector2i(576, 648)
 render_target_update_mode = 4
 
-[node name="PlayerBuggy" parent="GridContainer/SubViewportContainer/SubViewport" instance=ExtResource("8_jsgp5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -49, 13.453)
-player_number = 1
-player_colour = ExtResource("10_luqu7")
-
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -123,11 +128,6 @@ handle_input_locally = false
 audio_listener_enable_3d = true
 size = Vector2i(576, 648)
 render_target_update_mode = 4
-
-[node name="PlayerBuggy" parent="GridContainer/SubViewportContainer2/SubViewport" instance=ExtResource("8_jsgp5")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -49, 4.74081)
-player_number = 2
-player_colour = ExtResource("10_stv4k")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 
@@ -370,7 +370,7 @@ transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 shape = SubResource("SphereShape3D_uaobl")
 
 [node name="LevelSphere4 - StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 92.0363, -15, 0)
+transform = Transform3D(-0.766044, 0, -0.642788, 0, 1, 0, 0.642788, 0, -0.766044, 91, -15, 0)
 script = ExtResource("2_lx3i3")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelSphere4 - StaticBody3D"]
