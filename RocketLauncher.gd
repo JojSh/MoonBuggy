@@ -1,7 +1,9 @@
 extends Node3D
-const RocketProjectile = preload("res://rocket_projectile.tscn") 
+const RocketProjectile = preload("res://rocket_projectile.tscn")
+var can_fire: bool = true
 
 func fire_rocket():
+	if !can_fire: return
 	$RocketMesh.set_visible(false)
 	var rocket_projectile = RocketProjectile.instantiate()
 	get_parent().add_child(rocket_projectile)
@@ -26,3 +28,9 @@ func fire_rocket():
 	# Calculate launch force in the rocket's forward direction
 	var launch_impulse = -rocket_projectile_inner.global_transform.basis.x * 100
 	rocket_projectile_inner.apply_central_impulse(launch_impulse)
+	
+	can_fire = false
+	var timer = get_tree().create_timer(2)
+	await timer.timeout
+	$RocketMesh.set_visible(true)
+	can_fire = true
