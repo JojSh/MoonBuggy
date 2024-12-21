@@ -4,10 +4,10 @@ var can_fire: bool = true
 
 func fire_rocket():
 	if !can_fire: return
-	$RocketMesh.set_visible(false)
+	$MeshInstance3D.set_visible(false)
 	var rocket_projectile = RocketProjectile.instantiate()
 	get_parent().add_child(rocket_projectile)
-	rocket_projectile.global_transform = $RocketMesh.global_transform
+	rocket_projectile.global_transform = $MeshInstance3D.global_transform
 	
 	# Get references to the inner container and its children
 	var rocket_projectile_inner = rocket_projectile.get_node("RocketProjectileInner")
@@ -32,5 +32,5 @@ func fire_rocket():
 	can_fire = false
 	var timer = get_tree().create_timer(2)
 	await timer.timeout
-	$RocketMesh.set_visible(true)
+	$MeshInstance3D.set_visible(true)
 	can_fire = true

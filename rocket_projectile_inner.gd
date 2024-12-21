@@ -14,7 +14,7 @@ func _on_body_entered(body):
 	explosion_particle_effect.get_node("Explosion/AnimationPlayer").play("PlayExplosion")
 
 	_apply_explosive_force(collision_position)
-	# Emit signal ro parent before destroying the rocket
+	# Emit signal to parent before destroying the rocket
 	rocket_exploded.emit()
 	# Remove the rocket
 	queue_free()
@@ -35,7 +35,7 @@ func _set_up_collision_detection ():
 func _apply_explosive_force (collision_position):
 		# Apply explosion force
 	var explosion_radius = 7.5  # Adjust radius as needed
-	var explosion_force = 750.0  # Adjust force as needed
+	var explosion_force = 1000.0  # Adjust force as needed
 	# Get all bodies in explosion radius
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsShapeQueryParameters3D.new()
@@ -49,8 +49,11 @@ func _apply_explosive_force (collision_position):
 	# Apply impulse to each physics body
 	for result in results:
 		var hit_body = result["collider"]
+		if hit_body is VehicleBody3D:
+			hit_body.die()
 		if hit_body is RigidBody3D and hit_body != self:  # Skip the rocket itself
 			var direction = (hit_body.global_position - collision_position).normalized()
 			var distance = hit_body.global_position.distance_to(collision_position)
 			var force = direction * explosion_force * (1.0 - distance / explosion_radius)
 			hit_body.apply_central_impulse(force)
+		

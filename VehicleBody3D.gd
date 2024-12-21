@@ -38,20 +38,46 @@ var _handling_inversion := false
 var _inversion_attempt_timer := 0.0
 const MAX_INVERSION_RETRY_TIME := 1.0
 
+var is_dead := false
+var death_camera: Camera3D
+const RESPAWN_TIME := 3.0
+const SEPARATION_FORCE := 6.0
+var was_active_player := false  # Add this as a class variable
+
 @onready var _start_position := global_transform.origin
 #@onready var central_point_marker = $CentralPointMarker
 
 @onready var rocket_launcher = $RocketLauncher
 
+var death_collision_shapes := {}  # Dictionary to store shapes for each part
+@onready var original_parts: Array[Node3D] = [$Body, $Wheel1, $Wheel2, $Wheel3, $Wheel4, $RocketLauncher]
+
 func _ready ():
 	connect("body_entered", Callable(self, "_on_body_entered"))
-	if player_number == 2:
-		print(player_colour)
-		print($Body)
-		print($Body is MeshInstance3D)
 
-	if player_colour != null and $Body is MeshInstance3D:
-		$Body.set_surface_override_material(0, player_colour)
+	if player_colour != null and $Body.get_node_or_null("MeshInstance3D") is MeshInstance3D:
+		$Body.get_node("MeshInstance3D").set_surface_override_material(0, player_colour)
+
+	genenerate_collision_shapes_for_desctructible_parts()
+
+func genenerate_collision_shapes_for_desctructible_parts ():
+	for part in original_parts:
+		if part and part.get_node_or_null("MeshInstance3D") is MeshInstance3D:
+			var mesh_instance = part.get_node("MeshInstance3D")
+			var mesh = mesh_instance.mesh
+			if mesh:
+				var collision_shape = CollisionShape3D.new()
+				
+				# Create simplified convex shapes for all parts
+				# Parameters: (clean=true, simplify=true)
+				collision_shape.shape = mesh.create_convex_shape(true, true)
+				
+				# Combine the part and mesh instance transforms
+				collision_shape.transform = part.transform * mesh_instance.transform
+				# Disable the collision shape until death
+				collision_shape.disabled = true
+				
+				death_collision_shapes[part.name] = collision_shape
 
 func update_new_center_of_gravity_point (point):
 	# If this is the first gravity point we've received, store it as initial
@@ -115,6 +141,8 @@ func _on_body_entered(body):
 	update_new_center_of_gravity_point(body.global_position)
 
 func _physics_process(delta: float):
+	if is_dead: # maybe this should only block controller inputs and allow other things to continue?
+		return
 	DebugDraw.draw_line(global_transform.origin, _closest_gravity_point, Color.GREEN)
 
 	if Input.is_action_just_pressed(str("p", player_number, "_reset_to_start_pos")):
@@ -219,3 +247,116 @@ func stop_boost ():
 		is_boost_sound_playing = false
 	boost_timer = 0.0
 	can_boost = false
+
+func die():
+	if is_dead: return
+	is_dead = true
+	
+	# Store death position and velocity before disabling physics
+	var death_position = global_position
+	var death_velocity = linear_velocity  # Capture the vehicle's velocity
+	
+	#collision_layer = 0
+	#collision_mask = 0 
+	set_physics_process(false)
+	set_process_input(false)
+	
+	# Camera handling...
+	# Store if this was the active player
+	was_active_player = ($Camera1.current or $Camera2.current or $Camera3.current)
+	
+	# Only create death camera if this is the active player
+	if was_active_player:
+		death_camera = Camera3D.new()
+		get_tree().root.add_child(death_camera)
+		death_camera.global_transform = $Camera1.global_transform
+		death_camera.current = true
+
+	for original_part in original_parts:
+		generate_and_separate_clone_of_part (original_part, death_velocity, death_position)
+
+	# Start respawn timer
+	get_tree().create_timer(RESPAWN_TIME).timeout.connect(_respawn)
+
+func generate_and_separate_clone_of_part (og_part, death_velocity, death_position):
+		og_part.visible = false
+		var original_global_transform = og_part.global_transform
+
+		var duplicate_part_rgdbdy = RigidBody3D.new()
+		duplicate_part_rgdbdy.mass = 5.0
+		duplicate_part_rgdbdy.gravity_scale = 1.0
+		duplicate_part_rgdbdy.continuous_cd = true
+		duplicate_part_rgdbdy.max_contacts_reported = 4
+		duplicate_part_rgdbdy.contact_monitor = true
+		duplicate_part_rgdbdy.can_sleep = false # TODO: review whether this is needed later
+		# Make sure collision is enabled BEFORE adding the shape
+		duplicate_part_rgdbdy.collision_layer = 1
+		duplicate_part_rgdbdy.collision_mask = 1
+
+		get_tree().root.add_child(duplicate_part_rgdbdy)
+
+		var duplicate_part_node3d = og_part.duplicate()
+
+		duplicate_part_node3d.visible = true
+		duplicate_part_rgdbdy.add_child(duplicate_part_node3d)
+
+		# Add collision shape with explicit checks
+		if death_collision_shapes.has(og_part.name):
+			var collision_shape = death_collision_shapes[og_part.name].duplicate()
+			collision_shape.disabled = false
+			# Preserve the transform when adding to rigid body
+			var shape_transform = collision_shape.transform
+			duplicate_part_rgdbdy.add_child(collision_shape)
+			# In case reparenting to the duplicate_part_rgdbdy changes its transform to something we don't want
+			collision_shape.transform = shape_transform
+
+		duplicate_part_rgdbdy.global_transform = original_global_transform
+
+		# Set the initial velocity of the part to match the vehicle's velocity
+		duplicate_part_rgdbdy.linear_velocity = death_velocity
+		
+		# Add separation force on top of existing velocity
+		var direction = (duplicate_part_rgdbdy.global_position - death_position).normalized()
+		direction += Vector3(randf_range(-0.2, 0.2), 1.0, randf_range(-0.2, 0.2))  # More upward bias
+		direction = direction.normalized()
+		duplicate_part_rgdbdy.apply_impulse(direction * SEPARATION_FORCE)
+	
+
+func _respawn():
+	# Get spawn point (implement this based on your game's spawn system)
+	var spawn_point = get_spawn_point()
+	
+	# Reset position and rotation
+	global_position = spawn_point
+	rotation = Vector3.ZERO
+	linear_velocity = Vector3.ZERO
+	angular_velocity = Vector3.ZERO
+	
+	# Show original parts
+	for part in original_parts:
+		if part:
+			part.visible = true
+	
+	# Re-enable physics and collision
+	collision_layer = 1  # Set to original layer
+	collision_mask = 1   # Set to original mask
+	set_physics_process(true)
+	set_process_input(true)
+	
+	# Switch camera back
+	if death_camera and was_active_player:
+		death_camera.queue_free()
+		$Camera1.current = true
+
+	was_active_player = false
+	is_dead = false
+
+func _input(event):
+	if is_dead:
+		return
+	# Normal input processing here
+
+# Helper function - implement based on your spawn system
+func get_spawn_point() -> Vector3:
+	# Return a valid spawn position
+	return Vector3(0, 5, 0)  # Example
