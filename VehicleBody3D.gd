@@ -146,6 +146,12 @@ func _on_body_entered(body):
 func _physics_process(delta: float):
 	if is_dead: # maybe this should only block controller inputs and allow other things to continue?
 		return
+	if global_position.y <= -100:
+		die()
+		$ImpactSound.play()
+		return
+		# need some extra code to remove death parts
+
 	DebugDraw.draw_line(global_transform.origin, _closest_gravity_point, Color.GREEN)
 
 	if Input.is_action_just_pressed(str("p", player_number, "_reset_to_start_pos")):
