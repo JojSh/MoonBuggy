@@ -19,6 +19,7 @@ var _initial_gravity_point: Vector3
 @export var jump_initial_impulse := 20.0
 ## How fast the player can turn around to match a new direction.
 @export var rotation_speed := 8.0
+@export var spawn_point : Vector3
 
 var _move_direction := Vector3.ZERO
 var _last_strong_direction := Vector3.FORWARD
@@ -59,6 +60,8 @@ func _ready ():
 		$Body.get_node("MeshInstance3D").set_surface_override_material(0, player_colour)
 
 	genenerate_collision_shapes_for_desctructible_parts()
+	
+	print(player_number, ": ", global_transform)
 
 func genenerate_collision_shapes_for_desctructible_parts ():
 	for part in original_parts:
@@ -324,7 +327,6 @@ func generate_and_separate_clone_of_part (og_part, death_velocity, death_positio
 
 func _respawn():
 	# Get spawn point (implement this based on your game's spawn system)
-	var spawn_point = get_spawn_point()
 	
 	# Reset position and rotation
 	global_position = spawn_point
@@ -355,8 +357,3 @@ func _input(event):
 	if is_dead:
 		return
 	# Normal input processing here
-
-# Helper function - implement based on your spawn system
-func get_spawn_point() -> Vector3:
-	# Return a valid spawn position
-	return Vector3(0, 5, 0)  # Example

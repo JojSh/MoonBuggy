@@ -80,14 +80,16 @@ script = ExtResource("1_06hsa")
 [node name="PlayerContainer" type="Node3D" parent="."]
 
 [node name="PlayerBuggy2" parent="PlayerContainer" instance=ExtResource("8_jsgp5")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -49, 4.74081)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -49, 4)
 player_number = 2
 player_colour = ExtResource("10_stv4k")
+spawn_point = Vector3(0, -49, 4)
 
 [node name="PlayerBuggy" parent="PlayerContainer" instance=ExtResource("8_jsgp5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -49, 13.453)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -49, 16)
 player_number = 1
 player_colour = ExtResource("10_luqu7")
+spawn_point = Vector3(0, -49, 16)
 
 [node name="AudioListener3DBetweenPlayers" type="AudioListener3D" parent="."]
 
@@ -114,7 +116,7 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="GridContainer/SubViewportContainer"]
 handle_input_locally = false
 audio_listener_enable_3d = true
-size = Vector2i(2, 2)
+size = Vector2i(576, 648)
 render_target_update_mode = 4
 
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="GridContainer"]
@@ -126,7 +128,7 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="GridContainer/SubViewportContainer2"]
 handle_input_locally = false
 audio_listener_enable_3d = true
-size = Vector2i(2, 2)
+size = Vector2i(576, 648)
 render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="."]

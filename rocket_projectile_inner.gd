@@ -21,10 +21,8 @@ func _on_body_entered(body):
 
 func fire_thruster ():
 	$RocketThruster/RocketTrigger.play("Rocket Thrust")
-
 	var launch_force = -global_transform.basis.x * 2500
 	apply_central_force(launch_force)
-
 	_set_up_collision_detection()
 
 func _set_up_collision_detection ():
@@ -33,7 +31,7 @@ func _set_up_collision_detection ():
 	max_contacts_reported = 4
 
 func _apply_explosive_force (collision_position):
-		# Apply explosion force
+	# Apply explosion force
 	var explosion_radius = 7.5  # Adjust radius as needed
 	var explosion_force = 1000.0  # Adjust force as needed
 	# Get all bodies in explosion radius
