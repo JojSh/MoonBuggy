@@ -155,7 +155,7 @@ func _physics_process(delta: float):
 	DebugDraw.draw_line(global_transform.origin, _closest_gravity_point, Color.GREEN)
 
 	if Input.is_action_just_pressed(str("p", player_number, "_reset_to_start_pos")):
-		self.position = Vector3(0, 1, 0)
+		self.position = spawn_point
 		self.rotation = Vector3(0, 0, 0)
 		linear_velocity = Vector3(0, 0, 0)
 		update_new_center_of_gravity_point(_initial_gravity_point)
@@ -332,8 +332,6 @@ func generate_and_separate_clone_of_part (og_part, death_velocity, death_positio
 	
 
 func _respawn():
-	# Get spawn point (implement this based on your game's spawn system)
-	
 	# Reset position and rotation
 	global_position = spawn_point
 	rotation = Vector3.ZERO
