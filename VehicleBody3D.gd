@@ -8,6 +8,7 @@ var previous_speed := linear_velocity.length()
 var _steer_target := 0.0
 var _closest_gravity_point: Vector3
 var _initial_gravity_point: Vector3
+var debug_gravitational_direction: bool = true
 
 @onready var desired_engine_pitch: float = $EngineSound.pitch_scale
 
@@ -44,13 +45,10 @@ var death_camera: Camera3D
 const RESPAWN_TIME := 3.0
 const SEPARATION_FORCE := 6.0
 var was_active_player := false  # Add this as a class variable
+var death_collision_shapes := {}  # Dictionary to store shapes for each part
 
 @onready var _start_position := global_transform.origin
-#@onready var central_point_marker = $CentralPointMarker
-
 @onready var rocket_launcher = $RocketLauncher
-
-var death_collision_shapes := {}  # Dictionary to store shapes for each part
 @onready var original_parts: Array[Node3D] = [$Body, $Wheel1, $Wheel2, $Wheel3, $Wheel4, $RocketLauncher]
 
 func _ready ():
@@ -60,8 +58,6 @@ func _ready ():
 		$Body.get_node("MeshInstance3D").set_surface_override_material(0, player_colour)
 
 	genenerate_collision_shapes_for_desctructible_parts()
-	
-	print(player_number, ": ", global_transform)
 
 func genenerate_collision_shapes_for_desctructible_parts ():
 	for part in original_parts:
@@ -152,7 +148,8 @@ func _physics_process(delta: float):
 		return
 		# need some extra code to remove death parts
 
-	DebugDraw.draw_line(global_transform.origin, _closest_gravity_point, Color.GREEN)
+	if (debug_gravitational_direction == true):
+		DebugDraw.draw_line(global_transform.origin, _closest_gravity_point, Color.GREEN)
 
 	if Input.is_action_just_pressed(str("p", player_number, "_reset_to_start_pos")):
 		self.position = spawn_point

@@ -33,14 +33,14 @@ tonemap_mode = 2
 glow_enabled = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_sj3sa"]
-size = Vector3(40, 0.2, 400)
+size = Vector3(80, 0.2, 400)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a1vpj"]
 albedo_texture = ExtResource("2_gc8uk")
 uv1_scale = Vector3(100, 1000, 100)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_xs5jn"]
-size = Vector3(40, 0.2, 400)
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_32rrp"]
+data = PackedVector3Array(-40, 0.1, 200, 40, 0.1, 200, -40, -0.1, 200, 40, 0.1, 200, 40, -0.1, 200, -40, -0.1, 200, 40, 0.1, -200, -40, 0.1, -200, 40, -0.1, -200, -40, 0.1, -200, -40, -0.1, -200, 40, -0.1, -200, 40, 0.1, 200, 40, 0.1, -200, 40, -0.1, 200, 40, 0.1, -200, 40, -0.1, -200, 40, -0.1, 200, -40, 0.1, -200, -40, 0.1, 200, -40, -0.1, -200, -40, 0.1, 200, -40, -0.1, 200, -40, -0.1, -200, 40, 0.1, 200, -40, 0.1, 200, 40, 0.1, -200, -40, 0.1, 200, -40, 0.1, -200, 40, 0.1, -200, -40, -0.1, 200, 40, -0.1, 200, -40, -0.1, -200, 40, -0.1, 200, 40, -0.1, -200, -40, -0.1, -200)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_873io"]
 
@@ -78,6 +78,7 @@ data = PackedVector3Array(-0.0001, -0.2451, -4.978, -0.0001, -0.4894, -4.9601, 0
 script = ExtResource("1_06hsa")
 
 [node name="MenuContainer" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="Control" type="Control" parent="MenuContainer"]
 layout_mode = 3
@@ -111,15 +112,15 @@ grow_vertical = 2
 [node name="VBoxContainer" type="VBoxContainer" parent="MenuContainer/Control/MarginContainer"]
 layout_mode = 2
 
-[node name="MenuButton" type="MenuButton" parent="MenuContainer/Control/MarginContainer/VBoxContainer"]
+[node name="SinglePlayerLocalButton" type="MenuButton" parent="MenuContainer/Control/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Single player (local)"
 
-[node name="MenuButton2" type="MenuButton" parent="MenuContainer/Control/MarginContainer/VBoxContainer"]
+[node name="TwoPlayerSplitScreenButton" type="MenuButton" parent="MenuContainer/Control/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Two player split-screen"
 
-[node name="MenuButton3" type="MenuButton" parent="MenuContainer/Control/MarginContainer/VBoxContainer"]
+[node name="FourPlayerSplitScreenButton" type="MenuButton" parent="MenuContainer/Control/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Four player split-screen"
 
@@ -133,7 +134,7 @@ transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
 mesh = SubResource("PrismMesh_e4u06")
 surface_material_override/0 = SubResource("StandardMaterial3D_7cpvd")
 
-[node name="GridContainer" type="GridContainer" parent="."]
+[node name="SplitScreenGridContainer" type="GridContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -143,37 +144,37 @@ size_flags_stretch_ratio = 9.9
 theme_override_constants/h_separation = 0
 columns = 2
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="GridContainer"]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="SplitScreenGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="GridContainer/SubViewportContainer"]
+[node name="SubViewport" type="SubViewport" parent="SplitScreenGridContainer/SubViewportContainer"]
 handle_input_locally = false
 audio_listener_enable_3d = true
 size = Vector2i(576, 648)
 render_target_update_mode = 4
 
-[node name="PlayerBuggy" parent="GridContainer/SubViewportContainer/SubViewport" instance=ExtResource("8_jsgp5")]
+[node name="PlayerBuggy" parent="SplitScreenGridContainer/SubViewportContainer/SubViewport" instance=ExtResource("8_jsgp5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -49, 16)
 player_number = 1
 player_colour = ExtResource("10_luqu7")
 spawn_point = Vector3(0, -49, 16)
 
-[node name="SubViewportContainer2" type="SubViewportContainer" parent="GridContainer"]
+[node name="SubViewportContainer2" type="SubViewportContainer" parent="SplitScreenGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="GridContainer/SubViewportContainer2"]
+[node name="SubViewport" type="SubViewport" parent="SplitScreenGridContainer/SubViewportContainer2"]
 handle_input_locally = false
 audio_listener_enable_3d = true
 size = Vector2i(576, 648)
 render_target_update_mode = 4
 
-[node name="PlayerBuggy" parent="GridContainer/SubViewportContainer2/SubViewport" instance=ExtResource("8_jsgp5")]
+[node name="PlayerBuggy" parent="SplitScreenGridContainer/SubViewportContainer2/SubViewport" instance=ExtResource("8_jsgp5")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -49, 4)
 player_number = 2
 player_colour = ExtResource("10_stv4k")
@@ -182,6 +183,7 @@ spawn_point = Vector3(0, -49, 4)
 [node name="Camera3D" type="Camera3D" parent="."]
 
 [node name="FPSDisplay" parent="." instance=ExtResource("1_nyho8")]
+visible = false
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_umg0y")
@@ -196,15 +198,16 @@ mesh = SubResource("BoxMesh_sj3sa")
 surface_material_override/0 = SubResource("StandardMaterial3D_a1vpj")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Level"]
+script = ExtResource("2_lx3i3")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Level/StaticBody3D"]
-shape = SubResource("BoxShape3D_xs5jn")
+shape = SubResource("ConcavePolygonShape3D_32rrp")
 
 [node name="Pills" type="Node3D" parent="Level"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00417, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.54908e-06, 1.00417, 16.8818)
 
 [node name="Pill" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 4.5, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 4.5, -12.9404)
 mass = 20.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill"]
@@ -216,7 +219,7 @@ mesh = SubResource("CapsuleMesh_mxteq")
 skeleton = NodePath("")
 
 [node name="Pill2" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 4, -3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5683, 4, -3)
 mass = 20.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill2"]
@@ -228,7 +231,7 @@ mesh = SubResource("CapsuleMesh_mxteq")
 skeleton = NodePath("")
 
 [node name="Pill3" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 4.5, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.999993, 4.5, -47.9682)
 mass = 20.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill3"]
@@ -240,7 +243,7 @@ mesh = SubResource("CapsuleMesh_mxteq")
 skeleton = NodePath("")
 
 [node name="Pill4" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.75, 4.5, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5722, 4.5, -2)
 mass = 20.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill4"]
@@ -268,6 +271,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.950751, 4, -4.07187)
 mass = 20.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.84774e-06, 0, 9.97566)
 shape = SubResource("CapsuleShape3D_873io")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill6"]
@@ -276,7 +280,7 @@ mesh = SubResource("CapsuleMesh_mxteq")
 skeleton = NodePath("")
 
 [node name="Pill7" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.549249, 4.5, -3.07187)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.0361, 4.5, -11.8939)
 mass = 20.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill7"]
@@ -288,13 +292,207 @@ mesh = SubResource("CapsuleMesh_mxteq")
 skeleton = NodePath("")
 
 [node name="Pill8" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.20075, 4.5, -3.07187)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.6605, 4.5, -38.795)
 mass = 20.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill8"]
 shape = SubResource("CapsuleShape3D_873io")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill8"]
+material_override = ExtResource("6_uhbxe")
+mesh = SubResource("CapsuleMesh_mxteq")
+skeleton = NodePath("")
+
+[node name="Pill9" type="RigidBody3D" parent="Level/Pills"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 26.6277, 4.5, 45.0145)
+mass = 20.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill9"]
+shape = SubResource("CapsuleShape3D_873io")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill9"]
+material_override = ExtResource("4_sak4k")
+mesh = SubResource("CapsuleMesh_mxteq")
+skeleton = NodePath("")
+
+[node name="Pill10" type="RigidBody3D" parent="Level/Pills"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 1.136, 4, 34.8793)
+mass = 20.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill10"]
+shape = SubResource("CapsuleShape3D_873io")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill10"]
+material_override = ExtResource("6_7n6r3")
+mesh = SubResource("CapsuleMesh_mxteq")
+skeleton = NodePath("")
+
+[node name="Pill11" type="RigidBody3D" parent="Level/Pills"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 24.3606, 4.5, 80.0259)
+mass = 20.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill11"]
+shape = SubResource("CapsuleShape3D_873io")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill11"]
+material_override = ExtResource("3_h4blv")
+mesh = SubResource("CapsuleMesh_mxteq")
+skeleton = NodePath("")
+
+[node name="Pill12" type="RigidBody3D" parent="Level/Pills"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 7.13956, 4.5, 33.9251)
+mass = 20.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill12"]
+shape = SubResource("CapsuleShape3D_873io")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill12"]
+material_override = ExtResource("6_uhbxe")
+mesh = SubResource("CapsuleMesh_mxteq")
+skeleton = NodePath("")
+
+[node name="Pill13" type="RigidBody3D" parent="Level/Pills"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 25.1538, 4.5, 35.1344)
+mass = 20.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill13"]
+shape = SubResource("CapsuleShape3D_873io")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill13"]
+material_override = ExtResource("4_sak4k")
+mesh = SubResource("CapsuleMesh_mxteq")
+skeleton = NodePath("")
+
+[node name="Pill14" type="RigidBody3D" parent="Level/Pills"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 24.6462, 4, 36.1306)
+mass = 20.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.84774e-06, 0, 9.97566)
+shape = SubResource("CapsuleShape3D_873io")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill14"]
+material_override = ExtResource("6_7n6r3")
+mesh = SubResource("CapsuleMesh_mxteq")
+skeleton = NodePath("")
+
+[node name="Pill15" type="RigidBody3D" parent="Level/Pills"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -6.39941, 4.5, 43.716)
+mass = 20.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill15"]
+shape = SubResource("CapsuleShape3D_873io")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill15"]
+material_override = ExtResource("3_h4blv")
+mesh = SubResource("CapsuleMesh_mxteq")
+skeleton = NodePath("")
+
+[node name="Pill16" type="RigidBody3D" parent="Level/Pills"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -8.22897, 4.5, 70.604)
+mass = 20.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill16"]
+shape = SubResource("CapsuleShape3D_873io")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill16"]
+material_override = ExtResource("6_uhbxe")
+mesh = SubResource("CapsuleMesh_mxteq")
+skeleton = NodePath("")
+
+[node name="Pill17" type="RigidBody3D" parent="Level/Pills"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 26.6278, 4.5, -70.4155)
+mass = 20.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill17"]
+shape = SubResource("CapsuleShape3D_873io")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill17"]
+material_override = ExtResource("4_sak4k")
+mesh = SubResource("CapsuleMesh_mxteq")
+skeleton = NodePath("")
+
+[node name="Pill18" type="RigidBody3D" parent="Level/Pills"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 1.13602, 4, -80.5506)
+mass = 20.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill18"]
+shape = SubResource("CapsuleShape3D_873io")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill18"]
+material_override = ExtResource("6_7n6r3")
+mesh = SubResource("CapsuleMesh_mxteq")
+skeleton = NodePath("")
+
+[node name="Pill19" type="RigidBody3D" parent="Level/Pills"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 24.3606, 4.5, -35.404)
+mass = 20.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill19"]
+shape = SubResource("CapsuleShape3D_873io")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill19"]
+material_override = ExtResource("3_h4blv")
+mesh = SubResource("CapsuleMesh_mxteq")
+skeleton = NodePath("")
+
+[node name="Pill20" type="RigidBody3D" parent="Level/Pills"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 7.13958, 4.5, -81.5049)
+mass = 20.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill20"]
+shape = SubResource("CapsuleShape3D_873io")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill20"]
+material_override = ExtResource("6_uhbxe")
+mesh = SubResource("CapsuleMesh_mxteq")
+skeleton = NodePath("")
+
+[node name="Pill21" type="RigidBody3D" parent="Level/Pills"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 25.1538, 4.5, -80.2955)
+mass = 20.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill21"]
+shape = SubResource("CapsuleShape3D_873io")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill21"]
+material_override = ExtResource("4_sak4k")
+mesh = SubResource("CapsuleMesh_mxteq")
+skeleton = NodePath("")
+
+[node name="Pill22" type="RigidBody3D" parent="Level/Pills"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 24.6462, 4, -79.2994)
+mass = 20.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.84774e-06, 0, 9.97566)
+shape = SubResource("CapsuleShape3D_873io")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill22"]
+material_override = ExtResource("6_7n6r3")
+mesh = SubResource("CapsuleMesh_mxteq")
+skeleton = NodePath("")
+
+[node name="Pill23" type="RigidBody3D" parent="Level/Pills"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -6.3994, 4.5, -71.7139)
+mass = 20.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill23"]
+shape = SubResource("CapsuleShape3D_873io")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill23"]
+material_override = ExtResource("3_h4blv")
+mesh = SubResource("CapsuleMesh_mxteq")
+skeleton = NodePath("")
+
+[node name="Pill24" type="RigidBody3D" parent="Level/Pills"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -8.22896, 4.5, -44.826)
+mass = 20.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill24"]
+shape = SubResource("CapsuleShape3D_873io")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill24"]
 material_override = ExtResource("6_uhbxe")
 mesh = SubResource("CapsuleMesh_mxteq")
 skeleton = NodePath("")
@@ -325,10 +523,6 @@ skeleton = NodePath("")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Block2"]
 shape = SubResource("ConvexPolygonShape3D_s41nm")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.18426, 4.478, -9.71931)
-shape = SubResource("ConvexPolygonShape3D_4ru31")
-
 [node name="Block3" type="RigidBody3D" parent="Level"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.24192, 4.478, -21.7446)
 mass = 25.0
@@ -343,18 +537,29 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.61904, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_4ru31")
 
 [node name="Ramp" type="RigidBody3D" parent="Level"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.55518, -30)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -38.214, 1, -48.094)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Ramp"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -2.26598, 0)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("PrismMesh_suh1j")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Ramp"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -2.26598, 0)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_b7gkw")
+
+[node name="Ramp2" type="RigidBody3D" parent="Level"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 37.7245, 1, 69.428)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Ramp2"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("PrismMesh_suh1j")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Ramp2"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_b7gkw")
 
 [node name="LevelSphere1 - StaticBody3D2" type="StaticBody3D" parent="."]
-transform = Transform3D(-0.3, 0, -4.52987e-08, 0, 0.3, 0, 4.52987e-08, 0, -0.3, 0, -15, 39)
+transform = Transform3D(-0.3, 0, -4.52987e-08, 0, 0.3, 0, 4.52987e-08, 0, -0.3, 12.783, -15, 36.7762)
 script = ExtResource("2_lx3i3")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelSphere1 - StaticBody3D2"]
@@ -398,7 +603,7 @@ transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 shape = SubResource("SphereShape3D_uaobl")
 
 [node name="LevelSphere3 - StaticBody3D2" type="StaticBody3D" parent="."]
-transform = Transform3D(-0.3, 0, -4.52987e-08, 0, 0.3, 0, 4.52987e-08, 0, -0.3, 0, -15, -39)
+transform = Transform3D(-0.3, 0, -4.52987e-08, 0, 0.3, 0, 4.52987e-08, 0, -0.3, -18.0912, -15, -39)
 script = ExtResource("2_lx3i3")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelSphere3 - StaticBody3D2"]
@@ -419,31 +624,54 @@ gravity_direction = Vector3(0, 0, 0)
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 shape = SubResource("SphereShape3D_uaobl")
 
-[node name="LevelSphere4 - StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(-0.766044, 0, -0.642788, 0, 1, 0, 0.642788, 0, -0.766044, 91, -15, 0)
+[node name="LevelSphereBig1 - StaticBody3D2" type="StaticBody3D" parent="."]
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, -100.951, -4.29482, -46.6563)
 script = ExtResource("2_lx3i3")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelSphere4 - StaticBody3D"]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-material_override = ExtResource("6_7n6r3")
-mesh = ExtResource("5_8htqn")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelSphereBig1 - StaticBody3D2"]
+material_override = ExtResource("3_h4blv")
+mesh = SubResource("SphereMesh_iaqk8")
 skeleton = NodePath("../..")
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="LevelSphere4 - StaticBody3D"]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-shape = SubResource("ConcavePolygonShape3D_4akrm")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphereBig1 - StaticBody3D2"]
+shape = SubResource("ConcavePolygonShape3D_c745l")
 
-[node name="Area3D" type="Area3D" parent="LevelSphere4 - StaticBody3D"]
+[node name="Area3D" type="Area3D" parent="LevelSphereBig1 - StaticBody3D2"]
 gravity_space_override = 3
 gravity_point = true
 gravity_point_center = Vector3(0, 0, 0)
 gravity_direction = Vector3(0, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphere4 - StaticBody3D/Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphereBig1 - StaticBody3D2/Area3D"]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
+shape = SubResource("SphereShape3D_uaobl")
+
+[node name="LevelSphereBig2 - StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(-0.766044, 0, -0.642788, 0, 1, 0, 0.642788, 0, -0.766044, 101.651, 4.96765, 47.5145)
+script = ExtResource("2_lx3i3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelSphereBig2 - StaticBody3D"]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
+material_override = ExtResource("6_7n6r3")
+mesh = ExtResource("5_8htqn")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="LevelSphereBig2 - StaticBody3D"]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_4akrm")
+
+[node name="Area3D" type="Area3D" parent="LevelSphereBig2 - StaticBody3D"]
+gravity_space_override = 3
+gravity_point = true
+gravity_point_center = Vector3(0, 0, 0)
+gravity_direction = Vector3(0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphereBig2 - StaticBody3D/Area3D"]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 shape = SubResource("SphereShape3D_uaobl")
 
 [connection signal="body_entered" from="LevelSphere1 - StaticBody3D2/Area3D" to="LevelSphere1 - StaticBody3D2" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="LevelSphere2 - StaticBody3D/Area3D" to="LevelSphere2 - StaticBody3D" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="LevelSphere3 - StaticBody3D2/Area3D" to="LevelSphere3 - StaticBody3D2" method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="LevelSphere4 - StaticBody3D/Area3D" to="LevelSphere4 - StaticBody3D" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="LevelSphereBig1 - StaticBody3D2/Area3D" to="LevelSphereBig1 - StaticBody3D2" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="LevelSphereBig2 - StaticBody3D/Area3D" to="LevelSphereBig2 - StaticBody3D" method="_on_area_3d_body_entered"]
