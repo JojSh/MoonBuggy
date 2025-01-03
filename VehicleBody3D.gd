@@ -78,8 +78,7 @@ func genenerate_collision_shapes_for_desctructible_parts ():
 				
 				death_collision_shapes[part.name] = collision_shape
 
-func update_new_center_of_gravity_point (point):
-	# If this is the first gravity point we've received, store it as initial
+func update_new_center_of_gravity_point(point):
 	if _closest_gravity_point == Vector3.ZERO:
 		_initial_gravity_point = point
 	_closest_gravity_point = point
@@ -125,15 +124,11 @@ func _orient_buggy_to_direction (delta: float) -> bool:
 	return false
 
 func _integrate_forces(state: PhysicsDirectBodyState3D):
-	# This clause handles if a player falls off a planet, resetting their position if they hit the safety net.
 	if _should_reset:
 		state.transform.origin = _start_position
 		_should_reset = false
 
 	local_gravity = state.total_gravity.normalized()
-	# get the diretion/distance as a vector3 from the buggy to the central point
-	#var direction_to_central_point = central_point_marker.transform.origin - global_transform.origin
-	# report any bodies the buggy is colliding with
 
 func _on_body_entered(body):
 	can_boost = true

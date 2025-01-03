@@ -1,7 +1,7 @@
 extends Node3D
 
 var list_of_players = []
-var multiplayer_split_screen : bool = true
+var multiplayer_split_screen : bool = false
 
 func _ready():
 	add_players_to_list()
@@ -31,3 +31,16 @@ func add_players_to_list ():
 		$AudioListener3DBetweenPlayers.queue_free()
 		for player in $PlayerContainer.get_children():
 			list_of_players.append(player)
+
+
+func _on_portal_entrance_area_3d_body_entered(body, portal_number: int):
+	if !(body is VehicleBody3D):
+		return
+	print("body is VehicleBody3D")
+
+	var exit_location = get_node("PortalExitArea3D" + str(portal_number)).global_position
+	body.position = exit_location
+	body.rotation = Vector3.ZERO
+	body.angular_velocity = Vector3.ZERO
+	body.linear_velocity = Vector3.ZERO
+	body.update_new_center_of_gravity_point(Vector3.ZERO)
