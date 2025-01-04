@@ -103,6 +103,7 @@ func _orient_buggy_to_direction (delta: float) -> bool:
 		return true
 
 	if alignment < -0.99:  # Almost completely inverted
+		print("Almost completely inverted")
 		if _handling_inversion:
 			_inversion_attempt_timer += delta
 			if _inversion_attempt_timer >= MAX_INVERSION_RETRY_TIME:
@@ -239,6 +240,7 @@ func _physics_process(delta: float):
 func _tick_orientation_timer (delta: float):
 	_orientation_duration += delta
 	if _orientation_duration >= MAX_ORIENTATION_TIME:
+		print("orientation timer ended")
 		_orientation_in_progress = false
 		_orientation_duration = 0.0
 
