@@ -587,7 +587,6 @@ mesh = SubResource("SphereMesh_iaqk8")
 skeleton = NodePath("../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphere1 - StaticBody3D2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 shape = SubResource("SphereShape3D_jf1r4")
 
 [node name="GravityArea3D" type="Area3D" parent="LevelSphere1 - StaticBody3D2"]
@@ -610,7 +609,6 @@ mesh = SubResource("SphereMesh_iaqk8")
 skeleton = NodePath("../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphere2 - StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 shape = SubResource("SphereShape3D_jf1r4")
 
 [node name="GravityArea3D" type="Area3D" parent="LevelSphere2 - StaticBody3D"]
@@ -633,7 +631,6 @@ mesh = SubResource("SphereMesh_iaqk8")
 skeleton = NodePath("../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphere3 - StaticBody3D2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 shape = SubResource("SphereShape3D_jf1r4")
 
 [node name="GravityArea3D" type="Area3D" parent="LevelSphere3 - StaticBody3D2"]

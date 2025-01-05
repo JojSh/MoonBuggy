@@ -32,13 +32,8 @@ var boost_timer := 0.0
 var can_boost := true
 const MAX_BOOST_DURATION := 0.5
 
-var _orientation_in_progress := false
-var _orientation_duration := 0.0
-const MAX_ORIENTATION_TIME := 1.0  # Maximum time to attempt orientation
-
-var _handling_inversion := false
-var _inversion_attempt_timer := 0.0
-const MAX_INVERSION_RETRY_TIME := 1.0
+var time_upside_down := 0.0
+const MAX_UPSIDE_DOWN_TIME := 3.0
 
 var is_dead := false
 var death_camera: Camera3D
@@ -83,46 +78,27 @@ func update_new_center_of_gravity_point(point):
 		_initial_gravity_point = point
 	_closest_gravity_point = point
 
-func switch_on_orientation ():
-	_orientation_in_progress = true
-	_orientation_duration = 0.0
-
-func _orient_buggy_to_direction (delta: float) -> bool:
+func reorient_vehicle():
+	# 1. Calculate the desired up direction (opposite to gravity)
 	var desired_up = (global_transform.origin - _closest_gravity_point).normalized()
-	var current_up = global_transform.basis.y
 	
-	var alignment = current_up.dot(desired_up)
-	# alignment will be:
-	#  1 when perfectly aligned
-	#  0 when perpendicular
-	# -1 when completely inverted	
-
-	if alignment > 0.99:  # Almost aligned
-		_handling_inversion = false
-		_inversion_attempt_timer = 0.0
-		return true
-
-	if alignment < -0.99:  # Almost completely inverted
-		print("Almost completely inverted")
-		if _handling_inversion:
-			_inversion_attempt_timer += delta
-			if _inversion_attempt_timer >= MAX_INVERSION_RETRY_TIME:
-				_handling_inversion = false
-		elif not _handling_inversion:
-			_handling_inversion = true
-			var right = global_transform.basis.x
-			global_transform = global_transform * Transform3D().rotated(right, PI/2)
-		return false
-
-	var rotation_axis = current_up.cross(desired_up).normalized()
-	var rotation_angle = current_up.angle_to(desired_up)
-	var smoothing_speed = 5.0 * delta
-	var smoothed_angle = rotation_angle * smoothing_speed
+	# 2. Calculate the desired forward direction
+	# Use the current forward direction projected onto the plane perpendicular to desired_up
+	var current_forward = -global_transform.basis.z
+	var right = current_forward.cross(desired_up).normalized()
+	var new_forward = desired_up.cross(right).normalized()
 	
-	var rotation = Transform3D().rotated(rotation_axis, smoothed_angle)
-	global_transform = global_transform * rotation
+	# 3. Construct the new basis
+	var new_basis = Basis()
+	new_basis.x = right
+	new_basis.y = desired_up
+	new_basis.z = -new_forward  # Negative because Godot uses -Z as forward
 	
-	return false
+	# 4. Apply the new orientation
+	global_transform.basis = new_basis
+	
+	# 5. Lift the vehicle slightly to prevent immediate collision
+	global_transform.origin += desired_up * 0.5
 
 func _integrate_forces(state: PhysicsDirectBodyState3D):
 	if _should_reset:
@@ -154,13 +130,7 @@ func _physics_process(delta: float):
 		update_new_center_of_gravity_point(_initial_gravity_point)
 
 	if Input.is_action_just_pressed(str("p", player_number, "_flip")):
-		var desired_up = (global_transform.origin - _closest_gravity_point).normalized()
-		global_transform.origin += desired_up * 1
-		switch_on_orientation()
-
-	if _orientation_in_progress:
-		_tick_orientation_timer(delta)
-		_orient_buggy_to_direction(delta)
+		reorient_vehicle()
 
 	if Input.is_action_just_pressed(str("p", player_number, "_toggle_camera")):
 		if $Camera1.current:
@@ -237,12 +207,16 @@ func _physics_process(delta: float):
 	if Input.is_action_just_pressed(str("p", player_number, "_fire")):
 		rocket_launcher.fire_rocket()
 
-func _tick_orientation_timer (delta: float):
-	_orientation_duration += delta
-	if _orientation_duration >= MAX_ORIENTATION_TIME:
-		print("orientation timer ended")
-		_orientation_in_progress = false
-		_orientation_duration = 0.0
+	# Check if vehicle is upside down
+	var up = global_transform.basis.y
+	var desired_up = (global_transform.origin - _closest_gravity_point).normalized()
+	if up.dot(desired_up) < -0.5:  # More than 120 degrees from desired up
+		time_upside_down += delta
+		if time_upside_down > MAX_UPSIDE_DOWN_TIME:
+			reorient_vehicle()
+			time_upside_down = 0.0
+	else:
+		time_upside_down = 0.0
 
 func stop_boost ():
 	if is_boost_sound_playing:
