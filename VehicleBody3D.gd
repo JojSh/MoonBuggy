@@ -79,8 +79,21 @@ func update_new_center_of_gravity_point(point):
 	_closest_gravity_point = point
 
 func reorient_vehicle():
+	
 	# 1. Calculate the desired up direction (opposite to gravity)
-	var desired_up = (global_transform.origin - _closest_gravity_point).normalized()
+	var desired_up: Vector3
+	
+	# Check if we're on a flat surface (box collider gravity area)
+	var to_gravity_point = global_transform.origin - _closest_gravity_point
+	var currently_on_horizontal_plane = abs(to_gravity_point.y) < 1.0
+	
+	if currently_on_horizontal_plane:  # If we're roughly on the same horizontal plane
+		print("flipping on the horizontal plane")
+		# Use world up vector for flat surfaces
+		desired_up = Vector3.UP
+	else:
+		# Use direction away from gravity point for spherical surfaces
+		desired_up = to_gravity_point.normalized()
 	
 	# 2. Calculate the desired forward direction
 	# Use the current forward direction projected onto the plane perpendicular to desired_up
