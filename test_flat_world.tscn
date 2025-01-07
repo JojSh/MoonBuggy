@@ -46,6 +46,9 @@ uv1_scale = Vector3(100, 1000, 100)
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_32rrp"]
 data = PackedVector3Array(-40, 0.1, 200, 40, 0.1, 200, -40, -0.1, 200, 40, 0.1, 200, 40, -0.1, 200, -40, -0.1, 200, 40, 0.1, -200, -40, 0.1, -200, 40, -0.1, -200, -40, 0.1, -200, -40, -0.1, -200, 40, -0.1, -200, 40, 0.1, 200, 40, 0.1, -200, 40, -0.1, 200, 40, 0.1, -200, 40, -0.1, -200, 40, -0.1, 200, -40, 0.1, -200, -40, 0.1, 200, -40, -0.1, -200, -40, 0.1, 200, -40, -0.1, 200, -40, -0.1, -200, 40, 0.1, 200, -40, 0.1, 200, 40, 0.1, -200, -40, 0.1, 200, -40, 0.1, -200, 40, 0.1, -200, -40, -0.1, 200, 40, -0.1, 200, -40, -0.1, -200, 40, -0.1, 200, 40, -0.1, -200, -40, -0.1, -200)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_y1d70"]
+size = Vector3(500, 100, 500)
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_873io"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_mxteq"]
@@ -64,9 +67,6 @@ size = Vector3(4, 1.2, 4)
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_b7gkw"]
 points = PackedVector3Array(-2, -0.6, -2, -2, -0.6, 2, 2, 0.6, -2, 2, -0.6, -2, 2, -0.6, 2, 2, 0.6, 2)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_y1d70"]
-size = Vector3(500, 100, 500)
 
 [sub_resource type="SphereMesh" id="SphereMesh_iaqk8"]
 radius = 50.0
@@ -205,16 +205,24 @@ environment = SubResource("Environment_umg0y")
 transform = Transform3D(1, 0, 0, 0, 0.767322, 0.641262, 0, -0.641262, 0.767322, 0, 14.1741, 4.37678)
 light_color = Color(1, 0.952941, 0.901961, 1)
 
-[node name="Level" type="MeshInstance3D" parent="."]
+[node name="Level" type="StaticBody3D" parent="."]
 transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, -50, 0)
-mesh = SubResource("BoxMesh_sj3sa")
-surface_material_override/0 = SubResource("StandardMaterial3D_a1vpj")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="Level"]
 script = ExtResource("2_lx3i3")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/StaticBody3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level"]
+mesh = SubResource("BoxMesh_sj3sa")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_a1vpj")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level"]
 shape = SubResource("ConcavePolygonShape3D_32rrp")
+
+[node name="GravityArea3D" type="Area3D" parent="Level"]
+gravity_space_override = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/GravityArea3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -47, 0)
+shape = SubResource("BoxShape3D_y1d70")
 
 [node name="Pills" type="Node3D" parent="Level"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.54908e-06, 1.00417, 16.8818)
@@ -571,13 +579,6 @@ mesh = SubResource("PrismMesh_suh1j")
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_b7gkw")
 
-[node name="GravityArea3D" type="Area3D" parent="Level"]
-gravity_space_override = 3
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/GravityArea3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -47, 0)
-shape = SubResource("BoxShape3D_y1d70")
-
 [node name="LevelSphere1 - StaticBody3D2" type="StaticBody3D" parent="."]
 transform = Transform3D(-0.3, 0, -4.52987e-08, 0, 0.3, 0, 4.52987e-08, 0, -0.3, 18, -15, 37)
 script = ExtResource("2_lx3i3")
@@ -747,6 +748,7 @@ shape = SubResource("SphereShape3D_uaobl")
 [node name="PortalExitArea3D2" parent="." instance=ExtResource("14_86qma")]
 transform = Transform3D(0.2, 0, 6.03984e-08, 0, 0.2, 0, -6.03984e-08, 0, 0.2, 97.6039, 41.6344, 35.5387)
 
+[connection signal="body_entered" from="Level/GravityArea3D" to="Level" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="LevelSphere1 - StaticBody3D2/GravityArea3D" to="LevelSphere1 - StaticBody3D2" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="LevelSphere2 - StaticBody3D/GravityArea3D" to="LevelSphere2 - StaticBody3D" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="LevelSphere3 - StaticBody3D2/GravityArea3D" to="LevelSphere3 - StaticBody3D2" method="_on_area_3d_body_entered"]
