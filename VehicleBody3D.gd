@@ -30,7 +30,7 @@ var _should_reset := false
 var is_boost_sound_playing := false
 var boost_timer := 0.0
 var can_boost := true
-const MAX_BOOST_DURATION := 0.5
+const MAX_BOOST_DURATION := 10.5
 
 var time_upside_down := 0.0
 const MAX_UPSIDE_DOWN_TIME := 3.0

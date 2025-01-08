@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://d1wcxewl0xytx"]
 
 [ext_resource type="Script" path="res://portal_entrance.gd" id="1_36ng6"]
-[ext_resource type="Material" uid="uid://c2467ybqnbu7u" path="res://black_hole.tres" id="1_dm2eg"]
+[ext_resource type="Material" uid="uid://dnxg64crf417k" path="res://black_hole_entrance.tres" id="2_dwak4"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_iaqk8"]
 radius = 50.0
@@ -19,7 +19,7 @@ script = ExtResource("1_36ng6")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, -1.42109e-14, 0, 1, 0, 1.42109e-14, 0, 1, 0, 0, 0)
-material_override = ExtResource("1_dm2eg")
+material_override = ExtResource("2_dwak4")
 mesh = SubResource("SphereMesh_iaqk8")
 skeleton = NodePath("../..")
 
