@@ -88,7 +88,6 @@ func reorient_vehicle():
 	var currently_on_horizontal_plane = abs(to_gravity_point.y) < 1.0
 	
 	if currently_on_horizontal_plane:  # If we're roughly on the same horizontal plane
-		print("flipping on the horizontal plane")
 		# Use world up vector for flat surfaces
 		desired_up = Vector3.UP
 	else:

@@ -32,7 +32,6 @@ func add_players_to_list ():
 		for player in $PlayerContainer.get_children():
 			list_of_players.append(player)
 
-
 func _on_portal_entrance_area_3d_body_entered(body, portal_number: int):
 	if !(body is VehicleBody3D):
 		return
@@ -43,4 +42,3 @@ func _on_portal_entrance_area_3d_body_entered(body, portal_number: int):
 	body.rotation = Vector3.ZERO
 	body.angular_velocity = Vector3.ZERO
 	body.linear_velocity = Vector3.ZERO
-	body.update_new_center_of_gravity_point(Vector3.ZERO)
