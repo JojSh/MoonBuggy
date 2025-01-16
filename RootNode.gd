@@ -1,7 +1,7 @@
 extends Node3D
 
 var list_of_players = []
-var multiplayer_split_screen : bool = false
+var multiplayer_split_screen : bool = true
 
 func _ready():
 	add_players_to_list()

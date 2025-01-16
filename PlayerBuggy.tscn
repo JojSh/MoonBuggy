@@ -61,6 +61,7 @@ center_of_mass_mode = 1
 max_contacts_reported = 4
 contact_monitor = true
 script = ExtResource("1_1u0r3")
+current_lives = 3
 engine_force_value = 80.0
 
 [node name="Body" type="Node3D" parent="."]
@@ -78,6 +79,39 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ns8cr")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0665755, -0.627381)
 mesh = SubResource("BoxMesh_nvqte")
 surface_material_override/0 = SubResource("StandardMaterial3D_u6x6a")
+
+[node name="Lives" type="Node3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.167121, 0)
+
+[node name="LifeWheel" type="MeshInstance3D" parent="Body/Lives"]
+transform = Transform3D(1.14641e-15, 2.62268e-08, 0.6, 0.6, -2.62268e-08, 0, 2.62268e-08, 0.6, -2.62268e-08, -0.319479, 0.0791816, 0.7)
+mesh = SubResource("TorusMesh_i1nhk")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("2_1s618")
+
+[node name="LifeWheel2" type="MeshInstance3D" parent="Body/Lives"]
+transform = Transform3D(1.14641e-15, 2.62268e-08, 0.6, 0.6, -2.62268e-08, 0, 2.62268e-08, 0.6, -2.62268e-08, -0.00459409, 0.0791816, 0.7)
+mesh = SubResource("TorusMesh_i1nhk")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("2_1s618")
+
+[node name="LifeWheel3" type="MeshInstance3D" parent="Body/Lives"]
+transform = Transform3D(1.14641e-15, 2.62268e-08, 0.6, 0.6, -2.62268e-08, 0, 2.62268e-08, 0.6, -2.62268e-08, 0.317101, 0.0791816, 0.7)
+mesh = SubResource("TorusMesh_i1nhk")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("2_1s618")
+
+[node name="LifeWheel4" type="MeshInstance3D" parent="Body/Lives"]
+transform = Transform3D(1.14641e-15, 2.62268e-08, 0.6, 0.6, -2.62268e-08, 0, 2.62268e-08, 0.6, -2.62268e-08, 0.161442, 0.357795, 0.7)
+mesh = SubResource("TorusMesh_i1nhk")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("2_1s618")
+
+[node name="LifeWheel5" type="MeshInstance3D" parent="Body/Lives"]
+transform = Transform3D(1.14641e-15, 2.62268e-08, 0.6, 0.6, -2.62268e-08, 0, 2.62268e-08, 0.6, -2.62268e-08, -0.157336, 0.357795, 0.7)
+mesh = SubResource("TorusMesh_i1nhk")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("2_1s618")
 
 [node name="RocketLauncher" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.5)

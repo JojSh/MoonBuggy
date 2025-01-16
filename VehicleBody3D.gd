@@ -13,6 +13,7 @@ var debug_gravitational_direction: bool = true
 @onready var desired_engine_pitch: float = $EngineSound.pitch_scale
 
 @export var player_number : int
+@export var current_lives : int
 @export var player_colour : StandardMaterial3D
 @export var engine_force_value := 40.0
 @export var move_speed := 80.0
@@ -53,6 +54,7 @@ func _ready ():
 		$Body.get_node("MeshInstance3D").set_surface_override_material(0, player_colour)
 
 	genenerate_collision_shapes_for_desctructible_parts()
+	_display_current_lives()
 
 func genenerate_collision_shapes_for_desctructible_parts ():
 	for part in original_parts:
@@ -225,6 +227,7 @@ func _physics_process(delta: float):
 	if up.dot(desired_up) < -0.5:  # More than 120 degrees from desired up
 		time_upside_down += delta
 		if time_upside_down > MAX_UPSIDE_DOWN_TIME:
+			print("auto re-orient")
 			reorient_vehicle()
 			time_upside_down = 0.0
 	else:
@@ -263,6 +266,9 @@ func die():
 
 	for original_part in original_parts:
 		generate_and_separate_clone_of_part (original_part, death_velocity, death_position)
+
+	current_lives -= 1
+	if (current_lives == 0): return # Game over
 
 	# Start respawn timer
 	get_tree().create_timer(RESPAWN_TIME).timeout.connect(_respawn)
@@ -317,6 +323,8 @@ func _respawn():
 	rotation = Vector3.ZERO
 	linear_velocity = Vector3.ZERO
 	angular_velocity = Vector3.ZERO
+
+	_display_current_lives()
 	
 	# Show original parts
 	for part in original_parts:
@@ -341,3 +349,16 @@ func _input(event):
 	if is_dead:
 		return
 	# Normal input processing here
+
+func _display_current_lives ():
+	var lives_container = $Body/Lives
+	
+	# Loop through all life wheels (1 to 5) <-- I feel like this can be much more readable - maybe with a .may or foreach? 
+	for i in range(1, 6):
+		var wheel_name = "LifeWheel" if i == 1 else "LifeWheel" + str(i) # <-- This can be avoided if the first LifeWheel becomes LifeWheel1
+		var life_wheel = lives_container.get_node_or_null(wheel_name)
+		if life_wheel:
+			# Show wheel if i <= current_lives, hide otherwise
+			life_wheel.visible = i <= current_lives
+
+	
