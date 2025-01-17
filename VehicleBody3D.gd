@@ -283,10 +283,13 @@ func generate_and_separate_clone_of_part (og_part, death_velocity, death_positio
 		duplicate_part_rgdbdy.continuous_cd = true
 		duplicate_part_rgdbdy.max_contacts_reported = 4
 		duplicate_part_rgdbdy.contact_monitor = true
-		duplicate_part_rgdbdy.can_sleep = false # TODO: review whether this is needed later
-		# Make sure collision is enabled BEFORE adding the shape
-		duplicate_part_rgdbdy.collision_layer = 1
-		duplicate_part_rgdbdy.collision_mask = 1
+		duplicate_part_rgdbdy.can_sleep = false
+		# Set collision layer to a debris-specific layer (using layer 2 for example)
+		# Layer 1 is typically used for general collision
+		duplicate_part_rgdbdy.collision_layer = 2  # Debris layer
+		# Mask determines what the debris can collide with
+		# Only collide with the environment/level (layer 1) but not with players
+		duplicate_part_rgdbdy.collision_mask = 1  # Only collide with environment
 
 		get_tree().root.add_child(duplicate_part_rgdbdy)
 
