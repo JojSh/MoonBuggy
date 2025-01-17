@@ -113,7 +113,7 @@ func reorient_vehicle():
 	
 	# 5. Zero out angular velocity to prevent rolling
 	angular_velocity = Vector3.ZERO
-	#linear_velocity = Vector3.ZERO
+	#linear_velocity = Vector3.ZERO # prevents the car from sliding but I think I like the slide after re orient
 	
 	# 6. Lift the vehicle slightly to prevent immediate collision
 	global_transform.origin += desired_up * 0.5
