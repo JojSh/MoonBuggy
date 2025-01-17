@@ -111,7 +111,11 @@ func reorient_vehicle():
 	# 4. Apply the new orientation
 	global_transform.basis = new_basis
 	
-	# 5. Lift the vehicle slightly to prevent immediate collision
+	# 5. Zero out angular velocity to prevent rolling
+	angular_velocity = Vector3.ZERO
+	#linear_velocity = Vector3.ZERO
+	
+	# 6. Lift the vehicle slightly to prevent immediate collision
 	global_transform.origin += desired_up * 0.5
 
 func _integrate_forces(state: PhysicsDirectBodyState3D):
