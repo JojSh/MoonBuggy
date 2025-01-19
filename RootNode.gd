@@ -5,6 +5,9 @@ var multiplayer_split_screen : bool = true
 
 func _ready():
 	add_players_to_list()
+	# Connect elimination signal from each player
+	for player in list_of_players:
+		player.player_eliminated.connect(_on_player_eliminated)
 
 func _process(_delta):
 	if !multiplayer_split_screen: return
@@ -35,10 +38,23 @@ func add_players_to_list ():
 func _on_portal_entrance_area_3d_body_entered(body, portal_number: int):
 	if !(body is VehicleBody3D):
 		return
-	print("body is VehicleBody3D")
 
 	var exit_location = get_node("PortalExitArea3D" + str(portal_number)).global_position
 	body.position = exit_location
 	body.rotation = Vector3.ZERO
 	body.angular_velocity = Vector3.ZERO
 	body.linear_velocity = Vector3.ZERO
+
+func _on_player_eliminated(player_number):
+	var alive_players = list_of_players.filter(func(player):
+		return player.is_dead == false
+	)
+	
+	if alive_players.size() == 1:
+		print("Player ", alive_players[0].player_number, " wins!")
+		# End the game
+		# Handle victory
+	elif alive_players.size() == 0:
+		print("Game Over - All players eliminated!")
+		# End the game
+		# Handle draw scenario

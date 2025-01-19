@@ -22,6 +22,7 @@ var debug_gravitational_direction: bool = true
 ## How fast the player can turn around to match a new direction.
 @export var rotation_speed := 8.0
 @export var spawn_point : Vector3
+@export var is_eliminated := false  # Add this near other @export variables
 
 var _move_direction := Vector3.ZERO
 var _last_strong_direction := Vector3.FORWARD
@@ -46,6 +47,8 @@ var death_collision_shapes := {}  # Dictionary to store shapes for each part
 @onready var _start_position := global_transform.origin
 @onready var rocket_launcher = $RocketLauncher
 @onready var original_parts: Array[Node3D] = [$Body, $Wheel1, $Wheel2, $Wheel3, $Wheel4, $RocketLauncher]
+
+signal player_eliminated(player_number)
 
 func _ready ():
 	connect("body_entered", Callable(self, "_on_body_entered"))
@@ -278,7 +281,10 @@ func die():
 		generate_and_separate_clone_of_part (original_part, death_velocity, death_position)
 
 	current_lives -= 1
-	if (current_lives == 0): return # Game over
+	if (current_lives == 0):
+		is_eliminated = true
+		emit_signal("player_eliminated", player_number)
+		return
 
 	# Start respawn timer
 	get_tree().create_timer(RESPAWN_TIME).timeout.connect(_respawn)
