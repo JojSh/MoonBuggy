@@ -31,9 +31,9 @@ var _should_reset := false
 var is_boost_sound_playing := false
 var boost_timer := 0.0
 var can_boost := true
-const MAX_BOOST_DURATION := 10.5
-
 var time_upside_down := 0.0
+
+const MAX_BOOST_DURATION := 3.0 # tssht sound plays once per 0.5s
 const MAX_UPSIDE_DOWN_TIME := 3.0
 
 var is_dead := false
@@ -162,8 +162,9 @@ func _physics_process(delta: float):
 		if boost_timer < MAX_BOOST_DURATION:
 			var up_direction = global_transform.basis.y
 			apply_central_impulse(up_direction * jump_initial_impulse)
-			$Beam/BeamTrigger.play("Beam Start")
-			$Beam2/BeamTrigger.play("Beam Start")
+			$Beams.visible = true
+			$Beams/Beam/BeamTrigger.play("Beam Start")
+			$Beams/Beam2/BeamTrigger.play("Beam Start")
 			if not is_boost_sound_playing:
 				$BoostSound.play()
 				is_boost_sound_playing = true
@@ -240,6 +241,11 @@ func _physics_process(delta: float):
 func stop_boost ():
 	if is_boost_sound_playing:
 		$BoostSound.stop()
+		# Try to force the animation to its end
+		$Beams/Beam/BeamTrigger.play("RESET")
+		$Beams/Beam2/BeamTrigger.play("RESET")
+		$Beams.visible = false
+		
 		is_boost_sound_playing = false
 	boost_timer = 0.0
 	can_boost = false

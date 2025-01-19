@@ -6,9 +6,9 @@
 [ext_resource type="ArrayMesh" uid="uid://bu4kaojj6gik0" path="res://AngryRocket3.obj" id="3_mseli"]
 [ext_resource type="Script" path="res://RocketLauncher.gd" id="3_rwhxb"]
 [ext_resource type="AudioStream" uid="uid://bfdtb5nal362t" path="res://sounds/rasp_engine.ogg" id="4_xtkfv"]
-[ext_resource type="AudioStream" uid="uid://exfcs2wl6fug" path="res://sounds/Tssshhhht.ogg" id="5_ledwd"]
 [ext_resource type="AudioStream" uid="uid://g4pr0ivgik13" path="res://sounds/rasp_impact1.ogg" id="6_8n3vk"]
 [ext_resource type="AudioStream" uid="uid://b5pn1vsmoxkjs" path="res://sounds/rasp_impact2.ogg" id="7_n1bsi"]
+[ext_resource type="AudioStream" uid="uid://ct4604hjdp60i" path="res://sounds/TssshhhhtLoopable.ogg" id="7_pk3u8"]
 [ext_resource type="AudioStream" uid="uid://cxx1vea75y2kb" path="res://sounds/rasp_impact3.ogg" id="8_465my"]
 [ext_resource type="AudioStream" uid="uid://2nm77xynp64v" path="res://sounds/rasp_impact4.ogg" id="9_7yhqf"]
 [ext_resource type="PackedScene" uid="uid://bg6bppthjrr05" path="res://beam_container.tscn" id="10_ym3a5"]
@@ -194,7 +194,7 @@ max_distance = 30.0
 attenuation_filter_cutoff_hz = 20500.0
 
 [node name="BoostSound" type="AudioStreamPlayer3D" parent="."]
-stream = ExtResource("5_ledwd")
+stream = ExtResource("7_pk3u8")
 attenuation_filter_cutoff_hz = 20500.0
 
 [node name="ImpactSound" type="AudioStreamPlayer3D" parent="."]
@@ -213,8 +213,10 @@ fov = 53.6
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 15, 0)
 fov = 53.6
 
-[node name="Beam" parent="." instance=ExtResource("10_ym3a5")]
+[node name="Beams" type="Node3D" parent="."]
+
+[node name="Beam" parent="Beams" instance=ExtResource("10_ym3a5")]
 transform = Transform3D(0.5, 0, 0, 0, 0.136803, -0.480921, 0, 0.480921, 0.136803, 0.3, -0.427582, 0.486286)
 
-[node name="Beam2" parent="." instance=ExtResource("10_ym3a5")]
+[node name="Beam2" parent="Beams" instance=ExtResource("10_ym3a5")]
 transform = Transform3D(0.5, 0, 0, 0, 0.136803, -0.480921, 0, 0.480921, 0.136803, -0.3, -0.427582, 0.486286)
