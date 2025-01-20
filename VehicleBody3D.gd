@@ -50,6 +50,8 @@ var death_collision_shapes := {}  # Dictionary to store shapes for each part
 
 signal player_eliminated(player_number)
 
+var inputs_paused := false
+
 func _ready ():
 	connect("body_entered", Callable(self, "_on_body_entered"))
 
@@ -133,7 +135,10 @@ func _on_body_entered(body):
 	update_new_center_of_gravity_point(body.global_position)
 
 func _physics_process(delta: float):
-	if is_dead: # maybe this should only block controller inputs and allow other things to continue?
+	if is_dead:
+		return
+	if inputs_paused:
+		stop_boost()
 		return
 	if global_position.y <= -100:
 		die()
@@ -365,7 +370,7 @@ func _respawn():
 	is_dead = false
 
 func _input(event):
-	if is_dead:
+	if is_dead or inputs_paused:
 		return
 	# Normal input processing here
 
@@ -379,5 +384,14 @@ func _display_current_lives ():
 		if life_wheel:
 			# Show wheel if i <= current_lives, hide otherwise
 			life_wheel.visible = i <= current_lives
+
+func pause_inputs():
+	inputs_paused = true
+	engine_force = 0.0  # Stop the vehicle
+	steering = 0.0
+	# Freeze all movement
+	freeze = true  # This is a built-in property of PhysicsBody3D that completely stops physics simulation
+	linear_velocity = Vector3.ZERO
+	angular_velocity = Vector3.ZERO
 
 	

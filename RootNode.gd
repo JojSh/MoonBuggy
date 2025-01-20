@@ -51,7 +51,15 @@ func _on_player_eliminated(player_number):
 	)
 	
 	if alive_players.size() == 1:
-		print("Player ", alive_players[0].player_number, " wins!")
+		var winner_text = str("Player ", alive_players[0].player_number, " wins!")
+		print(winner_text)
+		$MenuContainer/Control/GameOverScreen/VBoxContainer/PlayerWinNotification.text = winner_text
+		$MenuContainer.visible = true
+		$MenuContainer/Control/GameOverScreen.visible = true
+		# Pause all remaining players' inputs
+		for player in list_of_players:
+			player.pause_inputs()
+		
 		# End the game
 		# Handle victory
 	elif alive_players.size() == 0:
