@@ -6,7 +6,7 @@ func fire_rocket():
 	if !can_fire: return
 	$MeshInstance3D.set_visible(false)
 	var rocket_projectile = RocketProjectile.instantiate()
-	get_parent().add_child(rocket_projectile)
+	get_tree().get_root().add_child(rocket_projectile)
 	rocket_projectile.global_transform = $MeshInstance3D.global_transform
 	
 	# Get references to the inner container and its children
