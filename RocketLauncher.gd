@@ -1,7 +1,7 @@
 extends Node3D
 const RocketProjectile = preload("res://rocket_projectile.tscn")
 var can_fire: bool = true
-@export var launch_power := 200
+@export var launch_power := 300
 
 func fire_rocket():
 	if !can_fire: return
