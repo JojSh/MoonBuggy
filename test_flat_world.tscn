@@ -78,6 +78,7 @@ data = PackedVector3Array(-0.0001, -0.2451, -4.978, -0.0001, -0.4894, -4.9601, 0
 script = ExtResource("1_06hsa")
 
 [node name="MenuContainer" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="Control" type="Control" parent="MenuContainer"]
 layout_mode = 3
