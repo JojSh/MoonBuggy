@@ -1,6 +1,7 @@
 extends Node3D
 const RocketProjectile = preload("res://rocket_projectile.tscn")
 var can_fire: bool = true
+@export var launch_power := 200
 
 func fire_rocket():
 	if !can_fire: return
@@ -26,7 +27,7 @@ func fire_rocket():
 	tween.parallel().tween_property(collision_shape, "scale", collision_initial_scale * 2.5, 0.2)
 	
 	# Calculate launch force in the rocket's forward direction
-	var launch_impulse = -rocket_projectile_inner.global_transform.basis.x * 100
+	var launch_impulse = -rocket_projectile_inner.global_transform.basis.x * launch_power
 	rocket_projectile_inner.apply_central_impulse(launch_impulse)
 	
 	can_fire = false
