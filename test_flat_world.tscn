@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://cfp77dx8lxb0i"]
+[gd_scene load_steps=38 format=3 uid="uid://cfp77dx8lxb0i"]
 
 [ext_resource type="Script" path="res://RootNode.gd" id="1_06hsa"]
 [ext_resource type="PackedScene" uid="uid://cktcilqmb8mdx" path="res://FPSDisplay.tscn" id="1_nyho8"]
@@ -18,13 +18,23 @@
 [ext_resource type="PackedScene" uid="uid://dieogt36ljkks" path="res://portal_exit_area_3d.tscn" id="14_86qma"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_mq556"]
-font_size = 100
+font_size = 320
 
 [sub_resource type="PrismMesh" id="PrismMesh_e4u06"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7cpvd"]
 albedo_color = Color(1, 0.00498247, 0.00273094, 1)
 roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wrm68"]
+albedo_color = Color(0.89793, 0.659596, 1, 1)
+metallic = 0.89
+roughness = 0.41
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k5dcc"]
+albedo_color = Color(0.422322, 0.927869, 1, 1)
+metallic = 0.89
+roughness = 0.41
 
 [sub_resource type="BoxMesh" id="BoxMesh_sj3sa"]
 size = Vector3(80, 0.2, 400)
@@ -76,15 +86,18 @@ data = PackedVector3Array(-0.0001, -0.2451, -4.978, -0.0001, -0.4894, -4.9601, 0
 
 [node name="RootNode" type="Node3D"]
 script = ExtResource("1_06hsa")
+desired_number_players = 4
 
 [node name="MenuContainer" type="CanvasLayer" parent="."]
 visible = false
 
 [node name="Control" type="Control" parent="MenuContainer"]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 1152.0
-offset_bottom = 648.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="ColorRect" type="ColorRect" parent="MenuContainer/Control"]
 layout_mode = 1
@@ -127,15 +140,9 @@ text = "Four player split-screen"
 
 [node name="GameOverScreen" type="MarginContainer" parent="MenuContainer/Control"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -500.0
-offset_top = -250.0
-offset_right = 500.0
-offset_bottom = 250.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -156,14 +163,13 @@ layout_mode = 2
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.120117, -0.252323, -0.0459061)
 
 [node name="AudioListener3DBetweenPlayers" type="AudioListener3D" parent="."]
-visible = false
 
 [node name="DebugSphere" type="MeshInstance3D" parent="AudioListener3DBetweenPlayers"]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
 mesh = SubResource("PrismMesh_e4u06")
 surface_material_override/0 = SubResource("StandardMaterial3D_7cpvd")
 
-[node name="SplitScreenGridContainer" type="GridContainer" parent="."]
+[node name="SplitScreenGridContainer2P" type="GridContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -173,42 +179,128 @@ size_flags_stretch_ratio = 9.9
 theme_override_constants/h_separation = 0
 columns = 2
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="SplitScreenGridContainer"]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="SplitScreenGridContainer2P"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="SplitScreenGridContainer/SubViewportContainer"]
+[node name="SubViewport" type="SubViewport" parent="SplitScreenGridContainer2P/SubViewportContainer"]
 handle_input_locally = false
 audio_listener_enable_3d = true
-size = Vector2i(576, 648)
+size = Vector2i(1152, 1296)
 render_target_update_mode = 4
 
-[node name="PlayerBuggy" parent="SplitScreenGridContainer/SubViewportContainer/SubViewport" instance=ExtResource("8_jsgp5")]
+[node name="PlayerBuggy" parent="SplitScreenGridContainer2P/SubViewportContainer/SubViewport" instance=ExtResource("8_jsgp5")]
 transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 2.08165e-12, -49, 2.08165e-12)
 player_number = 1
 current_lives = 1
 player_colour = ExtResource("10_luqu7")
 spawn_point = Vector3(2.08165e-12, -49, 2.08165e-12)
 
-[node name="SubViewportContainer2" type="SubViewportContainer" parent="SplitScreenGridContainer"]
+[node name="SubViewportContainer2" type="SubViewportContainer" parent="SplitScreenGridContainer2P"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="SplitScreenGridContainer/SubViewportContainer2"]
+[node name="SubViewport" type="SubViewport" parent="SplitScreenGridContainer2P/SubViewportContainer2"]
 handle_input_locally = false
 audio_listener_enable_3d = true
-size = Vector2i(576, 648)
+size = Vector2i(1152, 1296)
 render_target_update_mode = 4
 
-[node name="PlayerBuggy" parent="SplitScreenGridContainer/SubViewportContainer2/SubViewport" instance=ExtResource("8_jsgp5")]
+[node name="PlayerBuggy" parent="SplitScreenGridContainer2P/SubViewportContainer2/SubViewport" instance=ExtResource("8_jsgp5")]
 transform = Transform3D(-1, 3.48787e-16, 8.74228e-08, 3.48787e-16, 1, -3.48787e-16, -8.74228e-08, -3.48787e-16, -1, -0.284451, -49, -20.7101)
 player_number = 2
 current_lives = 1
 player_colour = ExtResource("10_stv4k")
+spawn_point = Vector3(-4, -49, -74)
+
+[node name="SplitScreenGridContainer4P" type="GridContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_stretch_ratio = 9.9
+theme_override_constants/h_separation = 0
+columns = 2
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="SplitScreenGridContainer4P"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SplitScreenGridContainer4P/SubViewportContainer"]
+handle_input_locally = false
+audio_listener_enable_3d = true
+size = Vector2i(1152, 646)
+render_target_update_mode = 4
+
+[node name="PlayerBuggy" parent="SplitScreenGridContainer4P/SubViewportContainer/SubViewport" instance=ExtResource("8_jsgp5")]
+transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 2.08165e-12, -49, 2.08165e-12)
+player_number = 1
+current_lives = 1
+player_colour = ExtResource("10_luqu7")
+spawn_point = Vector3(2.08165e-12, -49, 2.08165e-12)
+
+[node name="SubViewportContainer2" type="SubViewportContainer" parent="SplitScreenGridContainer4P"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SplitScreenGridContainer4P/SubViewportContainer2"]
+handle_input_locally = false
+audio_listener_enable_3d = true
+size = Vector2i(1152, 646)
+render_target_update_mode = 4
+
+[node name="PlayerBuggy" parent="SplitScreenGridContainer4P/SubViewportContainer2/SubViewport" instance=ExtResource("8_jsgp5")]
+transform = Transform3D(-1, 3.48787e-16, 8.74228e-08, 3.48787e-16, 1, -3.48787e-16, -8.74228e-08, -3.48787e-16, -1, -0.284451, -49, -20.7101)
+player_number = 2
+current_lives = 1
+player_colour = ExtResource("10_stv4k")
+spawn_point = Vector3(-4, -49, -74)
+
+[node name="SubViewportContainer3" type="SubViewportContainer" parent="SplitScreenGridContainer4P"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SplitScreenGridContainer4P/SubViewportContainer3"]
+handle_input_locally = false
+audio_listener_enable_3d = true
+size = Vector2i(1152, 646)
+render_target_update_mode = 4
+
+[node name="PlayerBuggy" parent="SplitScreenGridContainer4P/SubViewportContainer3/SubViewport" instance=ExtResource("8_jsgp5")]
+transform = Transform3D(-1, 3.48787e-16, 8.74228e-08, 3.48787e-16, 1, -3.48787e-16, -8.74228e-08, -3.48787e-16, -1, 20.2869, -49, -20.71)
+player_number = 3
+current_lives = 1
+player_colour = SubResource("StandardMaterial3D_wrm68")
+spawn_point = Vector3(2.08165e-12, -49, -74)
+
+[node name="SubViewportContainer4" type="SubViewportContainer" parent="SplitScreenGridContainer4P"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SplitScreenGridContainer4P/SubViewportContainer4"]
+handle_input_locally = false
+audio_listener_enable_3d = true
+size = Vector2i(1152, 646)
+render_target_update_mode = 4
+
+[node name="PlayerBuggy" parent="SplitScreenGridContainer4P/SubViewportContainer4/SubViewport" instance=ExtResource("8_jsgp5")]
+transform = Transform3D(-1, 3.48787e-16, 8.74228e-08, 3.48787e-16, 1, -3.48787e-16, -8.74228e-08, -3.48787e-16, -1, 6, -49, -10)
+player_number = 4
+current_lives = 1
+player_colour = SubResource("StandardMaterial3D_k5dcc")
 spawn_point = Vector3(-4, -49, -74)
 
 [node name="Camera3D" type="Camera3D" parent="."]

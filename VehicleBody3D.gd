@@ -271,16 +271,17 @@ func die():
 	set_physics_process(false)
 	set_process_input(false)
 	
-	# Camera handling...
-	# Store if this was the active player
-	was_active_player = ($Camera1.current or $Camera2.current or $Camera3.current)
-	
-	# Only create death camera if this is the active player
-	if was_active_player:
-		death_camera = Camera3D.new()
-		get_tree().root.add_child(death_camera)
-		death_camera.global_transform = $Camera1.global_transform
-		death_camera.current = true
+	#cant remember why we wanted this?: maybe for single-player?
+	## Camera handling...
+	## Store if this was the active player
+	#was_active_player = ($Camera1.current or $Camera2.current or $Camera3.current)
+	#
+	## Only create death camera if this is the active player
+	#if was_active_player:
+		#death_camera = Camera3D.new()
+		#get_tree().root.add_child(death_camera)
+		#death_camera.global_transform = $Camera1.global_transform
+		#death_camera.current = true
 
 	for original_part in original_parts:
 		generate_and_separate_clone_of_part (original_part, death_velocity, death_position)

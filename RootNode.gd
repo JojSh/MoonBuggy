@@ -1,7 +1,7 @@
 extends Node3D
 
 var list_of_players = []
-var multiplayer_split_screen : bool = true
+@export var desired_number_players: int = 1
 
 func _ready():
 	add_players_to_list()
@@ -10,7 +10,7 @@ func _ready():
 		player.player_eliminated.connect(_on_player_eliminated)
 
 func _process(_delta):
-	if !multiplayer_split_screen: return
+	if desired_number_players == 1: return
 	if list_of_players.size() == 0:
 		print("Warning: No players found!")
 		return
@@ -23,17 +23,27 @@ func _process(_delta):
 	$AudioListener3DBetweenPlayers.global_position = central_point_between_players
 
 func add_players_to_list ():
-	if multiplayer_split_screen:
-		for sub_viewport_container in $SplitScreenGridContainer.get_children():
-			var sub_viewport = sub_viewport_container.get_node("SubViewport")
-			var player = sub_viewport.get_node("PlayerBuggy")
-			list_of_players.append(player)
-
+	if desired_number_players == 2:
+		for sub_viewport_container in $SplitScreenGridContainer2P.get_children():
+			get_players_from_sub_viewport_container(sub_viewport_container)
+			$SplitScreenGridContainer4P.queue_free()
+			$Camera3D.queue_free()
+	elif desired_number_players == 4:
+		for sub_viewport_container in $SplitScreenGridContainer4P.get_children():
+			get_players_from_sub_viewport_container(sub_viewport_container)
+			$SplitScreenGridContainer2P.queue_free()
+			$Camera3D.queue_free()
 	else:
-		$SplitScreenGridContainer.queue_free()
+		$SplitScreenGridContainer2P.queue_free()
+		$SplitScreenGridContainer4P.queue_free()
 		$AudioListener3DBetweenPlayers.queue_free()
 		for player in $PlayerContainer.get_children():
 			list_of_players.append(player)
+
+func get_players_from_sub_viewport_container (sub_viewport_container):
+	var sub_viewport = sub_viewport_container.get_node("SubViewport")
+	var player = sub_viewport.get_node("PlayerBuggy")
+	list_of_players.append(player)
 
 func _on_portal_entrance_area_3d_body_entered(body, portal_number: int):
 	if !(body is VehicleBody3D):
