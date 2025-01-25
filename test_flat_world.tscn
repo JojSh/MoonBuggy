@@ -139,6 +139,7 @@ layout_mode = 2
 text = "Four player split-screen"
 
 [node name="GameOverScreen" type="MarginContainer" parent="MenuContainer/Control"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -149,15 +150,27 @@ grow_vertical = 2
 [node name="VBoxContainer" type="VBoxContainer" parent="MenuContainer/Control/GameOverScreen"]
 layout_mode = 2
 
+[node name="EmptySpace" type="Label" parent="MenuContainer/Control/GameOverScreen/VBoxContainer"]
+layout_mode = 2
+text = "
+"
+label_settings = SubResource("LabelSettings_mq556")
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="PlayerWinNotification" type="Label" parent="MenuContainer/Control/GameOverScreen/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 3
+text = "Player 2 wins!"
 label_settings = SubResource("LabelSettings_mq556")
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="PlayAgainButton" type="MenuButton" parent="MenuContainer/Control/GameOverScreen/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
+tooltip_text = "fcgnxfnf"
+theme_override_font_sizes/font_size = 150
+text = "Play again?"
 
 [node name="PlayerContainer" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.120117, -0.252323, -0.0459061)
@@ -398,11 +411,11 @@ mesh = SubResource("CapsuleMesh_mxteq")
 skeleton = NodePath("")
 
 [node name="Pill6" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.950751, 4, -4.07187)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.950751, 4, -4.6271)
 mass = 20.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.84774e-06, 0, 9.97566)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 shape = SubResource("CapsuleShape3D_873io")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill6"]
@@ -499,7 +512,7 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 24.646
 mass = 20.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill14"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.84774e-06, 0, 9.97566)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 shape = SubResource("CapsuleShape3D_873io")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill14"]
@@ -596,7 +609,6 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 24.646
 mass = 20.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill22"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.84774e-06, 0, 9.97566)
 shape = SubResource("CapsuleShape3D_873io")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill22"]
@@ -643,7 +655,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.61904, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_4ru31")
 
 [node name="Block2" type="RigidBody3D" parent="Level"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.31292, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.21403, 0)
 mass = 25.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Block2"]
