@@ -66,6 +66,8 @@ func _on_player_eliminated(player_number):
 		$MenuContainer/Control/GameOverScreen/VBoxContainer/PlayerWinNotification.text = winner_text
 		$MenuContainer.visible = true
 		$MenuContainer/Control/GameOverScreen.visible = true
+		$MenuContainer/Control/GameOverScreen.grab_button_focus()
+
 		# Pause all remaining players' inputs
 		for player in list_of_players:
 			player.pause_inputs()
@@ -76,3 +78,11 @@ func _on_player_eliminated(player_number):
 		print("Game Over - All players eliminated!")
 		# End the game
 		# Handle draw scenario
+
+func restart_game ():
+	get_node("/root/DebrisManager").clear_all_debris()
+	get_tree().reload_current_scene()
+
+func _on_play_again_button_pressed ():
+	get_node("/root/DebrisManager").clear_all_debris()
+	get_tree().reload_current_scene()

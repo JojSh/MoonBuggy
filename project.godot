@@ -19,11 +19,15 @@ config/icon="res://icon.svg"
 
 PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
 DebugDraw="*res://debug_draw.tscn"
+DebrisManager="*res://DebrisManager.gd"
 
 [display]
 
-window/size/viewport_width=2304
-window/size/viewport_height=1296
+window/size/viewport_width=3840
+window/size/viewport_height=2160
+window/size/mode=4
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [editor_plugins]
 

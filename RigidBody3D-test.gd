@@ -19,7 +19,7 @@ var _should_reset := false
 
 
 func _ready() -> void:
-	_model.max_ground_speed = 4.o
+	_model.max_ground_speed = 4.0
 
 #func _integrate_forces(state: PhysicsDirectBodyState) -> void:
 func _integrate_forces(state) -> void:

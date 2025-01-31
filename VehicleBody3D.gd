@@ -47,6 +47,7 @@ var death_collision_shapes := {}  # Dictionary to store shapes for each part
 @onready var _start_position := global_transform.origin
 @onready var rocket_launcher = $RocketLauncher
 @onready var original_parts: Array[Node3D] = [$Body, $Wheel1, $Wheel2, $Wheel3, $Wheel4, $RocketLauncher]
+@onready var debris_manager = get_node("/root/DebrisManager")
 
 signal player_eliminated(player_number)
 
@@ -284,7 +285,7 @@ func die():
 		#death_camera.current = true
 
 	for original_part in original_parts:
-		generate_and_separate_clone_of_part (original_part, death_velocity, death_position)
+		generate_and_separate_clone_of_part(original_part, death_velocity, death_position)
 
 	current_lives -= 1
 	if (current_lives == 0):
@@ -296,51 +297,51 @@ func die():
 	get_tree().create_timer(RESPAWN_TIME).timeout.connect(_respawn)
 
 func generate_and_separate_clone_of_part (og_part, death_velocity, death_position):
-		og_part.visible = false
-		var original_global_transform = og_part.global_transform
+	og_part.visible = false
+	var original_global_transform = og_part.global_transform
 
-		var duplicate_part_rgdbdy = RigidBody3D.new()
-		duplicate_part_rgdbdy.mass = 5.0
-		duplicate_part_rgdbdy.gravity_scale = 1.0
-		duplicate_part_rgdbdy.continuous_cd = true
-		duplicate_part_rgdbdy.max_contacts_reported = 4
-		duplicate_part_rgdbdy.contact_monitor = true
-		duplicate_part_rgdbdy.can_sleep = false
-		# Set collision layer to a debris-specific layer (using layer 2 for example)
-		# Layer 1 is typically used for general collision
-		duplicate_part_rgdbdy.collision_layer = 2  # Debris layer
-		# Mask determines what the debris can collide with
-		# Only collide with the environment/level (layer 1) but not with players
-		duplicate_part_rgdbdy.collision_mask = 1  # Only collide with environment
+	var duplicate_part_rgdbdy = RigidBody3D.new()
+	duplicate_part_rgdbdy.mass = 5.0
+	duplicate_part_rgdbdy.gravity_scale = 1.0
+	duplicate_part_rgdbdy.continuous_cd = true
+	duplicate_part_rgdbdy.max_contacts_reported = 4
+	duplicate_part_rgdbdy.contact_monitor = true
+	duplicate_part_rgdbdy.can_sleep = false
+	# Set collision layer to a debris-specific layer (using layer 2 for example)
+	# Layer 1 is typically used for general collision
+	duplicate_part_rgdbdy.collision_layer = 2  # Debris layer
+	# Mask determines what the debris can collide with
+	# Only collide with the environment/level (layer 1) but not with players
+	duplicate_part_rgdbdy.collision_mask = 1  # Only collide with environment
 
-		get_tree().root.add_child(duplicate_part_rgdbdy)
+	# Instead of adding to root, add to debris manager
+	debris_manager.add_debris(duplicate_part_rgdbdy)
 
-		var duplicate_part_node3d = og_part.duplicate()
+	var duplicate_part_node3d = og_part.duplicate()
 
-		duplicate_part_node3d.visible = true
-		duplicate_part_rgdbdy.add_child(duplicate_part_node3d)
+	duplicate_part_node3d.visible = true
+	duplicate_part_rgdbdy.add_child(duplicate_part_node3d)
 
-		# Add collision shape with explicit checks
-		if death_collision_shapes.has(og_part.name):
-			var collision_shape = death_collision_shapes[og_part.name].duplicate()
-			collision_shape.disabled = false
-			# Preserve the transform when adding to rigid body
-			var shape_transform = collision_shape.transform
-			duplicate_part_rgdbdy.add_child(collision_shape)
-			# In case reparenting to the duplicate_part_rgdbdy changes its transform to something we don't want
-			collision_shape.transform = shape_transform
+	# Add collision shape with explicit checks
+	if death_collision_shapes.has(og_part.name):
+		var collision_shape = death_collision_shapes[og_part.name].duplicate()
+		collision_shape.disabled = false
+		# Preserve the transform when adding to rigid body
+		var shape_transform = collision_shape.transform
+		duplicate_part_rgdbdy.add_child(collision_shape)
+		# In case reparenting to the duplicate_part_rgdbdy changes its transform to something we don't want
+		collision_shape.transform = shape_transform
 
-		duplicate_part_rgdbdy.global_transform = original_global_transform
+	duplicate_part_rgdbdy.global_transform = original_global_transform
 
-		# Set the initial velocity of the part to match the vehicle's velocity
-		duplicate_part_rgdbdy.linear_velocity = death_velocity
-		
-		# Add separation force on top of existing velocity
-		var direction = (duplicate_part_rgdbdy.global_position - death_position).normalized()
-		direction += Vector3(randf_range(-0.2, 0.2), 1.0, randf_range(-0.2, 0.2))  # More upward bias
-		direction = direction.normalized()
-		duplicate_part_rgdbdy.apply_impulse(direction * SEPARATION_FORCE)
-	
+	# Set the initial velocity of the part to match the vehicle's velocity
+	duplicate_part_rgdbdy.linear_velocity = death_velocity
+
+	# Add separation force on top of existing velocity
+	var direction = (duplicate_part_rgdbdy.global_position - death_position).normalized()
+	direction += Vector3(randf_range(-0.2, 0.2), 1.0, randf_range(-0.2, 0.2))  # More upward bias
+	direction = direction.normalized()
+	duplicate_part_rgdbdy.apply_impulse(direction * SEPARATION_FORCE)
 
 func _respawn():
 	# Reset position and rotation
