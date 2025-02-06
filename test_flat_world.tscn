@@ -87,12 +87,14 @@ data = PackedVector3Array(-0.0001, -0.2451, -4.978, -0.0001, -0.4894, -4.9601, 0
 
 [node name="RootNode" type="Node3D"]
 script = ExtResource("1_06hsa")
-desired_number_players = 4
+desired_number_players = 2
+should_skip_main_menu = true
 
 [node name="MenuContainer" type="CanvasLayer" parent="."]
-visible = false
+process_mode = 3
 
 [node name="Control" type="Control" parent="MenuContainer"]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -100,43 +102,48 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ColorRect" type="ColorRect" parent="MenuContainer/Control"]
+[node name="MainMenuContainer" type="MarginContainer" parent="MenuContainer/Control"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.0705882, 0.0705882, 0.0705882, 0.494118)
 
-[node name="MainMenuContainer" type="MarginContainer" parent="MenuContainer/Control"]
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -500.0
-offset_top = -250.0
-offset_right = 500.0
-offset_bottom = 250.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="ColorRect" type="ColorRect" parent="MenuContainer/Control/MainMenuContainer"]
+layout_mode = 2
+color = Color(0.302973, 0.180791, 0.35748, 1)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MenuContainer/Control/MainMenuContainer"]
 layout_mode = 2
+alignment = 1
 
-[node name="SinglePlayerLocalButton" type="MenuButton" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
+[node name="SinglePlayerLocalButton" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
 layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 100
 text = "Single player (local)"
 
-[node name="TwoPlayerSplitScreenButton" type="MenuButton" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
+[node name="TwoPlayerSplitScreenButton" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
 layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 100
 text = "Two player split-screen"
 
-[node name="FourPlayerSplitScreenButton" type="MenuButton" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
+[node name="ThreePlayerSplitScreenButton3" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
 layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 100
+text = "Three player split-screen"
+
+[node name="FourPlayerSplitScreenButton" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 100
 text = "Four player split-screen"
 
 [node name="GameOverScreen" type="MarginContainer" parent="MenuContainer/Control"]
@@ -171,7 +178,7 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_vertical = 6
 theme_override_font_sizes/font_size = 150
-text = "TEST BUTTON"
+text = "Play again?"
 
 [node name="AudioListener3DBetweenPlayers" type="AudioListener3D" parent="."]
 
@@ -884,6 +891,10 @@ transform = Transform3D(0.2, 0, 6.03984e-08, 0, 0.2, 0, -6.03984e-08, 0, 0.2, 11
 [node name="PortalExitArea3D2" parent="." instance=ExtResource("14_86qma")]
 transform = Transform3D(0.2, 0, 6.03984e-08, 0, 0.2, 0, -6.03984e-08, 0, 0.2, 97.6039, 41.6344, 35.5387)
 
+[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/SinglePlayerLocalButton" to="." method="_on_choose_player_count_button_pressed" binds= [1]]
+[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/TwoPlayerSplitScreenButton" to="." method="_on_choose_player_count_button_pressed" binds= [2]]
+[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/ThreePlayerSplitScreenButton3" to="." method="_on_choose_player_count_button_pressed" binds= [3]]
+[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/FourPlayerSplitScreenButton" to="." method="_on_choose_player_count_button_pressed" binds= [4]]
 [connection signal="pressed" from="MenuContainer/Control/GameOverScreen/VBoxContainer/PlayAgainButton" to="." method="_on_play_again_button_pressed"]
 [connection signal="body_entered" from="Level/GravityArea3D" to="Level" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="LevelSphere1 - StaticBody3D2/GravityArea3D" to="LevelSphere1 - StaticBody3D2" method="_on_area_3d_body_entered"]

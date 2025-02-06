@@ -2,14 +2,30 @@ extends Node3D
 
 var list_of_players = []
 @export var desired_number_players: int = 1
+@export var should_skip_main_menu: bool = false
 
 func _ready():
+	if should_skip_main_menu:
+		hide_main_menu()
+		start_game()
+	else:
+		show_main_menu()
+
+func show_main_menu():
+	get_tree().paused = true
+	$MenuContainer/Control/MainMenuContainer/VBoxContainer/SinglePlayerLocalButton.grab_focus()
+
+func hide_main_menu():
+	$MenuContainer.visible = false
+	$MenuContainer/Control/MainMenuContainer.visible = false
+
+func start_game ():
 	register_active_players()
 	setup_split_screen()
 
 	for player in list_of_players:
-		# Connect elimination signal from each player
 		player.player_eliminated.connect(_on_player_eliminated)
+
 
 func setup_split_screen():
 	if desired_number_players == 1:
@@ -100,3 +116,11 @@ func restart_game ():
 func _on_play_again_button_pressed ():
 	get_node("/root/DebrisManager").clear_all_debris()
 	get_tree().reload_current_scene()
+
+func _on_choose_player_count_button_pressed(player_count):
+	desired_number_players = player_count
+	hide_main_menu()
+	start_game()
+	get_tree().paused = false
+	should_skip_main_menu = true
+	# add another (go back to main menu) button to game over screen that sets should_skip_main_menu = false, before calling restart
