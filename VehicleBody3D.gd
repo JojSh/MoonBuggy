@@ -241,7 +241,6 @@ func _physics_process(delta: float):
 	if up.dot(desired_up) < -0.5:  # More than 120 degrees from desired up
 		time_upside_down += delta
 		if time_upside_down > MAX_UPSIDE_DOWN_TIME:
-			print("auto re-orient")
 			reorient_vehicle()
 			time_upside_down = 0.0
 	else:

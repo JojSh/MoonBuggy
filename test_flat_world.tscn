@@ -87,8 +87,6 @@ data = PackedVector3Array(-0.0001, -0.2451, -4.978, -0.0001, -0.4894, -4.9601, 0
 
 [node name="RootNode" type="Node3D"]
 script = ExtResource("1_06hsa")
-desired_number_players = 2
-should_skip_main_menu = true
 
 [node name="MenuContainer" type="CanvasLayer" parent="."]
 process_mode = 3
@@ -176,9 +174,16 @@ vertical_alignment = 1
 
 [node name="PlayAgainButton" type="Button" parent="MenuContainer/Control/GameOverScreen/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 6
+size_flags_stretch_ratio = 1.94
+theme_override_colors/font_focus_color = Color(0.988235, 0.67451, 0.384314, 1)
 theme_override_font_sizes/font_size = 150
 text = "Play again?"
+
+[node name="ReturnToMainMenuButton" type="Button" parent="MenuContainer/Control/GameOverScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_focus_color = Color(0.988235, 0.67451, 0.384314, 1)
+theme_override_font_sizes/font_size = 150
+text = "Return to main menu"
 
 [node name="AudioListener3DBetweenPlayers" type="AudioListener3D" parent="."]
 
@@ -896,6 +901,7 @@ transform = Transform3D(0.2, 0, 6.03984e-08, 0, 0.2, 0, -6.03984e-08, 0, 0.2, 97
 [connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/ThreePlayerSplitScreenButton3" to="." method="_on_choose_player_count_button_pressed" binds= [3]]
 [connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/FourPlayerSplitScreenButton" to="." method="_on_choose_player_count_button_pressed" binds= [4]]
 [connection signal="pressed" from="MenuContainer/Control/GameOverScreen/VBoxContainer/PlayAgainButton" to="." method="_on_play_again_button_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/GameOverScreen/VBoxContainer/ReturnToMainMenuButton" to="." method="_on_return_to_main_menu_button_pressed"]
 [connection signal="body_entered" from="Level/GravityArea3D" to="Level" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="LevelSphere1 - StaticBody3D2/GravityArea3D" to="LevelSphere1 - StaticBody3D2" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="LevelSphere2 - StaticBody3D/GravityArea3D" to="LevelSphere2 - StaticBody3D" method="_on_area_3d_body_entered"]

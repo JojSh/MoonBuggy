@@ -1,11 +1,9 @@
 extends Node3D
 
 var list_of_players = []
-@export var desired_number_players: int = 1
-@export var should_skip_main_menu: bool = false
 
 func _ready():
-	if should_skip_main_menu:
+	if GameSettings.should_skip_main_menu:
 		hide_main_menu()
 		start_game()
 	else:
@@ -28,7 +26,7 @@ func start_game ():
 
 
 func setup_split_screen():
-	if desired_number_players == 1:
+	if GameSettings.desired_number_players == 1:
 		# Single player mode - cleanup split screen containers
 		for split_screen in $PlayerScreenManager/SplitScreens.get_children():
 			split_screen.queue_free()
@@ -37,14 +35,14 @@ func setup_split_screen():
 		return
 		
 	# Get the appropriate grid container for player count
-	var grid_container = $PlayerScreenManager/SplitScreens.get_node("GridContainer" + str(desired_number_players) + "P")
+	var grid_container = $PlayerScreenManager/SplitScreens.get_node("GridContainer" + str(GameSettings.desired_number_players) + "P")
 	
 	# Clean up unused grid containers
 	var all_containers = $PlayerScreenManager/SplitScreens.get_children()
 	var unused_containers = all_containers.filter(func(container): 
 		# Extract the number from the container name (e.g., "GridContainer2P" -> 2)
 		var player_count = container.name.replace("GridContainer", "").replace("P", "").to_int()
-		return player_count != desired_number_players
+		return player_count != GameSettings.desired_number_players
 	)
 	for container in unused_containers: container.queue_free()
 	
@@ -54,7 +52,7 @@ func setup_split_screen():
 	# Move players to their respective viewports
 	var viewports = grid_container.get_children()
 	
-	for i in desired_number_players:
+	for i in GameSettings.desired_number_players:
 		var viewport_container = viewports[i]
 		var player = list_of_players[i]
 		var viewport = viewport_container.get_node("SubViewport")
@@ -68,7 +66,7 @@ func register_active_players():
 	# Get all players from PlayerContainer and manage them based on desired player count
 	var index = 0
 	for player in $PlayerScreenManager/PlayerContainer.get_children():
-		if index < desired_number_players:
+		if index < GameSettings.desired_number_players:
 			list_of_players.append(player)
 		else:
 			player.queue_free()
@@ -91,7 +89,6 @@ func _on_player_eliminated(player_number):
 	
 	if alive_players.size() == 1:
 		var winner_text = str("Player ", alive_players[0].player_number, " wins!")
-		print(winner_text)
 		$MenuContainer/Control/GameOverScreen/VBoxContainer/PlayerWinNotification.text = winner_text
 		$MenuContainer.visible = true
 		$MenuContainer/Control/GameOverScreen.visible = true
@@ -114,13 +111,15 @@ func restart_game ():
 	get_tree().reload_current_scene()
 
 func _on_play_again_button_pressed ():
-	get_node("/root/DebrisManager").clear_all_debris()
-	get_tree().reload_current_scene()
+	restart_game()
 
 func _on_choose_player_count_button_pressed(player_count):
-	desired_number_players = player_count
+	GameSettings.desired_number_players = player_count
+	GameSettings.should_skip_main_menu = true
 	hide_main_menu()
 	start_game()
 	get_tree().paused = false
-	should_skip_main_menu = true
-	# add another (go back to main menu) button to game over screen that sets should_skip_main_menu = false, before calling restart
+
+func _on_return_to_main_menu_button_pressed():
+	GameSettings.should_skip_main_menu = false
+	restart_game()
