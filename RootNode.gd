@@ -24,7 +24,6 @@ func start_game ():
 	for player in list_of_players:
 		player.player_eliminated.connect(_on_player_eliminated)
 
-
 func setup_split_screen():
 	if GameSettings.desired_number_players == 1:
 		# Single player mode - cleanup split screen containers
@@ -89,22 +88,21 @@ func _on_player_eliminated(player_number):
 	
 	if alive_players.size() == 1:
 		var winner_text = str("Player ", alive_players[0].player_number, " wins!")
-		$MenuContainer/Control/GameOverScreen/VBoxContainer/PlayerWinNotification.text = winner_text
-		$MenuContainer.visible = true
-		$MenuContainer/Control/GameOverScreen.visible = true
-		$MenuContainer/Control/GameOverScreen.grab_button_focus()
+		show_game_over_menu(winner_text)
 
-		# Pause all remaining players' inputs
-		for player in list_of_players:
-			if is_instance_valid(player):
-				player.pause_inputs()
-		
-		# End the game
-		# Handle victory
 	elif alive_players.size() == 0:
-		print("Game Over - All players eliminated!")
-		# End the game
-		# Handle draw scenario
+		var draw_text = str("DRAW! Everybody died.")
+		show_game_over_menu(draw_text)
+
+func show_game_over_menu (message):
+	$MenuContainer/Control/GameOverScreen/VBoxContainer/PlayerWinNotification.text = message
+	$MenuContainer.visible = true
+	$MenuContainer/Control/GameOverScreen.visible = true
+	$MenuContainer/Control/GameOverScreen.grab_button_focus()
+	# Pause all remaining players' inputs
+	for player in list_of_players:
+		if is_instance_valid(player):
+			player.pause_inputs()
 
 func restart_game ():
 	get_node("/root/DebrisManager").clear_all_debris()
