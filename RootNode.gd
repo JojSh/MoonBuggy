@@ -2,6 +2,8 @@ extends Node3D
 
 var list_of_players = []
 
+@onready var _debug_init = turn_on_debug_mode()  # can also be turn_off_debug_mode
+
 func _ready():
 	if GameSettings.should_skip_main_menu:
 		hide_main_menu()
@@ -121,3 +123,23 @@ func _on_choose_player_count_button_pressed(player_count):
 func _on_return_to_main_menu_button_pressed():
 	GameSettings.should_skip_main_menu = false
 	restart_game()
+
+func turn_on_debug_mode():
+	GameSettings.debug_mode_on = true
+	# Instantiate FPS Display
+	const FPSDisplay = preload("res://FPSDisplay.tscn")
+	var fps_display = FPSDisplay.instantiate()
+	add_child(fps_display)
+
+func turn_off_debug_mode():
+	GameSettings.debug_mode_on = false
+	# Remove FPS Display if it exists
+	var fps_display = get_node_or_null("FPSDisplay")
+	if fps_display:
+		fps_display.queue_free()
+
+func _on_debug_toggle_pressed():
+	if (GameSettings.debug_mode_on):
+		turn_off_debug_mode()
+	else:
+		turn_on_debug_mode()

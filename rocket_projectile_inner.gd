@@ -32,8 +32,12 @@ func _set_up_collision_detection ():
 
 func _apply_explosive_force (collision_position):
 	# Apply explosion force
-	var explosion_radius = 7.5  # Adjust radius as needed
+	var explosion_radius = 6.5  # Adjust radius as needed
 	var explosion_force = 1000.0  # Adjust force as needed
+	
+	if GameSettings.debug_mode_on:
+		_create_debug_sphere(collision_position, explosion_radius)
+	
 	# Get all bodies in explosion radius
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsShapeQueryParameters3D.new()
@@ -55,3 +59,21 @@ func _apply_explosive_force (collision_position):
 			var force = direction * explosion_force * (1.0 - distance / explosion_radius)
 			hit_body.apply_central_impulse(force)
 		
+func _create_debug_sphere (position: Vector3, radius: float, duration: float = 1.0):
+	# Visualize explosion radius
+	var debug_mesh = SphereMesh.new()
+	debug_mesh.radius = radius
+	debug_mesh.height = radius * 2
+	var debug_node = MeshInstance3D.new()
+	debug_node.mesh = debug_mesh
+	debug_node.position = position
+	var material = StandardMaterial3D.new()
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.albedo_color = Color(1, 0, 0, 0.3)  # Semi-transparent red
+	debug_mesh.surface_set_material(0, material)
+	get_tree().root.add_child(debug_node)
+	
+	# Remove the debug visualization after the specified duration
+	var timer = get_tree().create_timer(duration)
+	timer.timeout.connect(func(): debug_node.queue_free())
+

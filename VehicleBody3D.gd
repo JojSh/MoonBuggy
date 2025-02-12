@@ -8,7 +8,6 @@ var previous_speed := linear_velocity.length()
 var _steer_target := 0.0
 var _closest_gravity_point: Vector3
 var _initial_gravity_point: Vector3
-var debug_gravitational_direction: bool = true
 
 @onready var desired_engine_pitch: float = $EngineSound.pitch_scale
 
@@ -147,7 +146,7 @@ func _physics_process(delta: float):
 		return
 		# need some extra code to remove death parts
 
-	if (debug_gravitational_direction == true):
+	if (GameSettings.debug_mode_on):
 		DebugDraw.draw_line(global_transform.origin, _closest_gravity_point, Color.GREEN)
 
 	if Input.is_action_just_pressed(str("p", player_number, "_reset_to_start_pos")):
@@ -394,5 +393,3 @@ func pause_inputs():
 	freeze = true  # This is a built-in property of PhysicsBody3D that completely stops physics simulation
 	linear_velocity = Vector3.ZERO
 	angular_velocity = Vector3.ZERO
-
-	
