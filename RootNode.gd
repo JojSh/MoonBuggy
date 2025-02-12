@@ -2,7 +2,7 @@ extends Node3D
 
 var list_of_players = []
 
-@onready var _debug_init = turn_on_debug_mode()  # can also be turn_off_debug_mode
+#@onready var _debug_init = turn_off_debug_mode()  # can also be turn_off_debug_mode
 
 func _ready():
 	if GameSettings.should_skip_main_menu:
