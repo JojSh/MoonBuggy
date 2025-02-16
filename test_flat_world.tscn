@@ -889,16 +889,16 @@ transform = Transform3D(1.16, 0, 5.53131e-08, 0, 1.16, 0, -5.53131e-08, 0, 1.16,
 shape = SubResource("SphereShape3D_uaobl")
 
 [node name="PortalEntranceArea3D1" parent="." instance=ExtResource("13_tj3hx")]
-transform = Transform3D(0.2, 0, 6.03984e-08, 0, 0.2, 0, -6.03984e-08, 0, 0.2, -163.724, -15.7994, -37)
+transform = Transform3D(-8.74228e-09, 6.97574e-17, 0.2, 6.97574e-17, 0.2, -6.97574e-17, -0.2, 6.97574e-17, -8.74228e-09, -163.724, -15.7994, -37)
 
 [node name="PortalExitArea3D1" parent="." instance=ExtResource("14_86qma")]
-transform = Transform3D(-0.2, 0, -3.01992e-08, 0, 0.2, 0, 3.01992e-08, 0, -0.2, -1.499, -47.233, 90)
+transform = Transform3D(0.2, -6.97574e-17, 6.97574e-17, 6.97574e-17, 0.2, -6.97574e-17, -6.97574e-17, 6.97574e-17, 0.2, -1.499, -47.233, 90)
 
 [node name="PortalEntranceArea3D2" parent="." instance=ExtResource("13_tj3hx")]
 transform = Transform3D(0.2, 0, 6.03984e-08, 0, 0.2, 0, -6.03984e-08, 0, 0.2, 11.3976, -44.2335, -104.242)
 
 [node name="PortalExitArea3D2" parent="." instance=ExtResource("14_86qma")]
-transform = Transform3D(0.2, 0, 6.03984e-08, 0, 0.2, 0, -6.03984e-08, 0, 0.2, 97.6039, 41.6344, 35.5387)
+transform = Transform3D(-8.74228e-09, 6.97574e-17, 0.2, 6.97574e-17, 0.2, -6.97574e-17, -0.2, 6.97574e-17, -8.74228e-09, 97.6039, 41.6344, 35.5387)
 
 [connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/SinglePlayerLocalButton" to="." method="_on_choose_player_count_button_pressed" binds= [1]]
 [connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/TwoPlayerSplitScreenButton" to="." method="_on_choose_player_count_button_pressed" binds= [2]]

@@ -1,9 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://d1wcxewl0xytx"]
+[gd_scene load_steps=9 format=3 uid="uid://d1wcxewl0xytx"]
 
 [ext_resource type="Script" path="res://portal_entrance.gd" id="1_36ng6"]
-[ext_resource type="Material" uid="uid://dnxg64crf417k" path="res://black_hole_entrance.tres" id="2_dwak4"]
+[ext_resource type="Shader" uid="uid://dswjgvavykywq" path="res://portal_entrance_vshader_inverted.tres" id="2_corl6"]
+[ext_resource type="Material" uid="uid://cpepguatyhnun" path="res://portal_exit_area_3d.tres" id="3_2mqof"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sesa2"]
+render_priority = 0
+shader = ExtResource("2_corl6")
 
 [sub_resource type="SphereMesh" id="SphereMesh_iaqk8"]
+radius = 50.0
+height = 100.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_ftem1"]
 radius = 50.0
 height = 100.0
 
@@ -19,11 +28,18 @@ script = ExtResource("1_36ng6")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, -1.42109e-14, 0, 1, 0, 1.42109e-14, 0, 1, 0, 0, 0)
-material_override = ExtResource("2_dwak4")
+material_override = SubResource("ShaderMaterial_sesa2")
 mesh = SubResource("SphereMesh_iaqk8")
 skeleton = NodePath("../..")
 
+[node name="InnerOrbMesh3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.98, 0, 2.93192e-14, 0, 0.98, 0, -2.93192e-14, 0, 0.98, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+material_override = ExtResource("3_2mqof")
+mesh = SubResource("SphereMesh_ftem1")
+skeleton = NodePath("../..")
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+visible = false
 shape = SubResource("ConcavePolygonShape3D_c745l")
 
 [node name="GravityArea3D" type="Area3D" parent="."]

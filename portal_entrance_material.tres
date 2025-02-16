@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://yodtwpg0w228"]
+
+[ext_resource type="Shader" uid="uid://doc5egqqdxbas" path="res://portal_entrance_vshader.tres" id="1_uhup0"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_uhup0")

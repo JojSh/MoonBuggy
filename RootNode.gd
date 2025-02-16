@@ -77,9 +77,11 @@ func _on_portal_entrance_area_3d_body_entered(body, portal_number: int):
 	if !(body is VehicleBody3D):
 		return
 
-	var exit_location = get_node("PortalExitArea3D" + str(portal_number)).global_position
+	var exit_node = get_node("PortalExitArea3D" + str(portal_number))
+	var exit_location = exit_node.global_position
+	var exit_rotation = exit_node.global_rotation
 	body.position = exit_location
-	body.rotation = Vector3.ZERO
+	body.rotation = exit_rotation
 	body.angular_velocity = Vector3.ZERO
 	body.linear_velocity = Vector3.ZERO
 
