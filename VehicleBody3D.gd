@@ -33,7 +33,7 @@ var boost_timer := 0.0
 var can_boost := true
 var time_upside_down := 0.0
 
-const MAX_BOOST_DURATION := 3.0 # tssht sound plays once per 0.5s
+const DEFAULT_MAX_BOOST_DURATION := 0.5 # tssht sound plays once per 0.5s
 const MAX_UPSIDE_DOWN_TIME := 3.0
 
 var is_dead := false
@@ -47,6 +47,7 @@ var death_collision_shapes := {}  # Dictionary to store shapes for each part
 @onready var rocket_launcher = $RocketLauncher
 @onready var original_parts: Array[Node3D] = [$Body, $Wheel1, $Wheel2, $Wheel3, $Wheel4, $RocketLauncher]
 @onready var debris_manager = get_node("/root/DebrisManager")
+@onready var current_max_boost_duration = DEFAULT_MAX_BOOST_DURATION
 
 signal player_eliminated(player_number)
 
@@ -167,7 +168,7 @@ func _physics_process(delta: float):
 			$Camera1.current = true
 
 	if Input.is_action_pressed(str("p", player_number, "_boost_jump")) and can_boost:
-		if boost_timer < MAX_BOOST_DURATION:
+		if boost_timer < current_max_boost_duration:
 			var up_direction = global_transform.basis.y
 			apply_central_impulse(up_direction * jump_initial_impulse)
 			$Beams.visible = true
@@ -178,7 +179,7 @@ func _physics_process(delta: float):
 				is_boost_sound_playing = true
 			
 			boost_timer += delta
-		elif boost_timer >= MAX_BOOST_DURATION:
+		elif boost_timer >= current_max_boost_duration:
 			stop_boost()
 	elif Input.is_action_just_released(str("p", player_number, "_boost_jump")):
 		stop_boost()
