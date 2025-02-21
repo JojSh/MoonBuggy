@@ -9,8 +9,6 @@ var _steer_target := 0.0
 var _closest_gravity_point: Vector3
 var _initial_gravity_point: Vector3
 
-@onready var desired_engine_pitch: float = $EngineSound.pitch_scale
-
 @export var player_number : int
 @export var current_lives : int
 @export var player_colour : StandardMaterial3D
@@ -33,7 +31,7 @@ var boost_timer := 0.0
 var can_boost := true
 var time_upside_down := 0.0
 
-const DEFAULT_MAX_BOOST_DURATION := 0.5 # tssht sound plays once per 0.5s
+const STARTING_BOOST_LEVEL := 1.0 # each boost level = +0.5s extra boost duration
 const MAX_UPSIDE_DOWN_TIME := 3.0
 
 var is_dead := false
@@ -47,7 +45,8 @@ var death_collision_shapes := {}  # Dictionary to store shapes for each part
 @onready var rocket_launcher = $RocketLauncher
 @onready var original_parts: Array[Node3D] = [$Body, $Wheel1, $Wheel2, $Wheel3, $Wheel4, $RocketLauncher]
 @onready var debris_manager = get_node("/root/DebrisManager")
-@onready var current_max_boost_duration = DEFAULT_MAX_BOOST_DURATION
+@onready var current_boost_level := STARTING_BOOST_LEVEL
+@onready var desired_engine_pitch: float = $EngineSound.pitch_scale
 
 signal player_eliminated(player_number)
 
@@ -60,7 +59,8 @@ func _ready ():
 		$Body.get_node("MeshInstance3D").set_surface_override_material(0, player_colour)
 
 	genenerate_collision_shapes_for_desctructible_parts()
-	_display_current_lives()
+	_update_lives_display()
+	_update_boost_display()
 
 func genenerate_collision_shapes_for_desctructible_parts ():
 	for part in original_parts:
@@ -168,6 +168,7 @@ func _physics_process(delta: float):
 			$Camera1.current = true
 
 	if Input.is_action_pressed(str("p", player_number, "_boost_jump")) and can_boost:
+		var current_max_boost_duration = current_boost_level / 2 # each 1 level = 0.5s extra boost duration
 		if boost_timer < current_max_boost_duration:
 			var up_direction = global_transform.basis.y
 			apply_central_impulse(up_direction * jump_initial_impulse)
@@ -348,8 +349,10 @@ func _respawn():
 	rotation = Vector3.ZERO
 	linear_velocity = Vector3.ZERO
 	angular_velocity = Vector3.ZERO
+	current_boost_level = STARTING_BOOST_LEVEL
 
-	_display_current_lives()
+	_update_lives_display()
+	_update_boost_display()
 	
 	# Show original parts
 	for part in original_parts:
@@ -375,16 +378,32 @@ func _input(event):
 		return
 	# Normal input processing here
 
-func _display_current_lives ():
+func _update_lives_display ():
 	var lives_container = $Body/Lives
-	
-	# Loop through all life wheels (1 to 5) <-- I feel like this can be much more readable - maybe with a .may or foreach? 
-	for i in range(1, 6):
-		var wheel_name = "LifeWheel" if i == 1 else "LifeWheel" + str(i) # <-- This can be avoided if the first LifeWheel becomes LifeWheel1
-		var life_wheel = lives_container.get_node_or_null(wheel_name)
+	var life_wheels = lives_container.get_children()
+
+	for i in life_wheels.size():
+		var currentNum  = i + 1
+		var life_wheel = life_wheels[i]
 		if life_wheel:
-			# Show wheel if i <= current_lives, hide otherwise
-			life_wheel.visible = i <= current_lives
+			life_wheel.visible = currentNum <= current_lives
+
+func _update_boost_display ():
+	var boost_display_container = $Body/BoostDisplay
+	var boost_bulbs = boost_display_container.get_children()
+
+	for i in boost_bulbs.size():
+		var currentNum  = i + 1
+		var boost_bulb = boost_bulbs[i]
+		if boost_bulb:
+			boost_bulb.visible = currentNum <= current_boost_level
+
+func increment_boost_level ():
+	var boost_limit = 6
+	if current_boost_level <= boost_limit:
+		$PickupSound.play()
+		current_boost_level += 1
+		_update_boost_display()
 
 func pause_inputs():
 	inputs_paused = true

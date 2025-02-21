@@ -10,7 +10,6 @@ texture = ExtResource("1_218po")
 texture_type = 1
 
 [sub_resource type="VisualShaderNodeUVPolarCoord" id="VisualShaderNodeUVPolarCoord_unlht"]
-default_input_values = [1, Vector2(0.5, 0.5), 2, 1.0, 3, 1.0]
 
 [sub_resource type="VisualShaderNodeUVFunc" id="VisualShaderNodeUVFunc_f5qd2"]
 default_input_values = [1, Vector2(1, 1), 2, Vector2(2.08165e-12, 2.08165e-12)]
@@ -79,7 +78,6 @@ void fragment() {
 
 }
 "
-graph_offset = Vector2(-315.717, -121.903)
 modes/cull = 2
 flags/unshaded = true
 nodes/fragment/0/position = Vector2(680, 20)

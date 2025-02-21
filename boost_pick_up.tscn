@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://cr6cwaremoght"]
+
+[ext_resource type="Script" path="res://BoostPickUp.gd" id="1_msa4y"]
+[ext_resource type="Material" uid="uid://cme2hqx1ya8pj" path="res://glowy_yellow.tres" id="2_72tm3"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_873io"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_mxteq"]
+
+[node name="BoostPickUp" type="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.269129, 4.5, -10.9771)
+collision_layer = 2
+mass = 20.0
+max_contacts_reported = 4
+contact_monitor = true
+script = ExtResource("1_msa4y")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_873io")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = ExtResource("2_72tm3")
+mesh = SubResource("CapsuleMesh_mxteq")
+skeleton = NodePath("")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
