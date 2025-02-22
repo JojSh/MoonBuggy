@@ -400,7 +400,7 @@ func _update_boost_display ():
 
 func increment_boost_level ():
 	var boost_limit = 6
-	if current_boost_level <= boost_limit:
+	if current_boost_level < boost_limit:
 		$PickupSound.play()
 		current_boost_level += 1
 		_update_boost_display()
