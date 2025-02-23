@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://cfp77dx8lxb0i"]
+[gd_scene load_steps=38 format=3 uid="uid://cfp77dx8lxb0i"]
 
 [ext_resource type="Script" path="res://RootNode.gd" id="1_06hsa"]
 [ext_resource type="Texture2D" uid="uid://0snyqnypvtk6" path="res://icon.svg" id="2_gc8uk"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://cr6cwaremoght" path="res://boost_pick_up.tscn" id="9_mt6wi"]
 [ext_resource type="Material" uid="uid://cf4w258oi4pca" path="res://car-green.tres" id="10_luqu7"]
 [ext_resource type="Material" uid="uid://c53pgeng2ewby" path="res://car-gold.tres" id="10_stv4k"]
+[ext_resource type="PackedScene" uid="uid://b37l6fgr4wr20" path="res://life_pick_up.tscn" id="10_wentv"]
 [ext_resource type="Material" uid="uid://cse68vhm0xbdf" path="res://glowy_purple.tres" id="12_pyp3s"]
 [ext_resource type="PackedScene" uid="uid://d1wcxewl0xytx" path="res://portal_entrance_area_3d.tscn" id="13_tj3hx"]
 [ext_resource type="PackedScene" uid="uid://dieogt36ljkks" path="res://portal_exit_area_3d.tscn" id="14_86qma"]
@@ -49,10 +50,6 @@ data = PackedVector3Array(-40, 0.1, 200, 40, 0.1, 200, -40, -0.1, 200, 40, 0.1, 
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_y1d70"]
 size = Vector3(500, 100, 500)
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_873io"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_mxteq"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_6unxr"]
 
@@ -401,252 +398,53 @@ gravity_space_override = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -47, 0)
 shape = SubResource("BoxShape3D_y1d70")
 
-[node name="Pills" type="Node3D" parent="Level"]
+[node name="PickupPills" type="Node3D" parent="Level"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.54908e-06, 1.00417, 16.8818)
 
-[node name="BoostPickUps" type="Node3D" parent="Level/Pills"]
+[node name="BoostPickUps" type="Node3D" parent="Level/PickupPills"]
 
-[node name="BoostPickUp" parent="Level/Pills/BoostPickUps" instance=ExtResource("9_mt6wi")]
+[node name="BoostPickUp" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.269134, 4.5, -46.5736)
 
-[node name="BoostPickUp2" parent="Level/Pills/BoostPickUps" instance=ExtResource("9_mt6wi")]
+[node name="BoostPickUp2" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.269118, 4.5, 59.4257)
 
-[node name="BoostPickUp3" parent="Level/Pills/BoostPickUps" instance=ExtResource("9_mt6wi")]
+[node name="BoostPickUp3" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.269128, 4.5, -3.24203)
 
-[node name="BoostPickUp4" parent="Level/Pills/BoostPickUps" instance=ExtResource("9_mt6wi")]
+[node name="BoostPickUp4" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.3052, 9, -22.871)
 
-[node name="BoostPickUp5" parent="Level/Pills/BoostPickUps" instance=ExtResource("9_mt6wi")]
+[node name="BoostPickUp5" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 24.0915, 9, 91.003)
 
-[node name="BoostPickUp6" parent="Level/Pills/BoostPickUps" instance=ExtResource("9_mt6wi")]
+[node name="BoostPickUp6" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -6.66854, 9, 54.6931)
 
-[node name="BoostPickUp7" parent="Level/Pills/BoostPickUps" instance=ExtResource("9_mt6wi")]
+[node name="BoostPickUp7" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 24.0915, 9, -24.4269)
 
-[node name="BoostPickUp8" parent="Level/Pills/BoostPickUps" instance=ExtResource("9_mt6wi")]
+[node name="BoostPickUp8" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -6.66472, 9, -60.735)
 
-[node name="Pill-B" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 4.5, -12.9404)
-mass = 20.0
+[node name="LifePickUps" type="Node3D" parent="Level/PickupPills"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill-B"]
-shape = SubResource("CapsuleShape3D_873io")
+[node name="LifePickUp" parent="Level/PickupPills/LifePickUps" instance=ExtResource("10_wentv")]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill-B"]
-material_override = ExtResource("4_sak4k")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
+[node name="LifePickUp2" parent="Level/PickupPills/LifePickUps" instance=ExtResource("10_wentv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.19496e-06, 0, 34.4046)
 
-[node name="Pill2-G" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5683, 4, -3)
-mass = 20.0
+[node name="LifePickUp3" parent="Level/PickupPills/LifePickUps" instance=ExtResource("10_wentv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.6132, 0, 34.4046)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill2-G"]
-shape = SubResource("CapsuleShape3D_873io")
+[node name="LifePickUp4" parent="Level/PickupPills/LifePickUps" instance=ExtResource("10_wentv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.6132, 0, 55.3257)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill2-G"]
-material_override = ExtResource("6_7n6r3")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
+[node name="LifePickUp5" parent="Level/PickupPills/LifePickUps" instance=ExtResource("10_wentv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5648, 0, 55.3257)
 
-[node name="Pill4" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5722, 4.5, -2)
-mass = 20.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill4"]
-shape = SubResource("CapsuleShape3D_873io")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill4"]
-material_override = ExtResource("6_uhbxe")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
-
-[node name="Pill5" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.45075, 4.5, -3.07187)
-mass = 20.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill5"]
-shape = SubResource("CapsuleShape3D_873io")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill5"]
-material_override = ExtResource("4_sak4k")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
-
-[node name="Pill6" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.950751, 4, -4.6271)
-mass = 20.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
-shape = SubResource("CapsuleShape3D_873io")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill6"]
-material_override = ExtResource("6_7n6r3")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
-
-[node name="Pill8" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.6605, 4.5, -38.795)
-mass = 20.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill8"]
-shape = SubResource("CapsuleShape3D_873io")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill8"]
-material_override = ExtResource("6_uhbxe")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
-
-[node name="Pill9" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 26.6277, 4.5, 45.0145)
-mass = 20.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill9"]
-shape = SubResource("CapsuleShape3D_873io")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill9"]
-material_override = ExtResource("4_sak4k")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
-
-[node name="Pill10" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 1.136, 4, 34.8793)
-mass = 20.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill10"]
-shape = SubResource("CapsuleShape3D_873io")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill10"]
-material_override = ExtResource("6_7n6r3")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
-
-[node name="Pill12" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 7.13956, 4.5, 33.9251)
-mass = 20.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill12"]
-shape = SubResource("CapsuleShape3D_873io")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill12"]
-material_override = ExtResource("6_uhbxe")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
-
-[node name="Pill13" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 25.1538, 4.5, 35.1344)
-mass = 20.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill13"]
-shape = SubResource("CapsuleShape3D_873io")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill13"]
-material_override = ExtResource("4_sak4k")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
-
-[node name="Pill14" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 24.6462, 4, 36.1306)
-mass = 20.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill14"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
-shape = SubResource("CapsuleShape3D_873io")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill14"]
-material_override = ExtResource("6_7n6r3")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
-
-[node name="Pill16" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -8.22897, 4.5, 70.604)
-mass = 20.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill16"]
-shape = SubResource("CapsuleShape3D_873io")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill16"]
-material_override = ExtResource("6_uhbxe")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
-
-[node name="Pill17" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 26.6278, 4.5, -70.4155)
-mass = 20.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill17"]
-shape = SubResource("CapsuleShape3D_873io")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill17"]
-material_override = ExtResource("4_sak4k")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
-
-[node name="Pill18" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 1.13602, 4, -80.5506)
-mass = 20.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill18"]
-shape = SubResource("CapsuleShape3D_873io")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill18"]
-material_override = ExtResource("6_7n6r3")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
-
-[node name="Pill20" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 7.13958, 4.5, -81.5049)
-mass = 20.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill20"]
-shape = SubResource("CapsuleShape3D_873io")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill20"]
-material_override = ExtResource("6_uhbxe")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
-
-[node name="Pill21" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 25.1538, 4.5, -80.2955)
-mass = 20.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill21"]
-shape = SubResource("CapsuleShape3D_873io")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill21"]
-material_override = ExtResource("4_sak4k")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
-
-[node name="Pill22" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 24.6462, 4, -79.2994)
-mass = 20.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill22"]
-shape = SubResource("CapsuleShape3D_873io")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill22"]
-material_override = ExtResource("6_7n6r3")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
-
-[node name="Pill24" type="RigidBody3D" parent="Level/Pills"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -8.22896, 4.5, -44.826)
-mass = 20.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Pills/Pill24"]
-shape = SubResource("CapsuleShape3D_873io")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Pills/Pill24"]
-material_override = ExtResource("6_uhbxe")
-mesh = SubResource("CapsuleMesh_mxteq")
-skeleton = NodePath("")
+[node name="LifePickUp6" parent="Level/PickupPills/LifePickUps" instance=ExtResource("10_wentv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5648, 0, 84.277)
 
 [node name="Block" type="RigidBody3D" parent="Level"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 5, -2)

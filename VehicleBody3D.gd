@@ -405,6 +405,13 @@ func increment_boost_level ():
 		current_boost_level += 1
 		_update_boost_display()
 
+func increment_lives ():
+	var life_limit = 5
+	if current_lives < life_limit:
+		$PickupSound.play()
+		current_lives += 1
+		_update_lives_display()
+
 func pause_inputs():
 	inputs_paused = true
 	engine_force = 0.0  # Stop the vehicle

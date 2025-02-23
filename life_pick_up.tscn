@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://b37l6fgr4wr20"]
+
+[ext_resource type="Script" path="res://LifePickUp.gd" id="1_ge5us"]
+[ext_resource type="Material" uid="uid://dnqxiy84bf34s" path="res://glowy_green.tres" id="2_6trxk"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_p5x7e"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_7wt2y"]
+
+[node name="LifePickUp" type="RigidBody3D"]
+collision_layer = 2
+mass = 20.0
+max_contacts_reported = 4
+contact_monitor = true
+script = ExtResource("1_ge5us")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_p5x7e")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = ExtResource("2_6trxk")
+mesh = SubResource("CapsuleMesh_7wt2y")
+skeleton = NodePath("")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
