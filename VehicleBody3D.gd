@@ -144,6 +144,7 @@ func _physics_process(delta: float):
 	if global_position.y <= -100:
 		die()
 		$ImpactSound.play()
+		
 		return
 		# need some extra code to remove death parts
 
@@ -272,6 +273,7 @@ func die():
 	set_physics_process(false)
 	set_process_input(false)
 	
+	$EngineSound.stop()
 	#cant remember why we wanted this?: maybe for single-player?
 	## Camera handling...
 	## Store if this was the active player
@@ -364,6 +366,8 @@ func _respawn():
 	collision_mask = 1   # Set to original mask
 	set_physics_process(true)
 	set_process_input(true)
+	
+	$EngineSound.play()
 	
 	# Switch camera back
 	if death_camera and was_active_player:
