@@ -32,6 +32,7 @@ var can_boost := true
 var time_upside_down := 0.0
 
 const STARTING_BOOST_LEVEL := 1.0 # each boost level = +0.5s extra boost duration
+const STARTING_RELOAD_LEVEL := 1
 const MAX_UPSIDE_DOWN_TIME := 3.0
 
 var is_dead := false
@@ -46,6 +47,7 @@ var death_collision_shapes := {}  # Dictionary to store shapes for each part
 @onready var original_parts: Array[Node3D] = [$Body, $Wheel1, $Wheel2, $Wheel3, $Wheel4, $RocketLauncher]
 @onready var debris_manager = get_node("/root/DebrisManager")
 @onready var current_boost_level := STARTING_BOOST_LEVEL
+@onready var current_reload_level := STARTING_RELOAD_LEVEL
 @onready var desired_engine_pitch: float = $EngineSound.pitch_scale
 
 signal player_eliminated(player_number)
@@ -415,6 +417,13 @@ func increment_lives ():
 		$PickupSound.play()
 		current_lives += 1
 		_update_lives_display()
+
+func reduce_rocket_reload_speed ():
+	var reload_level_limit = 5
+	if current_reload_level < reload_level_limit:
+		$PickupSound.play()
+		current_reload_level += 1
+		$RocketLauncher.reduce_cooldown_time(current_reload_level)
 
 func pause_inputs():
 	inputs_paused = true

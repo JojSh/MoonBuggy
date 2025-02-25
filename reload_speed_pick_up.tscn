@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://df7ht11kiiqun"]
+
+[ext_resource type="Script" path="res://ReloadSpeedPickUp.gd" id="1_825ca"]
+[ext_resource type="Material" uid="uid://coug284mb8bhx" path="res://glowy_red.tres" id="2_dijhf"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_cb48r"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ijs38"]
+
+[node name="ReloadSpeedPickUp" type="RigidBody3D"]
+collision_layer = 2
+mass = 20.0
+max_contacts_reported = 4
+contact_monitor = true
+script = ExtResource("1_825ca")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_cb48r")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = ExtResource("2_dijhf")
+mesh = SubResource("CapsuleMesh_ijs38")
+skeleton = NodePath("")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
