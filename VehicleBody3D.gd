@@ -1,46 +1,37 @@
 extends VehicleBody3D
 
-const STEER_SPEED = 1.5
+const STEER_SPEED = 2.5
 const STEER_LIMIT = 0.4
 const BRAKE_STRENGTH = 2.0
+const STARTING_BOOST_LEVEL := 1.0 # each boost level = +0.5s extra boost duration
+const STARTING_RELOAD_LEVEL := 1
+const MAX_UPSIDE_DOWN_TIME := 3.0
+const RESPAWN_TIME := 3.0
+const SEPARATION_FORCE := 6.0
 
 var previous_speed := linear_velocity.length()
 var _steer_target := 0.0
 var _closest_gravity_point: Vector3
 var _initial_gravity_point: Vector3
+var local_gravity := Vector3.DOWN
+var _should_reset := false
+var is_boost_sound_playing := false
+var boost_timer := 0.0
+var can_boost := true
+var time_upside_down := 0.0
+var is_dead := false
+var death_camera: Camera3D
+var was_active_player := false  # Add this as a class variable
+var death_collision_shapes := {}  # Dictionary to store shapes for each part
+var inputs_paused := false
 
 @export var player_number : int
 @export var current_lives : int
 @export var player_colour : StandardMaterial3D
 @export var engine_force_value := 40.0
-@export var move_speed := 80.0
-## Strength of the impulse applied upwards for the player's jump.
 @export var jump_initial_impulse := 20.0
-## How fast the player can turn around to match a new direction.
-@export var rotation_speed := 8.0
 @export var spawn_point : Vector3
 @export var is_eliminated := false  # Add this near other @export variables
-
-var _move_direction := Vector3.ZERO
-var _last_strong_direction := Vector3.FORWARD
-var local_gravity := Vector3.DOWN
-var _should_reset := false
-
-var is_boost_sound_playing := false
-var boost_timer := 0.0
-var can_boost := true
-var time_upside_down := 0.0
-
-const STARTING_BOOST_LEVEL := 1.0 # each boost level = +0.5s extra boost duration
-const STARTING_RELOAD_LEVEL := 1
-const MAX_UPSIDE_DOWN_TIME := 3.0
-
-var is_dead := false
-var death_camera: Camera3D
-const RESPAWN_TIME := 3.0
-const SEPARATION_FORCE := 6.0
-var was_active_player := false  # Add this as a class variable
-var death_collision_shapes := {}  # Dictionary to store shapes for each part
 
 @onready var _start_position := global_transform.origin
 @onready var rocket_launcher = $RocketLauncher
@@ -51,8 +42,6 @@ var death_collision_shapes := {}  # Dictionary to store shapes for each part
 @onready var desired_engine_pitch: float = $EngineSound.pitch_scale
 
 signal player_eliminated(player_number)
-
-var inputs_paused := false
 
 func _ready ():
 	connect("body_entered", Callable(self, "_on_body_entered"))
