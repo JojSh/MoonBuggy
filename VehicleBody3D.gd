@@ -45,32 +45,30 @@ signal player_eliminated(player_number)
 
 func _ready ():
 	connect("body_entered", Callable(self, "_on_body_entered"))
-
-	if player_colour != null and $Body.get_node_or_null("MeshInstance3D") is MeshInstance3D:
-		$Body.get_node("MeshInstance3D").set_surface_override_material(0, player_colour)
-
+	set_player_colour_from_exported_variable()
 	genenerate_collision_shapes_for_desctructible_parts()
 	_update_lives_display()
 	_update_boost_display()
 
+func set_player_colour_from_exported_variable ():
+	if player_colour != null and $Body.get_node_or_null("MeshInstance3D") is MeshInstance3D:
+		$Body.get_node("MeshInstance3D").set_surface_override_material(0, player_colour)
+
 func genenerate_collision_shapes_for_desctructible_parts ():
 	for part in original_parts:
-		if part and part.get_node_or_null("MeshInstance3D") is MeshInstance3D:
-			var mesh_instance = part.get_node("MeshInstance3D")
-			var mesh = mesh_instance.mesh
-			if mesh:
-				var collision_shape = CollisionShape3D.new()
-				
-				# Create simplified convex shapes for all parts
-				# Parameters: (clean=true, simplify=true)
-				collision_shape.shape = mesh.create_convex_shape(true, true)
-				
-				# Combine the part and mesh instance transforms
-				collision_shape.transform = part.transform * mesh_instance.transform
-				# Disable the collision shape until death
-				collision_shape.disabled = true
-				
-				death_collision_shapes[part.name] = collision_shape
+		var mesh_instance = part.get_node("MeshInstance3D")
+		var mesh = mesh_instance.mesh
+		var collision_shape = CollisionShape3D.new()
+
+		# Create simplified convex shapes for all parts
+		# Parameters: (clean=true, simplify=true)
+		collision_shape.shape = mesh.create_convex_shape(true, true)
+		
+		# Combine the part and mesh instance transforms
+		collision_shape.transform = part.transform * mesh_instance.transform
+		# Disable the collision shape until death
+		collision_shape.disabled = true
+		death_collision_shapes[part.name] = collision_shape
 
 func update_new_center_of_gravity_point(point):
 	if _closest_gravity_point == Vector3.ZERO:
@@ -78,21 +76,18 @@ func update_new_center_of_gravity_point(point):
 	_closest_gravity_point = point
 
 func reorient_vehicle():
-	
 	# 1. Calculate the desired up direction (opposite to gravity)
 	var desired_up: Vector3
-	
+
 	# Check if we're on a flat surface (box collider gravity area)
 	var to_gravity_point = global_transform.origin - _closest_gravity_point
-	var currently_on_horizontal_plane = abs(to_gravity_point.y) < 1.0
-	
-	if currently_on_horizontal_plane:  # If we're roughly on the same horizontal plane
-		# Use world up vector for flat surfaces
+	var roughly_on_horizontal_plane = abs(to_gravity_point.y) < 1.0
+
+	if roughly_on_horizontal_plane:
 		desired_up = Vector3.UP
 	else:
-		# Use direction away from gravity point for spherical surfaces
-		desired_up = to_gravity_point.normalized()
-	
+		desired_up = to_gravity_point.normalized() # Use direction away from gravity point for spherical surfaces
+
 	# 2. Calculate the desired forward direction
 	# Use the current forward direction projected onto the plane perpendicular to desired_up
 	var current_forward = -global_transform.basis.z
@@ -127,117 +122,51 @@ func _on_body_entered(body):
 	update_new_center_of_gravity_point(body.global_position)
 
 func _physics_process(delta: float):
-	if is_dead:
-		return
+	if is_dead: return
+
 	if inputs_paused:
 		stop_boost()
 		return
-	if global_position.y <= -100:
+
+	if global_position.y <= -100: # fallen off level
 		die()
 		$ImpactSound.play()
-		
 		return
-		# need some extra code to remove death parts
+		# need some extra code to remove death parts ?
 
 	if (GameSettings.debug_mode_on):
 		DebugDraw.draw_line(global_transform.origin, _closest_gravity_point, Color.GREEN)
 
 	if Input.is_action_just_pressed(str("p", player_number, "_reset_to_start_pos")):
-		self.position = spawn_point
-		self.rotation = Vector3(0, 0, 0)
-		linear_velocity = Vector3(0, 0, 0)
-		update_new_center_of_gravity_point(_initial_gravity_point)
+		return_to_start_position()
 
 	if Input.is_action_just_pressed(str("p", player_number, "_flip")):
 		reorient_vehicle()
 
 	if Input.is_action_just_pressed(str("p", player_number, "_toggle_camera")):
-		if $Camera1.current:
-			$Camera2.current = true
-		elif $Camera2.current:
-			$Camera3.current = true
-		else:
-			$Camera1.current = true
+		cycle_through_cameras()
 
-	if Input.is_action_pressed(str("p", player_number, "_boost_jump")) and can_boost:
-		var current_max_boost_duration = current_boost_level / 2 # each 1 level = 0.5s extra boost duration
-		if boost_timer < current_max_boost_duration:
-			var up_direction = global_transform.basis.y
-			apply_central_impulse(up_direction * jump_initial_impulse)
-			$Beams.visible = true
-			$Beams/Beam/BeamTrigger.play("Beam Start")
-			$Beams/Beam2/BeamTrigger.play("Beam Start")
-			if not is_boost_sound_playing:
-				$BoostSound.play()
-				is_boost_sound_playing = true
-			
-			boost_timer += delta
-		elif boost_timer >= current_max_boost_duration:
-			stop_boost()
-	elif Input.is_action_just_released(str("p", player_number, "_boost_jump")):
-		stop_boost()
+	handle_boost_input(delta)
+	handle_steering_input(delta)
+	handle_acceleration_input()
+	handle_reverse_input()
+	handle_fire_input()
 
-	var fwd_mps := (linear_velocity * transform.basis).x
+	handle_engine_sound()
+	handle_sudden_impact_feedback()
 
-	_steer_target = Input.get_axis(str("p", player_number, "_turn_right"), str("p", player_number, "_turn_left"))
-	_steer_target *= STEER_LIMIT
+	auto_reorient_vehicle_if_upside_down_too_long(delta)
 
-	# Engine sound simulation (not realistic, as this car script has no notion of gear or engine RPM).
-	desired_engine_pitch = 0.5 + linear_velocity.length() / (engine_force_value * 0.5)
-	# Change pitch smoothly to avoid abrupt change on collision.
-	$EngineSound.pitch_scale = lerpf($EngineSound.pitch_scale, desired_engine_pitch, 0.2)
+func start_boost ():
+	var up_direction = global_transform.basis.y
+	apply_central_impulse(up_direction * jump_initial_impulse)
+	$Beams.visible = true
+	$Beams/Beam/BeamTrigger.play("Beam Start")
+	$Beams/Beam2/BeamTrigger.play("Beam Start")
 
-	if abs(linear_velocity.length() - previous_speed) > 1.0:
-		# Sudden velocity change, likely due to a collision. Play an impact sound to give audible feedback,
-		# and vibrate for haptic feedback.
-		$ImpactSound.play()
-		Input.vibrate_handheld(100)
-		for joypad in Input.get_connected_joypads():
-			Input.start_joy_vibration(joypad, 0.0, 0.5, 0.1)
-
-	# Automatically accelerate when using touch controls (reversing overrides acceleration).
-	if DisplayServer.is_touchscreen_available() or Input.is_action_pressed(str("p", player_number, "_accelerate")):
-		# Increase engine force at low speeds to make the initial acceleration faster.
-		var speed := linear_velocity.length()
-		if speed < 5.0 and not is_zero_approx(speed):
-			engine_force = clampf(engine_force_value * 5.0 / speed, 0.0, 100.0)
-		else:
-			engine_force = engine_force_value
-
-		if not DisplayServer.is_touchscreen_available():
-			# Apply analog throttle factor for more subtle acceleration if not fully holding down the trigger.
-			engine_force *= Input.get_action_strength(str("p", player_number, "_accelerate"))
-	else:
-		engine_force = 0.0
-
-	if Input.is_action_pressed(str("p", player_number, "_reverse")):
-		# Increase engine force at low speeds to make the initial reversing faster.
-		var speed := linear_velocity.length()
-		if speed < 5.0 and not is_zero_approx(speed):
-			engine_force = -clampf(engine_force_value * BRAKE_STRENGTH * 5.0 / speed, 0.0, 100.0)
-		else:
-			engine_force = -engine_force_value * BRAKE_STRENGTH
-
-		# Apply analog brake factor for more subtle braking if not fully holding down the trigger.
-		engine_force *= Input.get_action_strength(str("p", player_number, "_reverse"))
-
-	steering = move_toward(steering, _steer_target, STEER_SPEED * delta)
-
-	previous_speed = linear_velocity.length()
-
-	if Input.is_action_just_pressed(str("p", player_number, "_fire")):
-		rocket_launcher.fire_rocket()
-
-	# Check if vehicle is upside down
-	var up = global_transform.basis.y
-	var desired_up = (global_transform.origin - _closest_gravity_point).normalized()
-	if up.dot(desired_up) < -0.5:  # More than 120 degrees from desired up
-		time_upside_down += delta
-		if time_upside_down > MAX_UPSIDE_DOWN_TIME:
-			reorient_vehicle()
-			time_upside_down = 0.0
-	else:
-		time_upside_down = 0.0
+	if not is_boost_sound_playing:
+		$BoostSound.play()
+		is_boost_sound_playing = true
 
 func stop_boost ():
 	if is_boost_sound_playing:
@@ -251,7 +180,7 @@ func stop_boost ():
 	boost_timer = 0.0
 	can_boost = false
 
-func die():
+func die ():
 	if is_dead: return
 	is_dead = true
 	
@@ -288,6 +217,96 @@ func die():
 
 	# Start respawn timer
 	get_tree().create_timer(RESPAWN_TIME).timeout.connect(_respawn)
+
+func return_to_start_position ():
+	self.position = spawn_point
+	self.rotation = Vector3(0, 0, 0)
+	linear_velocity = Vector3(0, 0, 0)
+	update_new_center_of_gravity_point(_initial_gravity_point)
+
+func cycle_through_cameras ():
+	if $Camera1.current:
+		$Camera2.current = true
+	elif $Camera2.current:
+		$Camera3.current = true
+	else:
+		$Camera1.current = true
+
+func handle_boost_input (delta):
+	if Input.is_action_pressed(str("p", player_number, "_boost_jump")) and can_boost:
+		var current_max_boost_duration = current_boost_level / 2 # each 1 level = 0.5s extra boost duration
+
+		if boost_timer < current_max_boost_duration:
+			start_boost()
+			boost_timer += delta
+		elif boost_timer >= current_max_boost_duration:
+			stop_boost()
+	elif Input.is_action_just_released(str("p", player_number, "_boost_jump")):
+		stop_boost()
+
+func handle_steering_input (delta):
+	_steer_target = Input.get_axis(str("p", player_number, "_turn_right"), str("p", player_number, "_turn_left"))
+	_steer_target *= STEER_LIMIT
+	steering = move_toward(steering, _steer_target, STEER_SPEED * delta)
+
+func handle_engine_sound ():
+	# Engine sound simulation (not realistic, as this car script has no notion of gear or engine RPM).
+	desired_engine_pitch = 0.5 + linear_velocity.length() / (engine_force_value * 0.5)
+	# Change pitch smoothly to avoid abrupt change on collision.
+	$EngineSound.pitch_scale = lerpf($EngineSound.pitch_scale, desired_engine_pitch, 0.2)
+
+func handle_sudden_impact_feedback ():
+	if abs(linear_velocity.length() - previous_speed) > 1.0:
+		# Sudden velocity change, likely due to a collision. Play an impact sound to give audible feedback,
+		# and vibrate for haptic feedback.
+		$ImpactSound.play()
+		Input.vibrate_handheld(100)
+		for joypad in Input.get_connected_joypads():
+			Input.start_joy_vibration(joypad, 0.0, 0.5, 0.1)
+	
+	# Store current speed for next frame's impact detection
+	previous_speed = linear_velocity.length()
+
+func handle_acceleration_input ():
+	if Input.is_action_pressed(str("p", player_number, "_accelerate")):
+		var speed := linear_velocity.length()
+		# Special handling for low speeds to help overcome initial inertia
+		if speed < 5.0 and not is_zero_approx(speed):
+			# At low speeds, apply extra force (inverse to speed)
+			# Example: at speed 1.0 -> force = 40 * 5 / 1 = 200, clamped to 100
+			# Example: at speed 4.0 -> force = 40 * 5 / 4 = 50
+			engine_force = clampf(engine_force_value * 5.0 / speed, 0.0, 100.0) # 0.0 is the min, 100.0 is the max
+		else:
+			# At non-low speeds, use regular engine force (40.0)
+			engine_force = engine_force_value
+	else:
+		engine_force = 0.0
+
+func handle_reverse_input ():
+	if Input.is_action_pressed(str("p", player_number, "_reverse")):
+		var speed := linear_velocity.length()
+		# Special handling for low speeds (see handle_acceleration_input comments for more details)
+		if speed < 5.0 and not is_zero_approx(speed):
+			engine_force = -clampf(engine_force_value * BRAKE_STRENGTH * 5.0 / speed, 0.0, 100.0) # 0.0 is the min, 100.0 is the max
+		else:
+			engine_force = -engine_force_value * BRAKE_STRENGTH
+			# Apply analog brake factor for more subtle braking if not fully holding down the trigger.
+			engine_force *= Input.get_action_strength(str("p", player_number, "_reverse"))
+
+func handle_fire_input ():
+	if Input.is_action_just_pressed(str("p", player_number, "_fire")):
+		rocket_launcher.fire_rocket()
+
+func auto_reorient_vehicle_if_upside_down_too_long (delta):
+	var up = global_transform.basis.y
+	var desired_up = (global_transform.origin - _closest_gravity_point).normalized()
+	if up.dot(desired_up) < -0.5:  # More than 120 degrees from desired up
+		time_upside_down += delta
+		if time_upside_down > MAX_UPSIDE_DOWN_TIME:
+			reorient_vehicle()
+			time_upside_down = 0.0
+	else:
+		time_upside_down = 0.0
 
 func generate_and_separate_clone_of_part (og_part, death_velocity, death_position):
 	og_part.visible = false
