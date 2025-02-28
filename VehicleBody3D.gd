@@ -50,6 +50,39 @@ func _ready ():
 	_update_lives_display()
 	_update_boost_display()
 
+func _physics_process(delta: float):
+	if is_dead: return
+
+	if inputs_paused:
+		stop_boost()
+		return
+
+	if global_position.y <= -100: # fallen off level
+		die()
+		$ImpactSound.play()
+		return
+		# need some extra code to remove death parts ?
+
+	if (GameSettings.debug_mode_on):
+		DebugDraw.draw_line(global_transform.origin, _closest_gravity_point, Color.GREEN)
+
+	if Input.is_action_just_pressed(str("p", player_number, "_flip")):
+		reorient_vehicle()
+
+	handle_cycle_through_cameras_input()
+	handle_return_to_start_position_input()
+
+	handle_boost_input(delta)
+	handle_steering_input(delta)
+	handle_acceleration_input()
+	handle_reverse_input()
+	handle_fire_input()
+
+	handle_engine_sound()
+	handle_sudden_impact_feedback()
+
+	auto_reorient_vehicle_if_upside_down_too_long(delta)
+
 func set_player_colour_from_exported_variable ():
 	if player_colour != null and $Body.get_node_or_null("MeshInstance3D") is MeshInstance3D:
 		$Body.get_node("MeshInstance3D").set_surface_override_material(0, player_colour)
@@ -121,42 +154,6 @@ func _on_body_entered(body):
 	can_boost = true
 	update_new_center_of_gravity_point(body.global_position)
 
-func _physics_process(delta: float):
-	if is_dead: return
-
-	if inputs_paused:
-		stop_boost()
-		return
-
-	if global_position.y <= -100: # fallen off level
-		die()
-		$ImpactSound.play()
-		return
-		# need some extra code to remove death parts ?
-
-	if (GameSettings.debug_mode_on):
-		DebugDraw.draw_line(global_transform.origin, _closest_gravity_point, Color.GREEN)
-
-	if Input.is_action_just_pressed(str("p", player_number, "_reset_to_start_pos")):
-		return_to_start_position()
-
-	if Input.is_action_just_pressed(str("p", player_number, "_flip")):
-		reorient_vehicle()
-
-	if Input.is_action_just_pressed(str("p", player_number, "_toggle_camera")):
-		cycle_through_cameras()
-
-	handle_boost_input(delta)
-	handle_steering_input(delta)
-	handle_acceleration_input()
-	handle_reverse_input()
-	handle_fire_input()
-
-	handle_engine_sound()
-	handle_sudden_impact_feedback()
-
-	auto_reorient_vehicle_if_upside_down_too_long(delta)
-
 func start_boost ():
 	var up_direction = global_transform.basis.y
 	apply_central_impulse(up_direction * jump_initial_impulse)
@@ -218,19 +215,21 @@ func die ():
 	# Start respawn timer
 	get_tree().create_timer(RESPAWN_TIME).timeout.connect(_respawn)
 
-func return_to_start_position ():
-	self.position = spawn_point
-	self.rotation = Vector3(0, 0, 0)
-	linear_velocity = Vector3(0, 0, 0)
-	update_new_center_of_gravity_point(_initial_gravity_point)
+func handle_return_to_start_position_input ():
+	if Input.is_action_just_pressed(str("p", player_number, "_reset_to_start_pos")):
+		self.position = spawn_point
+		self.rotation = Vector3(0, 0, 0)
+		linear_velocity = Vector3(0, 0, 0)
+		update_new_center_of_gravity_point(_initial_gravity_point)
 
-func cycle_through_cameras ():
-	if $Camera1.current:
-		$Camera2.current = true
-	elif $Camera2.current:
-		$Camera3.current = true
-	else:
-		$Camera1.current = true
+func handle_cycle_through_cameras_input ():
+	if Input.is_action_just_pressed(str("p", player_number, "_toggle_camera")):
+		if $Camera1.current:
+			$Camera2.current = true
+		elif $Camera2.current:
+			$Camera3.current = true
+		else:
+			$Camera1.current = true
 
 func handle_boost_input (delta):
 	if Input.is_action_pressed(str("p", player_number, "_boost_jump")) and can_boost:
