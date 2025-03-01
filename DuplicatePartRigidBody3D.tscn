@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://6f5lhavq55yq"]
+
+[node name="RigidBody3D" type="RigidBody3D"]
+collision_layer = 2
+mass = 5.0
+can_sleep = false
+continuous_cd = true
+max_contacts_reported = 4
+contact_monitor = true

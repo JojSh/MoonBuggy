@@ -310,20 +310,8 @@ func auto_reorient_vehicle_if_upside_down_too_long (delta):
 func generate_and_separate_clone_of_part (og_part, death_velocity, death_position):
 	og_part.visible = false
 	var original_global_transform = og_part.global_transform
-
-	var duplicate_part_rgdbdy = RigidBody3D.new()
-	duplicate_part_rgdbdy.mass = 5.0
-	duplicate_part_rgdbdy.gravity_scale = 1.0
-	duplicate_part_rgdbdy.continuous_cd = true
-	duplicate_part_rgdbdy.max_contacts_reported = 4
-	duplicate_part_rgdbdy.contact_monitor = true
-	duplicate_part_rgdbdy.can_sleep = false
-	# Set collision layer to a debris-specific layer (using layer 2 for example)
-	# Layer 1 is typically used for general collision
-	duplicate_part_rgdbdy.collision_layer = 2  # Debris layer
-	# Mask determines what the debris can collide with
-	# Only collide with the environment/level (layer 1) but not with players
-	duplicate_part_rgdbdy.collision_mask = 1  # Only collide with environment
+	const DuplicatePartRigidBody3D = preload("res://DuplicatePartRigidBody3D.tscn")
+	var duplicate_part_rgdbdy = DuplicatePartRigidBody3D.instantiate()
 
 	# Instead of adding to root, add to debris manager
 	debris_manager.add_debris(duplicate_part_rgdbdy)
