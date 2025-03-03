@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://1j3bgwhgpyoi"]
+
+[ext_resource type="Material" uid="uid://cos3ulati826e" path="res://chrome_glowy.tres" id="1_g6h31"]
+[ext_resource type="Script" path="res://RocketDiarrheaPickUp.gd" id="1_ogqrl"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qye62"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_dv0bj"]
+
+[node name="RocketDiarrheaPickUp" type="RigidBody3D"]
+collision_layer = 2
+mass = 20.0
+max_contacts_reported = 4
+contact_monitor = true
+script = ExtResource("1_ogqrl")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_qye62")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = ExtResource("1_g6h31")
+mesh = SubResource("CapsuleMesh_dv0bj")
+skeleton = NodePath("")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

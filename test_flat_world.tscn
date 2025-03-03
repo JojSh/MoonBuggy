@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://cfp77dx8lxb0i"]
+[gd_scene load_steps=40 format=3 uid="uid://cfp77dx8lxb0i"]
 
 [ext_resource type="Script" path="res://RootNode.gd" id="1_06hsa"]
 [ext_resource type="Texture2D" uid="uid://0snyqnypvtk6" path="res://icon.svg" id="2_gc8uk"]
@@ -16,6 +16,7 @@
 [ext_resource type="Material" uid="uid://c53pgeng2ewby" path="res://car-gold.tres" id="10_stv4k"]
 [ext_resource type="PackedScene" uid="uid://b37l6fgr4wr20" path="res://life_pick_up.tscn" id="10_wentv"]
 [ext_resource type="PackedScene" uid="uid://df7ht11kiiqun" path="res://reload_speed_pick_up.tscn" id="11_wsvvy"]
+[ext_resource type="PackedScene" uid="uid://1j3bgwhgpyoi" path="res://rocket_diarrhea_pick_up.tscn" id="12_8oo02"]
 [ext_resource type="Material" uid="uid://cse68vhm0xbdf" path="res://glowy_purple.tres" id="12_pyp3s"]
 [ext_resource type="PackedScene" uid="uid://d1wcxewl0xytx" path="res://portal_entrance_area_3d.tscn" id="13_tj3hx"]
 [ext_resource type="PackedScene" uid="uid://dieogt36ljkks" path="res://portal_exit_area_3d.tscn" id="14_86qma"]
@@ -203,7 +204,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_7cpvd")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.120117, -0.252323, -0.0459061)
 
 [node name="PlayerBuggy1" parent="PlayerScreenManager/PlayerContainer" instance=ExtResource("8_jsgp5")]
-transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 11.4455, -48.7477, -73.7951)
+transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, -0.530298, -48.7477, -24.4578)
 player_number = 1
 current_lives = 2
 player_colour = ExtResource("10_luqu7")
@@ -405,7 +406,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.54908e-06, 1.00417, 16.881
 [node name="BoostPickUps" type="Node3D" parent="Level/PickupPills"]
 
 [node name="BoostPickUp" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.269134, 4.5, -46.5736)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.557352, 4.00727, -46.7123)
 
 [node name="BoostPickUp2" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.269118, 4.5, 59.4257)
@@ -467,6 +468,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.98194e-07, 0, -1.31258)
 
 [node name="ReloadSpeedPickUp6" parent="Level/PickupPills/ReloadRatePickUps" instance=ExtResource("11_wsvvy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.64326e-08, 0, 0.506189)
+
+[node name="RocketDiarrheaPickUps" type="Node3D" parent="Level/PickupPills"]
+
+[node name="RocketDiarrheaPickUp" parent="Level/PickupPills/RocketDiarrheaPickUps" instance=ExtResource("12_8oo02")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.00752e-06, 0, 13.2952)
 
 [node name="Block" type="RigidBody3D" parent="Level"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 5, -2)

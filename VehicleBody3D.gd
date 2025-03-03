@@ -24,6 +24,7 @@ var death_camera: Camera3D
 var was_active_player := false  # Add this as a class variable
 var death_collision_shapes := {}  # Dictionary to store shapes for each part
 var inputs_paused := false
+var is_invincible := false
 
 @export var player_number : int
 @export var current_lives : int
@@ -178,6 +179,7 @@ func stop_boost ():
 	can_boost = false
 
 func die ():
+	if is_invincible: return
 	if is_dead: return
 	is_dead = true
 	
@@ -294,7 +296,7 @@ func handle_reverse_input ():
 
 func handle_fire_input ():
 	if Input.is_action_just_pressed(str("p", player_number, "_fire")):
-		rocket_launcher.fire_rocket()
+		rocket_launcher.fire_rocket(3)
 
 func auto_reorient_vehicle_if_upside_down_too_long (delta):
 	var up = global_transform.basis.y
@@ -428,3 +430,13 @@ func pause_inputs():
 	freeze = true  # This is a built-in property of PhysicsBody3D that completely stops physics simulation
 	linear_velocity = Vector3.ZERO
 	angular_velocity = Vector3.ZERO
+
+func activate_rocket_diarrhea():
+	$RocketLauncher.activate_diarrhea()
+	is_invincible = true
+	collision_layer = 0
+	var timer = get_tree().create_timer(10)
+	await timer.timeout
+	$RocketLauncher.deactivate_diarrhea()
+	is_invincible = false
+	collision_layer = 1

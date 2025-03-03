@@ -4,6 +4,8 @@ var can_fire: bool = true
 @export var launch_power := 300
 const STARTING_COOLDOWN_TIME = 5.0
 @onready var current_cooldown_time := STARTING_COOLDOWN_TIME
+@onready var diarrhea_active := false
+@onready var cooldown_time_before_diarrhea := STARTING_COOLDOWN_TIME
 
 func fire_rocket():
 	if !can_fire: return
@@ -36,16 +38,27 @@ func fire_rocket():
 	var timer = get_tree().create_timer(current_cooldown_time)
 	await timer.timeout
 	$MeshInstance3D.set_visible(true)
-	can_fire = true
+	if diarrhea_active:
+		can_fire = true  # Set can_fire to true before recursive call
+		fire_rocket()
+	else:
+		can_fire = true
 
 func reduce_cooldown_time (current_reload_level):
-	print(current_reload_level)
 	if current_reload_level < 5:
 		current_cooldown_time = STARTING_COOLDOWN_TIME - current_reload_level
-		print('current_cooldown_time = ', current_cooldown_time)
 	elif current_reload_level == 5:
 		current_cooldown_time = (STARTING_COOLDOWN_TIME - current_reload_level) + 0.5
-		print('current_cooldown_time = ', current_cooldown_time)
 	else:
-		print('current_cooldown_time = ', current_cooldown_time)
 		return
+
+func activate_diarrhea():
+	diarrhea_active = true
+	cooldown_time_before_diarrhea = current_cooldown_time
+	current_cooldown_time = 0.2
+	if can_fire:
+		fire_rocket()
+
+func deactivate_diarrhea():
+	diarrhea_active = false
+	current_cooldown_time = cooldown_time_before_diarrhea

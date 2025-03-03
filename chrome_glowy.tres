@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://cos3ulati826e"]
+
+[ext_resource type="Texture2D" uid="uid://0snyqnypvtk6" path="res://icon.svg" id="1_omnyk"]
+
+[resource]
+transparency = 1
+albedo_color = Color(17.742, 15.322, 14.785, 0.797)
+albedo_texture = ExtResource("1_omnyk")
+uv1_scale = Vector3(100, 100, 100)
