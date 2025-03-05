@@ -435,8 +435,21 @@ func activate_rocket_diarrhea():
 	$RocketLauncher.activate_diarrhea()
 	is_invincible = true
 	collision_layer = 0
-	var timer = get_tree().create_timer(10)
-	await timer.timeout
+	apply_invincibility_shader()
+
+	var diarrhea_timer = get_tree().create_timer(10)
+	await diarrhea_timer.timeout
+
 	$RocketLauncher.deactivate_diarrhea()
-	is_invincible = false
+	$Body/MeshInstance3D.material_override = null # remove the shader
 	collision_layer = 1
+	
+	var invincibility_buffer_timer = get_tree().create_timer(0.5)
+	await invincibility_buffer_timer.timeout
+	is_invincible = false
+
+func apply_invincibility_shader ():
+	var invincibility_shader = preload("res://invincibility_shader.tres")
+	var shader_material = ShaderMaterial.new()
+	shader_material.shader = invincibility_shader
+	$Body/MeshInstance3D.material_override = shader_material

@@ -252,7 +252,7 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer2P/SubViewportContainer1"]
 handle_input_locally = false
 audio_listener_enable_3d = true
-size = Vector2i(1920, 2160)
+size = Vector2i(2, 2)
 render_target_update_mode = 4
 
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer2P"]
@@ -264,7 +264,7 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer2P/SubViewportContainer2"]
 handle_input_locally = false
 audio_listener_enable_3d = true
-size = Vector2i(1920, 2160)
+size = Vector2i(2, 2)
 render_target_update_mode = 4
 
 [node name="GridContainer3P" type="GridContainer" parent="PlayerScreenManager/SplitScreens"]
@@ -286,7 +286,7 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer1"]
 handle_input_locally = false
 audio_listener_enable_3d = true
-size = Vector2i(1920, 1078)
+size = Vector2i(2, 2)
 render_target_update_mode = 4
 
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer3P"]
@@ -298,7 +298,7 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer2"]
 handle_input_locally = false
 audio_listener_enable_3d = true
-size = Vector2i(1920, 1078)
+size = Vector2i(2, 2)
 render_target_update_mode = 4
 
 [node name="SubViewportContainer3" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer3P"]
@@ -310,7 +310,7 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer3"]
 handle_input_locally = false
 audio_listener_enable_3d = true
-size = Vector2i(1920, 1078)
+size = Vector2i(2, 2)
 render_target_update_mode = 4
 
 [node name="GridContainer4P" type="GridContainer" parent="PlayerScreenManager/SplitScreens"]
@@ -332,7 +332,7 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer1"]
 handle_input_locally = false
 audio_listener_enable_3d = true
-size = Vector2i(1920, 1078)
+size = Vector2i(2, 2)
 render_target_update_mode = 4
 
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
@@ -344,7 +344,7 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer2"]
 handle_input_locally = false
 audio_listener_enable_3d = true
-size = Vector2i(1920, 1078)
+size = Vector2i(2, 2)
 render_target_update_mode = 4
 
 [node name="SubViewportContainer3" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
@@ -356,7 +356,7 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer3"]
 handle_input_locally = false
 audio_listener_enable_3d = true
-size = Vector2i(1920, 1078)
+size = Vector2i(2, 2)
 render_target_update_mode = 4
 
 [node name="SubViewportContainer4" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
@@ -368,7 +368,7 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer4"]
 handle_input_locally = false
 audio_listener_enable_3d = true
-size = Vector2i(1920, 1078)
+size = Vector2i(2, 2)
 render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="."]
