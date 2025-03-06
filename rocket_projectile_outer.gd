@@ -8,3 +8,6 @@ func play_explosion_sfx_then_remove ():
 
 func _on_rocket_projectile_inner_rocket_exploded():
 	play_explosion_sfx_then_remove()
+
+func _on_rocket_projectile_inner_rocket_out_of_bounds():
+	queue_free()

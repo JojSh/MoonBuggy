@@ -37,3 +37,4 @@ stream = ExtResource("5_val5s")
 doppler_tracking = 2
 
 [connection signal="rocket_exploded" from="RocketProjectileInner" to="." method="_on_rocket_projectile_inner_rocket_exploded"]
+[connection signal="rocket_out_of_bounds" from="RocketProjectileInner" to="." method="_on_rocket_projectile_inner_rocket_out_of_bounds"]

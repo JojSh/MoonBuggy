@@ -296,7 +296,7 @@ func handle_reverse_input ():
 
 func handle_fire_input ():
 	if Input.is_action_just_pressed(str("p", player_number, "_fire")):
-		rocket_launcher.fire_rocket(3)
+		rocket_launcher.fire_rocket()
 
 func auto_reorient_vehicle_if_upside_down_too_long (delta):
 	var up = global_transform.basis.y
@@ -436,6 +436,7 @@ func activate_rocket_diarrhea():
 	is_invincible = true
 	collision_layer = 0
 	apply_invincibility_shader()
+	# start special invincibility music?
 
 	var diarrhea_timer = get_tree().create_timer(10)
 	await diarrhea_timer.timeout
@@ -451,5 +452,6 @@ func activate_rocket_diarrhea():
 func apply_invincibility_shader ():
 	var invincibility_shader = preload("res://invincibility_shader.tres")
 	var shader_material = ShaderMaterial.new()
+	# can we make the shader glow more?
 	shader_material.shader = invincibility_shader
 	$Body/MeshInstance3D.material_override = shader_material

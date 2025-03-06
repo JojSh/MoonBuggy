@@ -1,6 +1,13 @@
 extends RigidBody3D
 
 signal rocket_exploded(position)
+signal rocket_out_of_bounds
+
+func _process(delta):
+	# Check bounds every 10 frames to improve performance
+	if Engine.get_process_frames() % 10 == 0:
+		if is_out_of_bounds():
+			rocket_out_of_bounds.emit()
 
 func _on_body_entered(body):
 	# Get the current position before we queue_free
@@ -76,4 +83,18 @@ func _create_debug_sphere (position: Vector3, radius: float, duration: float = 1
 	# Remove the debug visualization after the specified duration
 	var timer = get_tree().create_timer(duration)
 	timer.timeout.connect(func(): debug_node.queue_free())
+
+func is_out_of_bounds():
+	const MIN_Z = -250
+	const MAX_Z = 250
+	const MIN_X = -200
+	const MAX_X = 200
+	const MIN_Y = -50
+	const MAX_Y = 150
+
+	return (
+		global_position.z < MIN_Z or global_position.z > MAX_Z or
+		global_position.x < MIN_X or global_position.x > MAX_X or
+		global_position.y < MIN_Y or global_position.y > MAX_Y
+	)
 
