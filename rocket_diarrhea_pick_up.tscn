@@ -1,9 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://1j3bgwhgpyoi"]
+[gd_scene load_steps=6 format=3 uid="uid://1j3bgwhgpyoi"]
 
 [ext_resource type="Script" path="res://BasePickUp.gd" id="1_3w7yu"]
-[ext_resource type="Material" uid="uid://cos3ulati826e" path="res://chrome_glowy.tres" id="1_g6h31"]
+[ext_resource type="Shader" uid="uid://d2ro03oh1y8g8" path="res://invincibility_shader.tres" id="2_gfj2t"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qye62"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mhorq"]
+render_priority = 0
+shader = ExtResource("2_gfj2t")
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_dv0bj"]
 
@@ -19,7 +23,7 @@ effect_method = "activate_rocket_diarrhea"
 shape = SubResource("CapsuleShape3D_qye62")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-material_override = ExtResource("1_g6h31")
+material_override = SubResource("ShaderMaterial_mhorq")
 mesh = SubResource("CapsuleMesh_dv0bj")
 skeleton = NodePath("")
 
