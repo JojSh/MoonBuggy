@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://cfp77dx8lxb0i"]
+[gd_scene load_steps=37 format=3 uid="uid://cfp77dx8lxb0i"]
 
 [ext_resource type="Script" path="res://RootNode.gd" id="1_06hsa"]
 [ext_resource type="Texture2D" uid="uid://0snyqnypvtk6" path="res://icon.svg" id="2_gc8uk"]
@@ -11,12 +11,9 @@
 [ext_resource type="Environment" uid="uid://c5eh8m3f8t03j" path="res://bright_sky.tres" id="6_ool6o"]
 [ext_resource type="Material" uid="uid://coug284mb8bhx" path="res://glowy_red.tres" id="6_uhbxe"]
 [ext_resource type="PackedScene" uid="uid://tp634kdqbfd" path="res://PlayerBuggy.tscn" id="8_jsgp5"]
-[ext_resource type="PackedScene" uid="uid://cr6cwaremoght" path="res://boost_pick_up.tscn" id="9_mt6wi"]
+[ext_resource type="Script" path="res://PickUpSpawner.gd" id="9_kj6jm"]
 [ext_resource type="Material" uid="uid://cf4w258oi4pca" path="res://car-green.tres" id="10_luqu7"]
 [ext_resource type="Material" uid="uid://c53pgeng2ewby" path="res://car-gold.tres" id="10_stv4k"]
-[ext_resource type="PackedScene" uid="uid://b37l6fgr4wr20" path="res://life_pick_up.tscn" id="10_wentv"]
-[ext_resource type="PackedScene" uid="uid://df7ht11kiiqun" path="res://reload_speed_pick_up.tscn" id="11_wsvvy"]
-[ext_resource type="PackedScene" uid="uid://1j3bgwhgpyoi" path="res://rocket_diarrhea_pick_up.tscn" id="12_8oo02"]
 [ext_resource type="Material" uid="uid://cse68vhm0xbdf" path="res://glowy_purple.tres" id="12_pyp3s"]
 [ext_resource type="PackedScene" uid="uid://d1wcxewl0xytx" path="res://portal_entrance_area_3d.tscn" id="13_tj3hx"]
 [ext_resource type="PackedScene" uid="uid://dieogt36ljkks" path="res://portal_exit_area_3d.tscn" id="14_86qma"]
@@ -204,14 +201,14 @@ surface_material_override/0 = SubResource("StandardMaterial3D_7cpvd")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.120117, -0.252323, -0.0459061)
 
 [node name="PlayerBuggy1" parent="PlayerScreenManager/PlayerContainer" instance=ExtResource("8_jsgp5")]
-transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, -0.530298, -48.7477, -24.4578)
+transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 0, -48, -25)
 player_number = 1
 current_lives = 2
 player_colour = ExtResource("10_luqu7")
 spawn_point = Vector3(10, -49, -73)
 
 [node name="PlayerBuggy2" parent="PlayerScreenManager/PlayerContainer" instance=ExtResource("8_jsgp5")]
-transform = Transform3D(-1, 3.48787e-16, 8.74228e-08, 3.48787e-16, 1, -3.48787e-16, -8.74228e-08, -3.48787e-16, -1, -0.164334, -48.7477, -20.6642)
+transform = Transform3D(-1, 3.48787e-16, 8.74228e-08, 3.48787e-16, 1, -3.48787e-16, -8.74228e-08, -3.48787e-16, -1, 2.08165e-12, -49, -20.664)
 player_number = 2
 current_lives = 1
 player_colour = ExtResource("10_stv4k")
@@ -380,305 +377,237 @@ environment = ExtResource("6_ool6o")
 transform = Transform3D(1, 0, 0, 0, 0.767322, 0.641262, 0, -0.641262, 0.767322, 0, 14.1741, 4.37678)
 light_color = Color(1, 0.952941, 0.901961, 1)
 
-[node name="Level" type="StaticBody3D" parent="."]
+[node name="World" type="Node3D" parent="."]
+
+[node name="Level" type="StaticBody3D" parent="World"]
 transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, -50, 0)
 script = ExtResource("2_lx3i3")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/Level"]
 mesh = SubResource("BoxMesh_sj3sa")
-skeleton = NodePath("../..")
+skeleton = NodePath("../../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_a1vpj")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Level"]
 shape = SubResource("ConcavePolygonShape3D_32rrp")
 
-[node name="GravityArea3D" type="Area3D" parent="Level"]
+[node name="GravityArea3D" type="Area3D" parent="World/Level"]
 priority = 1
 gravity_space_override = 3
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/GravityArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Level/GravityArea3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -47, 0)
 shape = SubResource("BoxShape3D_y1d70")
 
-[node name="PickupPills" type="Node3D" parent="Level"]
+[node name="PickUpSpawner" type="Node3D" parent="World/Level"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.54908e-06, 1.00417, 16.8818)
+script = ExtResource("9_kj6jm")
 
-[node name="BoostPickUps" type="Node3D" parent="Level/PickupPills"]
-
-[node name="BoostPickUp" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.557352, 4.00727, -46.7123)
-
-[node name="BoostPickUp2" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.269118, 4.5, 59.4257)
-
-[node name="BoostPickUp3" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.269128, 4.5, -3.24203)
-
-[node name="BoostPickUp4" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.3052, 9, -22.871)
-
-[node name="BoostPickUp5" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 24.0915, 9, 91.003)
-
-[node name="BoostPickUp6" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -6.66854, 9, 54.6931)
-
-[node name="BoostPickUp7" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 24.0915, 9, -24.4269)
-
-[node name="BoostPickUp8" parent="Level/PickupPills/BoostPickUps" instance=ExtResource("9_mt6wi")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -6.66472, 9, -60.735)
-
-[node name="LifePickUps" type="Node3D" parent="Level/PickupPills"]
-
-[node name="LifePickUp" parent="Level/PickupPills/LifePickUps" instance=ExtResource("10_wentv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.98692, 0, 0)
-
-[node name="LifePickUp2" parent="Level/PickupPills/LifePickUps" instance=ExtResource("10_wentv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.19496e-06, 0, 34.4046)
-
-[node name="LifePickUp3" parent="Level/PickupPills/LifePickUps" instance=ExtResource("10_wentv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.6132, 0, 34.4046)
-
-[node name="LifePickUp4" parent="Level/PickupPills/LifePickUps" instance=ExtResource("10_wentv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.6132, 0, 55.3257)
-
-[node name="LifePickUp5" parent="Level/PickupPills/LifePickUps" instance=ExtResource("10_wentv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5648, 0, 55.3257)
-
-[node name="LifePickUp6" parent="Level/PickupPills/LifePickUps" instance=ExtResource("10_wentv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5648, 0, 84.277)
-
-[node name="ReloadRatePickUps" type="Node3D" parent="Level/PickupPills"]
-
-[node name="ReloadSpeedPickUp" parent="Level/PickupPills/ReloadRatePickUps" instance=ExtResource("11_wsvvy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.58777e-06, 0, -10.5153)
-
-[node name="ReloadSpeedPickUp2" parent="Level/PickupPills/ReloadRatePickUps" instance=ExtResource("11_wsvvy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.21819e-06, 0, -8.06771)
-
-[node name="ReloadSpeedPickUp3" parent="Level/PickupPills/ReloadRatePickUps" instance=ExtResource("11_wsvvy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.60385e-07, 0, -5.69806)
-
-[node name="ReloadSpeedPickUp4" parent="Level/PickupPills/ReloadRatePickUps" instance=ExtResource("11_wsvvy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.21933e-07, 0, -3.4566)
-
-[node name="ReloadSpeedPickUp5" parent="Level/PickupPills/ReloadRatePickUps" instance=ExtResource("11_wsvvy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.98194e-07, 0, -1.31258)
-
-[node name="ReloadSpeedPickUp6" parent="Level/PickupPills/ReloadRatePickUps" instance=ExtResource("11_wsvvy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.64326e-08, 0, 0.506189)
-
-[node name="RocketDiarrheaPickUps" type="Node3D" parent="Level/PickupPills"]
-
-[node name="RocketDiarrheaPickUp" parent="Level/PickupPills/RocketDiarrheaPickUps" instance=ExtResource("12_8oo02")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.9205, 0, 13)
-
-[node name="Block" type="RigidBody3D" parent="Level"]
+[node name="Block" type="RigidBody3D" parent="World/Level"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 5, -2)
 mass = 100.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Block"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/Level/Block"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.61904, 0, 0)
 material_override = ExtResource("6_uhbxe")
 mesh = SubResource("BoxMesh_6unxr")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Block"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Level/Block"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.61904, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_4ru31")
 
-[node name="Block2" type="RigidBody3D" parent="Level"]
+[node name="Block2" type="RigidBody3D" parent="World/Level"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.33216, 1.21403, 3.52147e-07)
 mass = 25.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Block2"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/Level/Block2"]
 material_override = ExtResource("3_h4blv")
 mesh = SubResource("BoxMesh_6unxr")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Block2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Level/Block2"]
 shape = SubResource("ConvexPolygonShape3D_s41nm")
 
-[node name="Block3" type="RigidBody3D" parent="Level"]
+[node name="Block3" type="RigidBody3D" parent="World/Level"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.24192, 4.478, -21.7446)
 mass = 25.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Block3"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/Level/Block3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.61904, 0, 0)
 mesh = SubResource("BoxMesh_6unxr")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Block3"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Level/Block3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.61904, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_4ru31")
 
-[node name="Ramp" type="RigidBody3D" parent="Level"]
+[node name="Ramp" type="RigidBody3D" parent="World/Level"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -38.214, 1, -50)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Ramp"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/Level/Ramp"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("PrismMesh_suh1j")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Ramp"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Level/Ramp"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_b7gkw")
 
-[node name="Ramp2" type="RigidBody3D" parent="Level"]
+[node name="Ramp2" type="RigidBody3D" parent="World/Level"]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 37.725, 1, 37)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Ramp2"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/Level/Ramp2"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("PrismMesh_suh1j")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Ramp2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Level/Ramp2"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_b7gkw")
 
-[node name="LevelSphere1 - StaticBody3D2" type="StaticBody3D" parent="."]
+[node name="LevelSphere1 - StaticBody3D2" type="StaticBody3D" parent="World"]
 transform = Transform3D(-0.3, 0, -4.52987e-08, 0, 0.3, 0, 4.52987e-08, 0, -0.3, 18, -15, 37)
 script = ExtResource("2_lx3i3")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelSphere1 - StaticBody3D2"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/LevelSphere1 - StaticBody3D2"]
 material_override = ExtResource("4_sak4k")
 mesh = SubResource("SphereMesh_iaqk8")
-skeleton = NodePath("../..")
+skeleton = NodePath("../../..")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphere1 - StaticBody3D2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/LevelSphere1 - StaticBody3D2"]
 shape = SubResource("SphereShape3D_jf1r4")
 
-[node name="GravityArea3D" type="Area3D" parent="LevelSphere1 - StaticBody3D2"]
+[node name="GravityArea3D" type="Area3D" parent="World/LevelSphere1 - StaticBody3D2"]
 gravity_space_override = 3
 gravity_point = true
 gravity_point_center = Vector3(0, 0, 0)
 gravity_direction = Vector3(0, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphere1 - StaticBody3D2/GravityArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/LevelSphere1 - StaticBody3D2/GravityArea3D"]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 shape = SubResource("SphereShape3D_uaobl")
 
-[node name="LevelSphere2 - StaticBody3D" type="StaticBody3D" parent="."]
+[node name="LevelSphere2 - StaticBody3D" type="StaticBody3D" parent="World"]
 transform = Transform3D(-0.3, 0, -4.52987e-08, 0, 0.3, 0, 4.52987e-08, 0, -0.3, 0, -15, 0)
 script = ExtResource("2_lx3i3")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelSphere2 - StaticBody3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/LevelSphere2 - StaticBody3D"]
 material_override = ExtResource("3_h4blv")
 mesh = SubResource("SphereMesh_iaqk8")
-skeleton = NodePath("../..")
+skeleton = NodePath("../../..")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphere2 - StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/LevelSphere2 - StaticBody3D"]
 shape = SubResource("SphereShape3D_jf1r4")
 
-[node name="GravityArea3D" type="Area3D" parent="LevelSphere2 - StaticBody3D"]
+[node name="GravityArea3D" type="Area3D" parent="World/LevelSphere2 - StaticBody3D"]
 gravity_space_override = 3
 gravity_point = true
 gravity_point_center = Vector3(0, 0, 0)
 gravity_direction = Vector3(0, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphere2 - StaticBody3D/GravityArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/LevelSphere2 - StaticBody3D/GravityArea3D"]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 shape = SubResource("SphereShape3D_uaobl")
 
-[node name="LevelSphere3 - StaticBody3D2" type="StaticBody3D" parent="."]
+[node name="LevelSphere3 - StaticBody3D2" type="StaticBody3D" parent="World"]
 transform = Transform3D(-0.3, 0, -4.52987e-08, 0, 0.3, 0, 4.52987e-08, 0, -0.3, -18.1045, -15, -37)
 script = ExtResource("2_lx3i3")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelSphere3 - StaticBody3D2"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/LevelSphere3 - StaticBody3D2"]
 material_override = ExtResource("6_uhbxe")
 mesh = SubResource("SphereMesh_iaqk8")
-skeleton = NodePath("../..")
+skeleton = NodePath("../../..")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphere3 - StaticBody3D2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/LevelSphere3 - StaticBody3D2"]
 shape = SubResource("SphereShape3D_jf1r4")
 
-[node name="GravityArea3D" type="Area3D" parent="LevelSphere3 - StaticBody3D2"]
+[node name="GravityArea3D" type="Area3D" parent="World/LevelSphere3 - StaticBody3D2"]
 gravity_space_override = 3
 gravity_point = true
 gravity_point_center = Vector3(0, 0, 0)
 gravity_direction = Vector3(0, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphere3 - StaticBody3D2/GravityArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/LevelSphere3 - StaticBody3D2/GravityArea3D"]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 shape = SubResource("SphereShape3D_uaobl")
 
-[node name="LevelSphereBig1 - StaticBody3D2" type="StaticBody3D" parent="."]
+[node name="LevelSphereBig1 - StaticBody3D2" type="StaticBody3D" parent="World"]
 transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, -93, -14.7, -37)
 script = ExtResource("2_lx3i3")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelSphereBig1 - StaticBody3D2"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/LevelSphereBig1 - StaticBody3D2"]
 material_override = ExtResource("12_pyp3s")
 mesh = SubResource("SphereMesh_iaqk8")
-skeleton = NodePath("../..")
+skeleton = NodePath("../../..")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphereBig1 - StaticBody3D2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/LevelSphereBig1 - StaticBody3D2"]
 shape = SubResource("SphereShape3D_3a5bm")
 
-[node name="GravityArea3D" type="Area3D" parent="LevelSphereBig1 - StaticBody3D2"]
+[node name="GravityArea3D" type="Area3D" parent="World/LevelSphereBig1 - StaticBody3D2"]
 gravity_space_override = 3
 gravity_point = true
 gravity_point_center = Vector3(0, 0, 0)
 gravity_direction = Vector3(0, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphereBig1 - StaticBody3D2/GravityArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/LevelSphereBig1 - StaticBody3D2/GravityArea3D"]
 transform = Transform3D(1.16, 0, 0, 0, 1.16, 0, 0, 0, 1.16, 0, 0, 0)
 shape = SubResource("SphereShape3D_uaobl")
 
-[node name="LevelSphereBig2(old) - StaticBody3D" type="StaticBody3D" parent="."]
+[node name="LevelSphereBig2(old) - StaticBody3D" type="StaticBody3D" parent="World"]
 transform = Transform3D(-0.800218, 0.166115, 0.576244, 0.134801, 0.986106, -0.0970713, -0.584363, 0, -0.811493, 533.74, -16.5551, 39.4826)
 script = ExtResource("2_lx3i3")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelSphereBig2(old) - StaticBody3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/LevelSphereBig2(old) - StaticBody3D"]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 material_override = ExtResource("6_7n6r3")
 mesh = ExtResource("5_8htqn")
-skeleton = NodePath("../..")
+skeleton = NodePath("../../..")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphereBig2(old) - StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/LevelSphereBig2(old) - StaticBody3D"]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_4akrm")
 
-[node name="GravityArea3D" type="Area3D" parent="LevelSphereBig2(old) - StaticBody3D"]
+[node name="GravityArea3D" type="Area3D" parent="World/LevelSphereBig2(old) - StaticBody3D"]
 gravity_space_override = 3
 gravity_point = true
 gravity_point_center = Vector3(0, 0, 0)
 gravity_direction = Vector3(0, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphereBig2(old) - StaticBody3D/GravityArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/LevelSphereBig2(old) - StaticBody3D/GravityArea3D"]
 transform = Transform3D(1.25, 0, 5.96046e-08, 0, 1.25, 0, -5.96046e-08, 0, 1.25, 0, 0, 0)
 shape = SubResource("SphereShape3D_uaobl")
 
-[node name="LevelSphereBig2 - StaticBody3D2" type="StaticBody3D" parent="."]
+[node name="LevelSphereBig2 - StaticBody3D2" type="StaticBody3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 94.7184, -14.8696, 37.1221)
 script = ExtResource("2_lx3i3")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="LevelSphereBig2 - StaticBody3D2"]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="World/LevelSphereBig2 - StaticBody3D2"]
 material_override = ExtResource("6_7n6r3")
 mesh = SubResource("SphereMesh_iaqk8")
-skeleton = NodePath("../..")
+skeleton = NodePath("../../..")
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="LevelSphereBig2 - StaticBody3D2"]
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="World/LevelSphereBig2 - StaticBody3D2"]
 shape = SubResource("SphereShape3D_3a5bm")
 
-[node name="GravityArea3D" type="Area3D" parent="LevelSphereBig2 - StaticBody3D2"]
+[node name="GravityArea3D" type="Area3D" parent="World/LevelSphereBig2 - StaticBody3D2"]
 gravity_space_override = 3
 gravity_point = true
 gravity_point_center = Vector3(0, 0, 0)
 gravity_direction = Vector3(0, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphereBig2 - StaticBody3D2/GravityArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/LevelSphereBig2 - StaticBody3D2/GravityArea3D"]
 transform = Transform3D(1.16, 0, 5.53131e-08, 0, 1.16, 0, -5.53131e-08, 0, 1.16, 0, 0, 0)
 shape = SubResource("SphereShape3D_uaobl")
 
-[node name="PortalEntranceArea3D1" parent="." instance=ExtResource("13_tj3hx")]
+[node name="PortalEntranceArea3D1" parent="World" instance=ExtResource("13_tj3hx")]
 transform = Transform3D(-8.74228e-09, 6.97574e-17, 0.2, 6.97574e-17, 0.2, -6.97574e-17, -0.2, 6.97574e-17, -8.74228e-09, -163.724, -15.7994, -37)
 
-[node name="PortalExitArea3D1" parent="." instance=ExtResource("14_86qma")]
+[node name="PortalExitArea3D1" parent="World" instance=ExtResource("14_86qma")]
 transform = Transform3D(0.2, -6.97574e-17, 6.97574e-17, 6.97574e-17, 0.2, -6.97574e-17, -6.97574e-17, 6.97574e-17, 0.2, -1.499, -47.233, 90)
 
-[node name="PortalEntranceArea3D2" parent="." instance=ExtResource("13_tj3hx")]
+[node name="PortalEntranceArea3D2" parent="World" instance=ExtResource("13_tj3hx")]
 transform = Transform3D(0.2, 0, 6.03984e-08, 0, 0.2, 0, -6.03984e-08, 0, 0.2, 11.3976, -44.2335, -104.242)
 
-[node name="PortalExitArea3D2" parent="." instance=ExtResource("14_86qma")]
+[node name="PortalExitArea3D2" parent="World" instance=ExtResource("14_86qma")]
 transform = Transform3D(-8.74228e-09, 6.97574e-17, 0.2, 6.97574e-17, 0.2, -6.97574e-17, -0.2, 6.97574e-17, -8.74228e-09, 97.6039, 41.6344, 35.5387)
 
 [connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/SinglePlayerLocalButton" to="." method="_on_choose_player_count_button_pressed" binds= [1]]
@@ -688,10 +617,10 @@ transform = Transform3D(-8.74228e-09, 6.97574e-17, 0.2, 6.97574e-17, 0.2, -6.975
 [connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/DebugToggle" to="." method="_on_debug_toggle_pressed"]
 [connection signal="pressed" from="MenuContainer/Control/GameOverScreen/VBoxContainer/PlayAgainButton" to="." method="_on_play_again_button_pressed"]
 [connection signal="pressed" from="MenuContainer/Control/GameOverScreen/VBoxContainer/ReturnToMainMenuButton" to="." method="_on_return_to_main_menu_button_pressed"]
-[connection signal="body_entered" from="Level/GravityArea3D" to="Level" method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="LevelSphere1 - StaticBody3D2/GravityArea3D" to="LevelSphere1 - StaticBody3D2" method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="LevelSphere2 - StaticBody3D/GravityArea3D" to="LevelSphere2 - StaticBody3D" method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="LevelSphere3 - StaticBody3D2/GravityArea3D" to="LevelSphere3 - StaticBody3D2" method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="LevelSphereBig1 - StaticBody3D2/GravityArea3D" to="LevelSphereBig1 - StaticBody3D2" method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="LevelSphereBig2(old) - StaticBody3D/GravityArea3D" to="LevelSphereBig2(old) - StaticBody3D" method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="LevelSphereBig2 - StaticBody3D2/GravityArea3D" to="LevelSphereBig2 - StaticBody3D2" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="World/Level/GravityArea3D" to="World/Level" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="World/LevelSphere1 - StaticBody3D2/GravityArea3D" to="World/LevelSphere1 - StaticBody3D2" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="World/LevelSphere2 - StaticBody3D/GravityArea3D" to="World/LevelSphere2 - StaticBody3D" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="World/LevelSphere3 - StaticBody3D2/GravityArea3D" to="World/LevelSphere3 - StaticBody3D2" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="World/LevelSphereBig1 - StaticBody3D2/GravityArea3D" to="World/LevelSphereBig1 - StaticBody3D2" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="World/LevelSphereBig2(old) - StaticBody3D/GravityArea3D" to="World/LevelSphereBig2(old) - StaticBody3D" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="World/LevelSphereBig2 - StaticBody3D2/GravityArea3D" to="World/LevelSphereBig2 - StaticBody3D2" method="_on_area_3d_body_entered"]

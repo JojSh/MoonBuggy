@@ -422,7 +422,7 @@ func reduce_rocket_reload_speed ():
 		current_reload_level += 1
 		$RocketLauncher.reduce_cooldown_time(current_reload_level)
 
-func pause_inputs():
+func pause_inputs ():
 	inputs_paused = true
 	engine_force = 0.0  # Stop the vehicle
 	steering = 0.0
@@ -431,7 +431,7 @@ func pause_inputs():
 	linear_velocity = Vector3.ZERO
 	angular_velocity = Vector3.ZERO
 
-func activate_rocket_diarrhea():
+func activate_rocket_diarrhea ():
 	$RocketLauncher.activate_diarrhea()
 	is_invincible = true
 	collision_layer = 0

@@ -13,7 +13,7 @@ points = PackedVector3Array(-1.73195, -0.793289, -0.487797, 1.66042, 1.93202, 0.
 [node name="RocketProjectile" type="Node3D"]
 script = ExtResource("1_nessc")
 
-[node name="RocketProjectileInner" type="RigidBody3D" parent="."]
+[node name="RocketProjectileInner" type="RigidBody3D" parent="." groups=["RocketProjectile"]]
 gravity_scale = 0.2
 script = ExtResource("2_fcnr1")
 
