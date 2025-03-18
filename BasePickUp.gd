@@ -5,6 +5,9 @@ signal moved_off_position
 
 var initial_position = Vector3.ZERO
 var check_position_timer = null
+var _closest_gravity_point: Vector3
+var _initial_gravity_point: Vector3
+
 @export var position_threshold = 3.0  # Distance threshold to consider the pickup moved
 @export var effect_method = ""  # The method to call on the vehicle body
 
@@ -25,6 +28,9 @@ func _on_body_entered(body):
 		if body.has_method(effect_method):
 			body.call(effect_method)
 		queue_free()
+	else:
+		if (body.name.begins_with("Level")):
+			update_new_center_of_gravity_point(body.global_position)
 
 func check_for_moved_off_spawn_pos():
 	# Create a timer that repeats every few seconds
@@ -43,3 +49,9 @@ func check_current_position_vs_initial():
 	if distance > position_threshold:
 		emit_signal("moved_off_position")
 		queue_free()
+	
+func update_new_center_of_gravity_point(point):
+	if _closest_gravity_point == Vector3.ZERO:
+		_initial_gravity_point = point
+	_closest_gravity_point = point
+

@@ -2,12 +2,8 @@
 class_name ItemSpawner
 extends Node
 
-# Array of possible spawn positions
-var spawn_positions = [
-	Vector3(-2, -49, -30),
-	Vector3(0, -49, -30),
-	Vector3(2, -49, -30),
-]
+# Array of spawn point node references
+var spawn_points = []
 
 # Track which positions are currently occupied
 var occupied_positions = []
@@ -33,8 +29,13 @@ var spawn_timer = null
 var spawn_interval = 2.0  # Seconds between spawns
 
 func _ready():
+	# Get spawn point nodes
+	for child in get_children():
+		if child is Node3D and child.name.begins_with("SpawnPoint"):
+			spawn_points.append(child)
+	
 	# Initialize all positions as available
-	occupied_positions.resize(spawn_positions.size())
+	occupied_positions.resize(spawn_points.size())
 	for i in range(occupied_positions.size()):
 		occupied_positions[i] = false
 
@@ -54,7 +55,7 @@ func _on_spawn_timer_timeout():
 func spawn_random_item():
 	# Get all available positions
 	var available_indices = []
-	for i in range(spawn_positions.size()):
+	for i in range(spawn_points.size()):
 		if not occupied_positions[i]:
 			available_indices.append(i)
 
@@ -65,7 +66,7 @@ func spawn_random_item():
 
 	# Choose a random available position
 	var random_index = available_indices[randi() % available_indices.size()]
-	var spawn_position = spawn_positions[random_index]
+	var spawn_point = spawn_points[random_index]
 
 	# Mark position as occupied
 	occupied_positions[random_index] = true
@@ -76,7 +77,8 @@ func spawn_random_item():
 	# Spawn the item
 	var item = item_scene.instantiate()
 	add_child(item)
-	item.global_position = spawn_position
+	item.global_position = spawn_point.global_position
+	item.global_rotation = spawn_point.global_rotation
 
 	# Connect to item's collected signal
 	item.connect("collected", _on_item_collected.bind(random_index))

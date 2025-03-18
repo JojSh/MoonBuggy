@@ -152,8 +152,9 @@ func _integrate_forces(state: PhysicsDirectBodyState3D):
 	local_gravity = state.total_gravity.normalized()
 
 func _on_body_entered(body):
-	can_boost = true
-	update_new_center_of_gravity_point(body.global_position)
+	if (body.name.begins_with("Level")):
+		can_boost = true
+		update_new_center_of_gravity_point(body.global_position)
 
 func start_boost ():
 	var up_direction = global_transform.basis.y
@@ -432,6 +433,7 @@ func pause_inputs ():
 	angular_velocity = Vector3.ZERO
 
 func activate_rocket_diarrhea ():
+	$PickupSound.play()
 	$RocketLauncher.activate_diarrhea()
 	is_invincible = true
 	collision_layer = 0

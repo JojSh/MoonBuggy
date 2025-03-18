@@ -8,7 +8,10 @@
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_7wt2y"]
 
 [node name="LifePickUp" type="RigidBody3D"]
-collision_layer = 2
+collision_layer = 3
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
 mass = 20.0
 max_contacts_reported = 4
 contact_monitor = true
