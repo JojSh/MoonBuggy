@@ -4,7 +4,6 @@
 [ext_resource type="Material" uid="uid://coug284mb8bhx" path="res://glowy_red.tres" id="2_dijhf"]
 
 [node name="ReloadSpeedPickUp" instance=ExtResource("1_base")]
-axis_lock_angular_y = true
 effect_method = "reduce_rocket_reload_speed"
 
 [node name="MeshInstance3D" parent="." index="1"]

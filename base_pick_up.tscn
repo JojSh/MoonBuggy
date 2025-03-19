@@ -7,7 +7,8 @@
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_7wt2y"]
 
 [node name="BasePickUp" type="RigidBody3D"]
-collision_layer = 3
+collision_layer = 2
+collision_mask = 5
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true

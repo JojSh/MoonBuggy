@@ -5,7 +5,6 @@
 
 [node name="BoostPickUp" instance=ExtResource("1_base")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
-axis_lock_angular_y = true
 effect_method = "increment_boost_level"
 
 [node name="MeshInstance3D" parent="." index="1"]
