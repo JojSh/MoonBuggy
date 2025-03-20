@@ -3,7 +3,7 @@ extends VehicleBody3D
 const STEER_SPEED = 2.5
 const STEER_LIMIT = 0.4
 const BRAKE_STRENGTH = 2.0
-const STARTING_BOOST_LEVEL := 1.0 # each boost level = +0.5s extra boost duration
+const STARTING_BOOST_LEVEL := 6.0 # each boost level = +0.5s extra boost duration
 const STARTING_RELOAD_LEVEL := 1
 const MAX_UPSIDE_DOWN_TIME := 3.0
 const RESPAWN_TIME := 3.0
@@ -25,6 +25,17 @@ var was_active_player := false  # Add this as a class variable
 var death_collision_shapes := {}  # Dictionary to store shapes for each part
 var inputs_paused := false
 var is_invincible := false
+var is_reorienting := false  # Track if we're currently in a gradual reorientation
+
+# Variables for gradual reorientation
+var reorientation_timer := 0.0
+var reorientation_duration := 0.5
+var reorientation_initial_basis: Basis
+var reorientation_target_basis: Basis
+var reorientation_initial_origin: Vector3
+var reorientation_target_origin: Vector3
+var reorientation_cooldown := 1.0  # Tracks the cooldown time remaining
+const REORIENTATION_COOLDOWN_DURATION := 1.0  # 1 second cooldown
 
 @export var player_number : int
 @export var current_lives : int
@@ -64,10 +75,23 @@ func _physics_process(delta: float):
 		return
 		# need some extra code to remove death parts ?
 
+	# Update reorientation cooldown
+	if reorientation_cooldown > 0:
+		reorientation_cooldown -= delta
+
 	if (GameSettings.debug_mode_on):
 		DebugDraw.draw_line(global_transform.origin, _closest_gravity_point, Color.GREEN)
+		
+		# Add debug visualization for the reorientation process
+		if is_reorienting:
+			draw_debug_reorientation()
+
+	# Handle gradual reorientation in physics_process
+	if is_reorienting:
+		process_reorientation(delta)
 
 	if Input.is_action_just_pressed(str("p", player_number, "_flip")):
+		# Player explicitly requested a flip
 		reorient_vehicle()
 
 	handle_cycle_through_cameras_input()
@@ -109,7 +133,14 @@ func update_new_center_of_gravity_point(point):
 		_initial_gravity_point = point
 	_closest_gravity_point = point
 
-func reorient_vehicle():
+func reorient_vehicle(on_delay: bool = false):
+	# Cancel any in-progress gradual reorientation
+	is_reorienting = false
+	
+	if on_delay:
+		var reorient_timer = get_tree().create_timer(0.2)
+		await reorient_timer.timeout
+
 	# 1. Calculate the desired up direction (opposite to gravity)
 	var desired_up: Vector3
 
@@ -220,6 +251,7 @@ func die ():
 
 func handle_return_to_start_position_input ():
 	if Input.is_action_just_pressed(str("p", player_number, "_reset_to_start_pos")):
+		reorientation_cooldown = 1.0
 		self.position = spawn_point
 		self.rotation = Vector3(0, 0, 0)
 		linear_velocity = Vector3(0, 0, 0)
@@ -300,6 +332,10 @@ func handle_fire_input ():
 		rocket_launcher.fire_rocket()
 
 func auto_reorient_vehicle_if_upside_down_too_long (delta):
+	# Skip this check if we're already in a reorientation process
+	if is_reorienting:
+		return
+		
 	var up = global_transform.basis.y
 	var desired_up = (global_transform.origin - _closest_gravity_point).normalized()
 	if up.dot(desired_up) < -0.5:  # More than 120 degrees from desired up
@@ -346,6 +382,7 @@ func generate_and_separate_clone_of_part (og_part, death_velocity, death_positio
 	duplicate_part_rgdbdy.apply_impulse(direction * SEPARATION_FORCE)
 
 func _respawn():
+	reorientation_cooldown = 1.0
 	# Reset position and rotation
 	global_position = spawn_point
 	rotation = Vector3.ZERO
@@ -457,3 +494,95 @@ func apply_invincibility_shader ():
 	# can we make the shader glow more?
 	shader_material.shader = invincibility_shader
 	$Body/MeshInstance3D.material_override = shader_material
+
+func reorient_vehicle_over_time(duration: float = 0.5):
+	# Don't start a new reorientation if one is already in progress
+	if is_reorienting:
+		return
+		
+	# Don't start if we're in the cooldown period
+	if reorientation_cooldown > 0:
+		print("Reorientation on cooldown: " + str(reorientation_cooldown) + "s remaining")
+		return
+		
+	print('calling reorient over time')
+	is_reorienting = true
+	reorientation_timer = 0.0
+	reorientation_duration = duration
+	
+	# Start the cooldown timer
+	reorientation_cooldown = REORIENTATION_COOLDOWN_DURATION
+	
+	# Store initial state
+	reorientation_initial_basis = global_transform.basis
+	reorientation_initial_origin = global_transform.origin
+	
+	# Calculate target orientation - same logic as in reorient_vehicle()
+	# 1. Calculate the desired up direction (opposite to gravity)
+	var desired_up: Vector3
+	
+	# Check if we're on a flat surface (box collider gravity area)
+	var to_gravity_point = global_transform.origin - _closest_gravity_point
+	var roughly_on_horizontal_plane = abs(to_gravity_point.y) < 1.0
+	
+	if roughly_on_horizontal_plane:
+		desired_up = Vector3.UP
+	else:
+		desired_up = to_gravity_point.normalized() # Use direction away from gravity point for spherical surfaces
+	
+	# 2. Calculate the desired forward direction
+	var current_forward = -reorientation_initial_basis.z
+	var right = current_forward.cross(desired_up).normalized()
+	var new_forward = desired_up.cross(right).normalized()
+	
+	# 3. Construct the target basis
+	reorientation_target_basis = Basis()
+	reorientation_target_basis.x = right
+	reorientation_target_basis.y = desired_up
+	reorientation_target_basis.z = -new_forward  # Negative because Godot uses -Z as forward
+	
+	# Calculate the target position with the lift
+	reorientation_target_origin = reorientation_initial_origin + desired_up * 0.5
+
+func process_reorientation(delta: float):
+	reorientation_timer += delta
+	var t = min(reorientation_timer / reorientation_duration, 1.0)
+	
+	# Use smoothstep for nicer easing
+	var weight = smoothstep(0.0, 1.0, t)
+	
+	# Interpolate the basis
+	global_transform.basis = reorientation_initial_basis.slerp(reorientation_target_basis, weight)
+	
+	# Interpolate the position
+	global_transform.origin = reorientation_initial_origin.lerp(reorientation_target_origin, weight)
+	
+	# Gradually reduce angular velocity
+	angular_velocity = angular_velocity * (1.0 - weight)
+	
+	# Check if we're done
+	if t >= 1.0:
+		# Make sure we set exactly to the target values at the end
+		global_transform.basis = reorientation_target_basis
+		global_transform.origin = reorientation_target_origin
+		angular_velocity = Vector3.ZERO
+		is_reorienting = false
+
+func draw_debug_reorientation():
+	# Draw a line showing the desired up direction
+	var to_gravity_point = global_transform.origin - _closest_gravity_point
+	var desired_up = to_gravity_point.normalized()
+	
+	# Draw the current up vector in blue
+	DebugDraw.draw_line(
+		global_transform.origin, 
+		global_transform.origin + global_transform.basis.y * 3.0, 
+		Color.BLUE
+	)
+
+	# Draw the target up vector in yellow
+	DebugDraw.draw_line(
+		global_transform.origin, 
+		global_transform.origin + reorientation_target_basis.y * 3.0, 
+		Color.YELLOW
+	)

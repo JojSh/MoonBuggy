@@ -16,7 +16,8 @@
 [ext_resource type="PackedScene" uid="uid://bg6bppthjrr05" path="res://beam_container.tscn" id="10_ym3a5"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_kudkn"]
-bounce = 0.1
+bounce = 0.2
+absorbent = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_dp7yc"]
 lightmap_size_hint = Vector2i(15, 19)
@@ -63,6 +64,9 @@ physics_material_override = SubResource("PhysicsMaterial_kudkn")
 center_of_mass_mode = 1
 max_contacts_reported = 4
 contact_monitor = true
+engine_force = 1.0
+brake = 1.0
+steering = 0.0174533
 script = ExtResource("1_1u0r3")
 current_lives = 3
 engine_force_value = 80.0
@@ -147,6 +151,9 @@ skeleton = NodePath("")
 
 [node name="Wheel1" type="VehicleWheel3D" parent="."]
 transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, -0.599998, -0.25, -0.5)
+engine_force = 1.0
+brake = 1.0
+steering = 0.0174533
 use_as_traction = true
 use_as_steering = true
 wheel_roll_influence = 0.2
@@ -163,6 +170,8 @@ surface_material_override/0 = ExtResource("2_1s618")
 
 [node name="Wheel2" type="VehicleWheel3D" parent="."]
 transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, -0.599998, -0.25, 0.5)
+engine_force = 1.0
+brake = 1.0
 use_as_traction = true
 wheel_roll_influence = 0.2
 wheel_radius = 0.25
@@ -178,6 +187,9 @@ surface_material_override/0 = ExtResource("2_1s618")
 
 [node name="Wheel3" type="VehicleWheel3D" parent="."]
 transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0.599998, -0.25, -0.5)
+engine_force = 1.0
+brake = 1.0
+steering = 0.0174533
 use_as_traction = true
 use_as_steering = true
 wheel_roll_influence = 0.2
@@ -194,6 +206,8 @@ surface_material_override/0 = ExtResource("2_1s618")
 
 [node name="Wheel4" type="VehicleWheel3D" parent="."]
 transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0.599998, -0.25, 0.5)
+engine_force = 1.0
+brake = 1.0
 use_as_traction = true
 wheel_roll_influence = 0.2
 wheel_radius = 0.25
