@@ -21,6 +21,7 @@ PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_came
 DebugDraw="*res://debug_draw.tscn"
 DebrisManager="*res://DebrisManager.gd"
 GameSettings="*res://GameSettings.gd"
+MusicManager="*res://music_manager.tscn"
 
 [display]
 

@@ -1,7 +1,6 @@
 extends Node3D
 
 var list_of_players = []
-var music_is_playing: bool = false
 
 #@onready var _debug_init = turn_off_debug_mode()  # can also be turn_off_debug_mode
 
@@ -23,16 +22,10 @@ func hide_main_menu():
 func start_game ():
 	register_active_players()
 	setup_split_screen()
-	handle_music_start()
+	MusicManager.start_music()
 
 	for player in list_of_players:
 		player.player_eliminated.connect(_on_player_eliminated)
-
-func handle_music_start ():
-	if music_is_playing:
-		return
-	$Music/MoonbuggyOST1.play()
-	music_is_playing = true
 
 func setup_split_screen():
 	if GameSettings.desired_number_players == 1:

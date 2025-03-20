@@ -1,11 +1,10 @@
-[gd_scene load_steps=39 format=3 uid="uid://cfp77dx8lxb0i"]
+[gd_scene load_steps=38 format=3 uid="uid://cfp77dx8lxb0i"]
 
 [ext_resource type="Script" path="res://RootNode.gd" id="1_06hsa"]
 [ext_resource type="Texture2D" uid="uid://0snyqnypvtk6" path="res://icon.svg" id="2_gc8uk"]
 [ext_resource type="Script" path="res://GravityAreaParentLevel.gd" id="2_lx3i3"]
 [ext_resource type="Script" path="res://GameOverScreen.gd" id="2_p4gfa"]
 [ext_resource type="Material" uid="uid://cme2hqx1ya8pj" path="res://glowy_yellow.tres" id="3_h4blv"]
-[ext_resource type="AudioStream" uid="uid://kuae7lo44gf6" path="res://music/MoonbuggyOST1.ogg" id="3_p6sjg"]
 [ext_resource type="Material" uid="uid://b0v5v2mk6c10l" path="res://glowy_blue.tres" id="4_sak4k"]
 [ext_resource type="ArrayMesh" uid="uid://bmavq1ddqemly" path="res://meshes/bumpy-world-1.obj" id="5_8htqn"]
 [ext_resource type="Material" uid="uid://dnqxiy84bf34s" path="res://glowy_green.tres" id="6_7n6r3"]
@@ -196,11 +195,6 @@ text = "Return to main menu"
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
 mesh = SubResource("PrismMesh_e4u06")
 surface_material_override/0 = SubResource("StandardMaterial3D_7cpvd")
-
-[node name="Music" type="Node3D" parent="."]
-
-[node name="MoonbuggyOST1" type="AudioStreamPlayer" parent="Music"]
-stream = ExtResource("3_p6sjg")
 
 [node name="PlayerScreenManager" type="Node3D" parent="."]
 
