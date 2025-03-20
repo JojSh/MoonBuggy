@@ -402,91 +402,6 @@ gravity_space_override = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -47, 0)
 shape = SubResource("BoxShape3D_y1d70")
 
-[node name="PickUpSpawner" type="Node3D" parent="World/Level"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
-script = ExtResource("9_kj6jm")
-
-[node name="SpawnPoint1" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 1, 2.08165e-12)
-
-[node name="SpawnPoint2" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.0369, 1, 57.4664)
-
-[node name="SpawnPoint3" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.0988, 1, 125.091)
-
-[node name="SpawnPoint4" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.89768, 1, 173.006)
-
-[node name="SpawnPoint5" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.0573, 1, 57.4664)
-
-[node name="SpawnPoint6" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.0369, 1, -30.9941)
-
-[node name="SpawnPoint7" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.0573, 1, -30.9941)
-
-[node name="SpawnPoint8" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.0573, 1, -135.079)
-
-[node name="SpawnPoint9" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.381146, 1, -182.092)
-
-[node name="SpawnPoint10" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -82.4396, 88.1903, -36.6479)
-
-[node name="SpawnPoint11" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 93.7536, 88.1903, 38.106)
-
-[node name="SpawnPoint12" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.3156, 52.4614, 38.106)
-
-[node name="SpawnPoint13" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.183046, 52.4614, 0.130337)
-
-[node name="SpawnPoint22" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, -6.97574e-16, -1.5246e-23, -1.5246e-23, -4.37114e-08, 1, -6.97574e-16, -1, -4.37114e-08, 0.183049, 34.4999, -18.5154)
-
-[node name="SpawnPoint23" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, -1.98958e-22, -1.5246e-23, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.183044, 34.4999, 18.776)
-
-[node name="SpawnPoint24" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, -1.98958e-22, -1.5246e-23, -4.37114e-08, 1, 0, -1, -4.37114e-08, 95.9639, 34.4999, 90.6218)
-
-[node name="SpawnPoint25" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, -1.98958e-22, -1.5246e-23, -4.37114e-08, 1, 0, -1, -4.37114e-08, 95.9639, 34.4999, -15.2731)
-
-[node name="SpawnPoint26" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, -1.98958e-22, -1.5246e-23, -4.37114e-08, 1, 0, -1, -4.37114e-08, -93.5359, 34.4999, 20.9041)
-
-[node name="SpawnPoint27" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, -1.98958e-22, -1.5246e-23, -4.37114e-08, 1, 0, -1, -4.37114e-08, -93.5359, 34.4999, -93.3944)
-
-[node name="SpawnPoint14" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.9495, 52.4614, -37.1611)
-
-[node name="SpawnPoint19" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.3156, 16.0253, 38.106)
-
-[node name="SpawnPoint20" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.183046, 16.0253, 0.130337)
-
-[node name="SpawnPoint21" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.9495, 16.0253, -37.1611)
-
-[node name="SpawnPoint15" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(-4.37114e-08, 1, 3.48787e-16, -1, -4.37114e-08, -3.48787e-16, -3.48787e-16, -3.48787e-16, 1, -0.159084, 35.5263, -37.1611)
-
-[node name="SpawnPoint16" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, -3.48787e-16, -3.48787e-16, 0, 1, -35.9109, 35.5263, -37.1611)
-
-[node name="SpawnPoint17" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, -3.48787e-16, -3.48787e-16, 0, 1, -1.01438, 35.5263, 37.4217)
-
-[node name="SpawnPoint18" type="Node3D" parent="World/Level/PickUpSpawner"]
-transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, -3.48787e-16, -3.48787e-16, 0, 1, 37.3034, 35.5263, 37.4217)
-
 [node name="Block" type="RigidBody3D" parent="World/Level"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 5, -2)
 mass = 100.0
@@ -720,6 +635,91 @@ transform = Transform3D(0.2, 0, 6.03984e-08, 0, 0.2, 0, -6.03984e-08, 0, 0.2, 11
 [node name="PortalExitArea3D2" parent="World" instance=ExtResource("14_86qma")]
 transform = Transform3D(-8.74228e-09, 6.97574e-17, 0.2, 6.97574e-17, 0.2, -6.97574e-17, -0.2, 6.97574e-17, -8.74228e-09, 97.6039, 41.6344, 35.5387)
 collision_mask = 7
+
+[node name="PickUpSpawner" type="Node3D" parent="World"]
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, -2.08165e-12, -50, -2.08165e-12)
+script = ExtResource("9_kj6jm")
+
+[node name="SpawnPoint1" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 1, 2.08165e-12)
+
+[node name="SpawnPoint2" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.0369, 1, 57.4664)
+
+[node name="SpawnPoint3" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.0988, 1, 125.091)
+
+[node name="SpawnPoint4" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.89768, 1, 173.006)
+
+[node name="SpawnPoint5" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.0573, 1, 57.4664)
+
+[node name="SpawnPoint6" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.0369, 1, -30.9941)
+
+[node name="SpawnPoint7" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.0573, 1, -30.9941)
+
+[node name="SpawnPoint8" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.0573, 1, -135.079)
+
+[node name="SpawnPoint9" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.381146, 1, -182.092)
+
+[node name="SpawnPoint10" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -82.4396, 88.1903, -36.6479)
+
+[node name="SpawnPoint11" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 93.7536, 88.1903, 38.106)
+
+[node name="SpawnPoint12" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.3156, 52.4614, 38.106)
+
+[node name="SpawnPoint13" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.183046, 52.4614, 0.130337)
+
+[node name="SpawnPoint22" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, -6.97574e-16, -1.5246e-23, -1.5246e-23, -4.37114e-08, 1, -6.97574e-16, -1, -4.37114e-08, 0.183049, 34.4999, -18.5154)
+
+[node name="SpawnPoint23" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, -1.98958e-22, -1.5246e-23, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.183044, 34.4999, 18.776)
+
+[node name="SpawnPoint24" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, -1.98958e-22, -1.5246e-23, -4.37114e-08, 1, 0, -1, -4.37114e-08, 95.9639, 34.4999, 90.6218)
+
+[node name="SpawnPoint25" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, -1.98958e-22, -1.5246e-23, -4.37114e-08, 1, 0, -1, -4.37114e-08, 95.9639, 34.4999, -15.2731)
+
+[node name="SpawnPoint26" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, -1.98958e-22, -1.5246e-23, -4.37114e-08, 1, 0, -1, -4.37114e-08, -93.5359, 34.4999, 20.9041)
+
+[node name="SpawnPoint27" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, -1.98958e-22, -1.5246e-23, -4.37114e-08, 1, 0, -1, -4.37114e-08, -93.5359, 34.4999, -93.3944)
+
+[node name="SpawnPoint14" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.9495, 52.4614, -37.1611)
+
+[node name="SpawnPoint19" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.3156, 16.0253, 38.106)
+
+[node name="SpawnPoint20" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.183046, 16.0253, 0.130337)
+
+[node name="SpawnPoint21" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.9495, 16.0253, -37.1611)
+
+[node name="SpawnPoint15" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(-4.37114e-08, 1, 3.48787e-16, -1, -4.37114e-08, -3.48787e-16, -3.48787e-16, -3.48787e-16, 1, -0.159084, 35.5263, -37.1611)
+
+[node name="SpawnPoint16" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, -3.48787e-16, -3.48787e-16, 0, 1, -35.9109, 35.5263, -37.1611)
+
+[node name="SpawnPoint17" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, -3.48787e-16, -3.48787e-16, 0, 1, -1.01438, 35.5263, 37.4217)
+
+[node name="SpawnPoint18" type="Node3D" parent="World/PickUpSpawner"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, -3.48787e-16, -3.48787e-16, 0, 1, 37.3034, 35.5263, 37.4217)
 
 [node name="BoostPickUp" parent="." instance=ExtResource("18_hjmac")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.6663, 5.60428, 36.7782)
