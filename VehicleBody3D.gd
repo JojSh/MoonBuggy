@@ -35,7 +35,7 @@ var reorientation_target_basis: Basis
 var reorientation_initial_origin: Vector3
 var reorientation_target_origin: Vector3
 var reorientation_cooldown := 1.0  # Tracks the cooldown time remaining
-const REORIENTATION_COOLDOWN_DURATION := 1.0  # 1 second cooldown
+const REORIENTATION_COOLDOWN_DURATION := 3.0  # 3.0 second cooldown
 
 @export var player_number : int
 @export var current_lives : int
@@ -139,6 +139,14 @@ func update_new_center_of_gravity_point(point):
 func reorient_vehicle(on_delay: bool = false):
 	# Cancel any in-progress gradual reorientation
 	is_reorienting = false
+	
+	# Don't start if we're in the cooldown period
+	if reorientation_cooldown > 0:
+		print("Manual reorientation on cooldown: " + str(reorientation_cooldown) + "s remaining")
+		return
+	
+	# Start the cooldown timer
+	reorientation_cooldown = REORIENTATION_COOLDOWN_DURATION
 	
 	if on_delay:
 		var reorient_timer = get_tree().create_timer(0.2)
@@ -346,6 +354,8 @@ func auto_reorient_vehicle_if_upside_down_too_long (delta):
 	if up.dot(desired_up) < -0.5:  # More than 120 degrees from desired up
 		time_upside_down += delta
 		if time_upside_down > MAX_UPSIDE_DOWN_TIME:
+			# For safety feature, reset cooldown and call regular reorient
+			reorientation_cooldown = 0.0  # Ensure we can reorient
 			reorient_vehicle()
 			time_upside_down = 0.0
 	else:
