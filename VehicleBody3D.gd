@@ -64,8 +64,6 @@ func _ready ():
 	genenerate_collision_shapes_for_desctructible_parts()
 	_update_lives_display()
 	_update_boost_display()
-	#var bla = get_tree().create_timer(0.1)
-	#await bla.timeout
 
 func _physics_process(delta: float):
 	if is_dead: return
@@ -257,10 +255,10 @@ func die ():
 	get_tree().create_timer(RESPAWN_TIME).timeout.connect(_respawn)
 
 func handle_return_to_start_position_input ():
-	if Input.is_action_just_pressed(str("p", player_number, "_reset_to_start_pos")):
+	if (Input.is_action_just_pressed(str("p", player_number, "_reset_to_start_pos")) and GameSettings.debug_mode_on):
 		reorientation_cooldown = 1.0
 		self.position = spawn_point
-		self.rotation = Vector3(0, 0, 0)
+		self.rotation = spawn_rotation
 		linear_velocity = Vector3(0, 0, 0)
 		update_new_center_of_gravity_point(_initial_gravity_point)
 
