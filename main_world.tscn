@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://cfp77dx8lxb0i"]
+[gd_scene load_steps=37 format=3 uid="uid://cfp77dx8lxb0i"]
 
 [ext_resource type="Script" path="res://RootNode.gd" id="1_06hsa"]
 [ext_resource type="Texture2D" uid="uid://0snyqnypvtk6" path="res://icon.svg" id="2_gc8uk"]
@@ -17,7 +17,6 @@
 [ext_resource type="Material" uid="uid://cse68vhm0xbdf" path="res://glowy_purple.tres" id="12_pyp3s"]
 [ext_resource type="PackedScene" uid="uid://d1wcxewl0xytx" path="res://portal_entrance_area_3d.tscn" id="13_tj3hx"]
 [ext_resource type="PackedScene" uid="uid://dieogt36ljkks" path="res://portal_exit_area_3d.tscn" id="14_86qma"]
-[ext_resource type="PackedScene" uid="uid://cr6cwaremoght" path="res://boost_pick_up.tscn" id="18_hjmac"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_mq556"]
 font_size = 320
@@ -202,32 +201,24 @@ surface_material_override/0 = SubResource("StandardMaterial3D_7cpvd")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.120117, -0.252323, -0.0459061)
 
 [node name="PlayerBuggy1" parent="PlayerScreenManager/PlayerContainer" instance=ExtResource("8_jsgp5")]
-transform = Transform3D(0.0567102, 3.28446e-16, 0.998391, 3.48787e-16, 1, -3.48787e-16, -0.998391, 3.68005e-16, 0.0567102, 86.1315, 42.6404, 36.0879)
+transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 0, -49, 165)
 player_number = 1
-current_lives = 2
 player_colour = ExtResource("10_luqu7")
-spawn_point = Vector3(10, -49, -73)
 
 [node name="PlayerBuggy2" parent="PlayerScreenManager/PlayerContainer" instance=ExtResource("8_jsgp5")]
-transform = Transform3D(-1, 3.48787e-16, 8.74228e-08, 3.48787e-16, 1, -3.48787e-16, -8.74228e-08, -3.48787e-16, -1, 2.08165e-12, -49, -20.664)
+transform = Transform3D(-0.689898, -1.18621e-17, -0.723907, 3.48787e-16, 1, -3.48787e-16, 0.723907, -4.93117e-16, -0.689898, -92, 36.6898, -40)
 player_number = 2
-current_lives = 1
 player_colour = ExtResource("10_stv4k")
-spawn_point = Vector3(-4, -49, -74)
 
 [node name="PlayerBuggy3" parent="PlayerScreenManager/PlayerContainer" instance=ExtResource("8_jsgp5")]
-transform = Transform3D(-1, 3.48787e-16, 8.74228e-08, 3.48787e-16, 1, -3.48787e-16, -8.74228e-08, -3.48787e-16, -1, 20.407, -48.7477, -20.6641)
+transform = Transform3D(0.0165276, 3.42975e-16, 0.999863, 3.48787e-16, 1, -3.48787e-16, -0.999863, 3.54504e-16, 0.0165276, 82.8025, 35.4922, 35.0649)
 player_number = 3
-current_lives = 1
 player_colour = SubResource("StandardMaterial3D_wrm68")
-spawn_point = Vector3(2.08165e-12, -49, -74)
 
 [node name="PlayerBuggy4" parent="PlayerScreenManager/PlayerContainer" instance=ExtResource("8_jsgp5")]
-transform = Transform3D(-1, 3.48787e-16, 8.74228e-08, 3.48787e-16, 1, -3.48787e-16, -8.74228e-08, -3.48787e-16, -1, 20.7816, -48.7477, 5.10018)
+transform = Transform3D(-1, 3.48787e-16, 8.74228e-08, 3.48787e-16, 1, -3.48787e-16, -8.74228e-08, -3.48787e-16, -1, 2.08165e-12, -49, -165)
 player_number = 4
-current_lives = 1
 player_colour = SubResource("StandardMaterial3D_k5dcc")
-spawn_point = Vector3(-4, -49, -74)
 
 [node name="SplitScreens" type="Node3D" parent="PlayerScreenManager"]
 
@@ -721,12 +712,31 @@ transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, -3.48787e-16, -3.4
 [node name="SpawnPoint18" type="Node3D" parent="World/PickUpSpawner"]
 transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, -3.48787e-16, -3.48787e-16, 0, 1, 37.3034, 35.5263, 37.4217)
 
-[node name="BoostPickUp" parent="." instance=ExtResource("18_hjmac")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.6663, 5.60428, 36.7782)
-collision_mask = 1
-axis_lock_angular_x = false
-axis_lock_angular_y = false
-axis_lock_angular_z = false
+[node name="PlayerSpawnPositions" type="Node3D" parent="World"]
+
+[node name="Position1" type="Node3D" parent="World/PlayerSpawnPositions"]
+transform = Transform3D(-1, 3.48787e-16, -8.74228e-08, 3.48787e-16, 1, -3.48787e-16, 8.74228e-08, -3.48787e-16, -1, 2.08165e-12, -49, -160)
+
+[node name="Position2" type="Node3D" parent="World/PlayerSpawnPositions"]
+transform = Transform3D(-1, 3.48787e-16, -8.74228e-08, 3.48787e-16, 1, -3.48787e-16, 8.74228e-08, -3.48787e-16, -1, 2.08165e-12, -49, -60)
+
+[node name="Position3" type="Node3D" parent="World/PlayerSpawnPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -49, 60)
+
+[node name="Position4" type="Node3D" parent="World/PlayerSpawnPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -49, 160)
+
+[node name="Position5" type="Node3D" parent="World/PlayerSpawnPositions"]
+transform = Transform3D(0.00230379, 0.999997, 0, -0.999997, 0.00230379, 0, 0, 0, 1, 146.751, -10.374, 37.9402)
+
+[node name="Position6" type="Node3D" parent="World/PlayerSpawnPositions"]
+transform = Transform3D(1, -8.74228e-08, -8.74228e-08, -8.74228e-08, -1, -3.48787e-16, -8.74228e-08, 7.99153e-15, -1, 17.5965, -32.253, 34.4225)
+
+[node name="Position7" type="Node3D" parent="World/PlayerSpawnPositions"]
+transform = Transform3D(-1, -8.74228e-08, 3.48787e-16, 8.74228e-08, -1, -3.48787e-16, 3.48787e-16, -3.48787e-16, 1, -17.7098, -32.253, -37.1688)
+
+[node name="Position8" type="Node3D" parent="World/PlayerSpawnPositions"]
+transform = Transform3D(0.707107, 1.60554e-24, 0.707107, 3.48787e-16, 1, -3.48787e-16, -0.707107, 4.93259e-16, 0.707107, -94.2981, 38.1964, -34.945)
 
 [connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/SinglePlayerLocalButton" to="." method="_on_choose_player_count_button_pressed" binds= [1]]
 [connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/TwoPlayerSplitScreenButton" to="." method="_on_choose_player_count_button_pressed" binds= [2]]

@@ -4,6 +4,8 @@ var list_of_players = []
 
 #@onready var _debug_init = turn_off_debug_mode()  # can also be turn_off_debug_mode
 
+var randomise_start_positions: bool = true
+
 func _ready():
 	if GameSettings.should_skip_main_menu:
 		hide_main_menu()
@@ -21,11 +23,24 @@ func hide_main_menu():
 
 func start_game ():
 	register_active_players()
+	if (randomise_start_positions):
+		assign_random_spawn_points()
 	setup_split_screen()
 	MusicManager.start_music()
 
 	for player in list_of_players:
 		player.player_eliminated.connect(_on_player_eliminated)
+		player.player_lost_a_life.connect(_on_player_lost_a_life)
+
+func assign_random_spawn_points ():
+	var all_player_spawn_points = $World/PlayerSpawnPositions.get_children()
+	all_player_spawn_points.shuffle()
+
+	for player in list_of_players:
+		var selected_spawn_point = all_player_spawn_points.pop_front()
+		player.set_new_spawn_point(selected_spawn_point)
+		player.move_to_spawn_point()
+		all_player_spawn_points.push_back(selected_spawn_point)
 
 func setup_split_screen():
 	if GameSettings.desired_number_players == 1:
@@ -98,6 +113,9 @@ func _on_player_eliminated(player_number):
 	elif alive_players.size() == 0:
 		var draw_text = str("DRAW! Everybody died.")
 		show_game_over_menu(draw_text)
+
+func _on_player_lost_a_life(player_number):
+	assign_random_spawn_points()
 
 func show_game_over_menu (message):
 	$MenuContainer/Control/GameOverScreen/VBoxContainer/PlayerWinNotification.text = message

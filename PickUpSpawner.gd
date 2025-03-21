@@ -61,7 +61,6 @@ func spawn_random_item():
 
 	# If no positions available, exit
 	if available_indices.size() == 0:
-		print("No available spawn positions!")
 		return null
 
 	# Choose a random available position

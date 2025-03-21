@@ -3,7 +3,7 @@ extends VehicleBody3D
 const STEER_SPEED = 2.5
 const STEER_LIMIT = 0.4
 const BRAKE_STRENGTH = 2.0
-const STARTING_BOOST_LEVEL := 6.0 # each boost level = +0.5s extra boost duration
+const STARTING_BOOST_LEVEL := 1.0 # each boost level = +0.5s extra boost duration
 const STARTING_RELOAD_LEVEL := 1
 const MAX_UPSIDE_DOWN_TIME := 3.0
 const RESPAWN_TIME := 3.0
@@ -42,7 +42,8 @@ const REORIENTATION_COOLDOWN_DURATION := 1.0  # 1 second cooldown
 @export var player_colour : StandardMaterial3D
 @export var engine_force_value := 40.0
 @export var jump_initial_impulse := 20.0
-@export var spawn_point : Vector3
+var spawn_point : Vector3
+var spawn_rotation : Vector3
 @export var is_eliminated := false  # Add this near other @export variables
 
 @onready var _start_position := global_transform.origin
@@ -54,13 +55,17 @@ const REORIENTATION_COOLDOWN_DURATION := 1.0  # 1 second cooldown
 @onready var desired_engine_pitch: float = $EngineSound.pitch_scale
 
 signal player_eliminated(player_number)
+signal player_lost_a_life(player_number)
 
 func _ready ():
+	global_position = spawn_point
 	connect("body_entered", Callable(self, "_on_body_entered"))
 	set_player_colour_from_exported_variable()
 	genenerate_collision_shapes_for_desctructible_parts()
 	_update_lives_display()
 	_update_boost_display()
+	#var bla = get_tree().create_timer(0.1)
+	#await bla.timeout
 
 func _physics_process(delta: float):
 	if is_dead: return
@@ -245,6 +250,8 @@ func die ():
 		is_eliminated = true
 		emit_signal("player_eliminated", player_number)
 		return
+	else:
+		emit_signal("player_lost_a_life", player_number)
 
 	# Start respawn timer
 	get_tree().create_timer(RESPAWN_TIME).timeout.connect(_respawn)
@@ -385,7 +392,7 @@ func _respawn():
 	reorientation_cooldown = 1.0
 	# Reset position and rotation
 	global_position = spawn_point
-	rotation = Vector3.ZERO
+	rotation = spawn_rotation
 	linear_velocity = Vector3.ZERO
 	angular_velocity = Vector3.ZERO
 	current_boost_level = STARTING_BOOST_LEVEL
@@ -495,6 +502,14 @@ func apply_invincibility_shader ():
 	shader_material.shader = invincibility_shader
 	$Body/MeshInstance3D.material_override = shader_material
 
+func set_new_spawn_point (point):
+	spawn_point = point.position
+	spawn_rotation = point.rotation
+
+func move_to_spawn_point ():
+	global_position = spawn_point
+	global_rotation = spawn_rotation
+
 func reorient_vehicle_over_time(duration: float = 0.5):
 	# Don't start a new reorientation if one is already in progress
 	if is_reorienting:
@@ -502,10 +517,8 @@ func reorient_vehicle_over_time(duration: float = 0.5):
 		
 	# Don't start if we're in the cooldown period
 	if reorientation_cooldown > 0:
-		print("Reorientation on cooldown: " + str(reorientation_cooldown) + "s remaining")
 		return
 		
-	print('calling reorient over time')
 	is_reorienting = true
 	reorientation_timer = 0.0
 	reorientation_duration = duration
