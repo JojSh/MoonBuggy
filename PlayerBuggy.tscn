@@ -225,20 +225,18 @@ surface_material_override/0 = ExtResource("2_1s618")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_s5yfx")
 
-[node name="EngineSound" type="AudioStreamPlayer3D" parent="."]
+[node name="EngineSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_xtkfv")
 volume_db = -20.0
 autoplay = true
-attenuation_filter_cutoff_hz = 20500.0
 
-[node name="BoostSound" type="AudioStreamPlayer3D" parent="."]
+[node name="BoostSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_pk3u8")
-attenuation_filter_cutoff_hz = 20500.0
 
-[node name="PickupSound" type="AudioStreamPlayer3D" parent="."]
+[node name="PickupSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("9_p1vwo")
 
-[node name="ImpactSound" type="AudioStreamPlayer3D" parent="."]
+[node name="ImpactSound" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamRandomizer_7fnw1")
 volume_db = -9.0
 

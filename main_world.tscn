@@ -21,10 +21,10 @@
 [sub_resource type="LabelSettings" id="LabelSettings_mq556"]
 font_size = 320
 
-[sub_resource type="PrismMesh" id="PrismMesh_e4u06"]
+[sub_resource type="SphereMesh" id="SphereMesh_v6i6q"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7cpvd"]
-albedo_color = Color(1, 0.00498247, 0.00273094, 1)
+albedo_color = Color(0.978747, 0.458872, 0.747274, 1)
 roughness = 0.2
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wrm68"]
@@ -189,10 +189,13 @@ theme_override_font_sizes/font_size = 150
 text = "Return to main menu"
 
 [node name="AudioListener3DBetweenPlayers" type="AudioListener3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -47.9886, 0)
+current = true
 
 [node name="DebugSphere" type="MeshInstance3D" parent="AudioListener3DBetweenPlayers"]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
-mesh = SubResource("PrismMesh_e4u06")
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
+visible = false
+mesh = SubResource("SphereMesh_v6i6q")
 surface_material_override/0 = SubResource("StandardMaterial3D_7cpvd")
 
 [node name="PlayerScreenManager" type="Node3D" parent="."]

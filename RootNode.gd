@@ -13,11 +13,39 @@ func _ready():
 	else:
 		show_main_menu()
 
+# Update the audio listener position every frame in multiplayer mode
+func _process(delta):
+	if list_of_players.size() > 1:
+		update_audio_listener_position()
+
+# Function to update the audio listener position to stay equidistant between all active players
+func update_audio_listener_position():
+	var active_players = list_of_players.filter(func(player):
+		return is_instance_valid(player) and not player.is_dead
+	)
+	
+	if active_players.size() == 0:
+		return
+	
+	# Calculate the center position between all active players
+	var center_position = Vector3.ZERO
+	for player in active_players:
+		center_position += player.global_position
+	
+	center_position /= active_players.size()
+	
+	# Set the audio listener position to the calculated center
+	# Add a slight height offset to ensure better audio pickup
+	$AudioListener3DBetweenPlayers.global_position = center_position + Vector3(0, 2, 0)
+	
+	# Make sure the audio listener is active
+	$AudioListener3DBetweenPlayers.current = true
+
 func show_main_menu():
 	get_tree().paused = true
 	$MenuContainer/Control/MainMenuContainer/VBoxContainer/SinglePlayerLocalButton.grab_focus()
 
-func hide_main_menu():
+func hide_main_menu(): 
 	$MenuContainer.visible = false
 	$MenuContainer/Control/MainMenuContainer.visible = false
 
@@ -31,6 +59,11 @@ func start_game ():
 	for player in list_of_players:
 		player.player_eliminated.connect(_on_player_eliminated)
 		player.player_lost_a_life.connect(_on_player_lost_a_life)
+	
+	# Initialize audio listener position if we're in multiplayer mode
+	if GameSettings.desired_number_players > 1:
+		update_audio_listener_position()
+		$AudioListener3DBetweenPlayers.current = true
 
 func assign_random_spawn_points ():
 	var all_player_spawn_points = $World/PlayerSpawnPositions.get_children()
@@ -78,6 +111,10 @@ func setup_split_screen():
 		$PlayerScreenManager/PlayerContainer.remove_child(player)
 		# Add to new viewport
 		viewport.add_child(player)
+	
+	# If in multiplayer mode, make sure the central audio listener is active
+	if GameSettings.desired_number_players > 1:
+		$AudioListener3DBetweenPlayers.current = true
 
 func register_active_players():
 	# Get all players from PlayerContainer and manage them based on desired player count
@@ -109,13 +146,22 @@ func _on_player_eliminated(player_number):
 	if alive_players.size() == 1:
 		var winner_text = str("Player ", alive_players[0].player_number, " wins!")
 		show_game_over_menu(winner_text)
-
 	elif alive_players.size() == 0:
 		var draw_text = str("DRAW! Everybody died.")
 		show_game_over_menu(draw_text)
+	
+	# Update audio listener position based on remaining players
+	if GameSettings.desired_number_players > 1 and alive_players.size() > 0:
+		update_audio_listener_position()
 
 func _on_player_lost_a_life(player_number):
 	assign_random_spawn_points()
+	
+	# Update audio listener position when player respawns
+	if GameSettings.desired_number_players > 1:
+		# Add a short delay to ensure the player has fully respawned
+		var timer = get_tree().create_timer(0.1)
+		timer.timeout.connect(func(): update_audio_listener_position())
 
 func show_game_over_menu (message):
 	$MenuContainer/Control/GameOverScreen/VBoxContainer/PlayerWinNotification.text = message
