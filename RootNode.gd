@@ -155,13 +155,24 @@ func _on_player_eliminated(player_number):
 		update_audio_listener_position()
 
 func _on_player_lost_a_life(player_number):
-	assign_random_spawn_points()
+	assign_new_spawn_point_to_player(player_number)
 	
 	# Update audio listener position when player respawns
 	if GameSettings.desired_number_players > 1:
 		# Add a short delay to ensure the player has fully respawned
 		var timer = get_tree().create_timer(0.1)
 		timer.timeout.connect(func(): update_audio_listener_position())
+
+func assign_new_spawn_point_to_player(player_number):
+	var all_player_spawn_points = $World/PlayerSpawnPositions.get_children()
+	var new_spawn_point = all_player_spawn_points.pick_random()
+	
+	var current_player = list_of_players.filter(func(p): 
+		return p.player_number == player_number
+	)[0]
+	
+	current_player.set_new_spawn_point(new_spawn_point)
+	current_player.move_to_spawn_point()
 
 func show_game_over_menu (message):
 	$MenuContainer/Control/GameOverScreen/VBoxContainer/PlayerWinNotification.text = message
