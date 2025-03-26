@@ -156,6 +156,7 @@ func _on_player_eliminated(player_number):
 
 func _on_player_lost_a_life(player_number):
 	assign_new_spawn_point_to_player(player_number)
+	# next up: ^ this is causing the camera to go mental and fly away on death.
 	
 	# Update audio listener position when player respawns
 	if GameSettings.desired_number_players > 1:
