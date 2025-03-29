@@ -8,6 +8,7 @@ const STARTING_RELOAD_LEVEL := 1
 const MAX_UPSIDE_DOWN_TIME := 3.0
 const RESPAWN_TIME := 3.0
 const SEPARATION_FORCE := 6.0
+const ORIENTATION_THRESHOLD := 0.85  # Corresponds to ~32 degrees difference - lower value means more reorientations
 
 var previous_speed := linear_velocity.length()
 var _steer_target := 0.0
@@ -520,37 +521,54 @@ func move_to_spawn_point ():
 
 func reorient_vehicle_over_time(duration: float = 0.5):
 	# Don't start a new reorientation if one is already in progress
-	if is_reorienting:
+	if is_reorienting or reorientation_cooldown > 0:
 		return
 
-	# Don't start if we're in the cooldown period
-	if reorientation_cooldown > 0:
+	# Calculate desired up direction and decide if reorientation is needed
+	var orientation_data = calculate_desired_orientation()
+	
+	# If already correctly oriented, no need to reorient
+	if orientation_data.already_oriented:
 		return
+	
+	# Initialize reorientation
+	start_reorientation(duration, orientation_data)
+	
+	# Calculate target transform
+	calculate_target_transform(orientation_data)
 
-	const ORIENTATION_THRESHOLD = 0.95  # Corresponds to ~18 degrees difference
+# Calculates the desired up direction based on gravity and surface type
+# Returns a dictionary with orientation data
+func calculate_desired_orientation():
+	var data = {
+		"desired_up": Vector3.ZERO,
+		"is_flat_surface": false,
+		"already_oriented": false,
+		"gravity_dir": Vector3.ZERO
+	}
 
-	# Calculate the desired up direction (opposite to gravity)
-	var desired_up: Vector3
-
-	# Check if we're on a flat surface (box collider gravity area)
+	# Calculate gravity direction
 	var to_gravity_point = global_transform.origin - _closest_gravity_point
-	var gravity_dir = to_gravity_point.normalized()
-
-	# Check if the gravity vector is almost horizontal (meaning gravity is pointing sideways)
-	# This happens when the car enters a flat surface gravity area from above
-	var is_gravity_almost_horizontal = abs(gravity_dir.y) < 0.1 && (abs(gravity_dir.x) > 0.9 || abs(gravity_dir.z) > 0.9)
+	data.gravity_dir = to_gravity_point.normalized()
 	
-	if is_gravity_almost_horizontal or gravity_dir.dot(Vector3.UP) > 0.9: # >0.9 means within ~25 degrees of vertical
-		desired_up = Vector3.UP
-	else: # it's a spherical surface
-		desired_up = gravity_dir  # Use direction away from gravity point for spherical surfaces
-	
-	# Check if the car is already correctly oriented (dot product close to 1)
-	# This will prevent unnecessary reorientations
-	if global_transform.basis.y.dot(desired_up) > ORIENTATION_THRESHOLD: # Vehicle is already oriented correctly, no need to reorient
-		return
+	# Determine if we're on a flat surface or spherical surface
+	var is_gravity_almost_horizontal = abs(data.gravity_dir.y) < 0.1 && (abs(data.gravity_dir.x) > 0.9 || abs(data.gravity_dir.z) > 0.9)
+	data.is_flat_surface = is_gravity_almost_horizontal || data.gravity_dir.dot(Vector3.UP) > 0.9
 
-	is_reorienting = true
+	# Set desired up direction based on surface type
+	if data.is_flat_surface:
+		data.desired_up = Vector3.UP
+	else:
+		data.desired_up = data.gravity_dir
+
+	# Check if the car is already correctly oriented
+	data.already_oriented = global_transform.basis.y.dot(data.desired_up) > ORIENTATION_THRESHOLD
+
+	return data
+
+# Initializes the reorientation process
+func start_reorientation(duration: float, orientation_data: Dictionary):
+	is_reorienting = true # this tells physics process to run the reorientation code each frame
 	reorientation_timer = 0.0
 	reorientation_duration = duration
 	
@@ -560,44 +578,49 @@ func reorient_vehicle_over_time(duration: float = 0.5):
 	# Store initial state
 	reorientation_initial_basis = global_transform.basis
 	reorientation_initial_origin = global_transform.origin
-	
-	# 2. Calculate the desired forward direction
-	# Use current forward direction as a reference to maintain driving direction
+
+# Calculates the target transform for reorientation
+func calculate_target_transform(orientation_data: Dictionary):
 	var current_forward = -reorientation_initial_basis.z
 	
-	# For flat surfaces, we want to maintain the current forward direction's horizontal component
-	if is_gravity_almost_horizontal || gravity_dir.dot(Vector3.UP) > 0.9:
-		# Project current_forward onto the horizontal plane
-		var horizontal_forward = current_forward
-		horizontal_forward.y = 0  # Remove vertical component
-		if horizontal_forward.length_squared() > 0.001:
-			horizontal_forward = horizontal_forward.normalized()
-		else:
-			# If the forward vector is mostly vertical, use the world forward as fallback
-			horizontal_forward = -Vector3.FORWARD
-		
-		# Construct target basis from horizontal forward and up directions
-		var right = horizontal_forward.cross(desired_up).normalized()
-		var new_forward = desired_up.cross(right).normalized()
-		
-		# 3. Construct the target basis
-		reorientation_target_basis = Basis()
-		reorientation_target_basis.x = right
-		reorientation_target_basis.y = desired_up
-		reorientation_target_basis.z = -new_forward  # Negative because Godot uses -Z as forward
+	if orientation_data.is_flat_surface:
+		calculate_flat_surface_transform(current_forward, orientation_data.desired_up)
 	else:
-		# For spherical surfaces, use the approach from original code
-		var right = current_forward.cross(desired_up).normalized()
-		var new_forward = desired_up.cross(right).normalized()
-		
-		# 3. Construct the target basis
-		reorientation_target_basis = Basis()
-		reorientation_target_basis.x = right
-		reorientation_target_basis.y = desired_up
-		reorientation_target_basis.z = -new_forward  # Negative because Godot uses -Z as forward
+		calculate_spherical_surface_transform(current_forward, orientation_data.desired_up)
 	
 	# Calculate the target position with the lift
-	reorientation_target_origin = reorientation_initial_origin + desired_up * 0.5
+	reorientation_target_origin = reorientation_initial_origin + orientation_data.desired_up * 0.5
+
+# Calculates the target transform for flat surfaces
+func calculate_flat_surface_transform(current_forward: Vector3, desired_up: Vector3):
+	# Project current_forward onto the horizontal plane
+	var horizontal_forward = current_forward
+	horizontal_forward.y = 0  # Remove vertical component
+	
+	if horizontal_forward.length_squared() > 0.001:
+		horizontal_forward = horizontal_forward.normalized()
+	else:
+		# If the forward vector is mostly vertical, use the world forward as fallback
+		horizontal_forward = -Vector3.FORWARD
+	
+	# Construct target basis from horizontal forward and up directions
+	construct_target_basis(horizontal_forward, desired_up)
+
+# Calculates the target transform for spherical surfaces
+func calculate_spherical_surface_transform(current_forward: Vector3, desired_up: Vector3):
+	# For spherical surfaces, use the approach from original code
+	construct_target_basis(current_forward, desired_up)
+
+# Constructs the target basis from forward and up directions
+func construct_target_basis(forward: Vector3, up: Vector3):
+	var right = forward.cross(up).normalized()
+	var new_forward = up.cross(right).normalized()
+	
+	# Construct the target basis
+	reorientation_target_basis = Basis()
+	reorientation_target_basis.x = right
+	reorientation_target_basis.y = up
+	reorientation_target_basis.z = -new_forward  # Negative because Godot uses -Z as forward
 
 func process_reorientation(delta: float):
 	reorientation_timer += delta
