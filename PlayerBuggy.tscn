@@ -152,9 +152,9 @@ skeleton = NodePath("")
 
 [node name="Wheel1" type="VehicleWheel3D" parent="."]
 transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, -0.599998, -0.25, -0.5)
-engine_force = 1.0
-brake = 1.0
-steering = 0.0174533
+engine_force = 0.01
+brake = 0.01
+steering = 0.000174533
 use_as_traction = true
 use_as_steering = true
 wheel_roll_influence = 0.5
@@ -172,8 +172,8 @@ surface_material_override/0 = ExtResource("2_1s618")
 
 [node name="Wheel2" type="VehicleWheel3D" parent="."]
 transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, -0.599998, -0.25, 0.5)
-engine_force = 1.0
-brake = 1.0
+engine_force = 0.01
+brake = 0.01
 use_as_traction = true
 wheel_roll_influence = 0.5
 wheel_radius = 0.25
@@ -190,9 +190,9 @@ surface_material_override/0 = ExtResource("2_1s618")
 
 [node name="Wheel3" type="VehicleWheel3D" parent="."]
 transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0.599998, -0.25, -0.5)
-engine_force = 1.0
-brake = 1.0
-steering = 0.0174533
+engine_force = 0.01
+brake = 0.01
+steering = 0.000174533
 use_as_traction = true
 use_as_steering = true
 wheel_roll_influence = 0.5
@@ -210,8 +210,8 @@ surface_material_override/0 = ExtResource("2_1s618")
 
 [node name="Wheel4" type="VehicleWheel3D" parent="."]
 transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0.599998, -0.25, 0.5)
-engine_force = 1.0
-brake = 1.0
+engine_force = 0.01
+brake = 0.01
 use_as_traction = true
 wheel_roll_influence = 0.5
 wheel_radius = 0.25
