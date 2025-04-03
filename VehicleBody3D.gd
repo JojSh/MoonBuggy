@@ -9,6 +9,7 @@ const MAX_UPSIDE_DOWN_TIME := 3.0
 const RESPAWN_TIME := 3.0
 const SEPARATION_FORCE := 6.0
 const ORIENTATION_THRESHOLD := 0.85  # Corresponds to ~32 degrees difference - lower value means more reorientations
+const BOOST_COOLDOWN := 3.0  # Time in seconds before boost can be used again
 
 var previous_speed := linear_velocity.length()
 var _steer_target := 0.0
@@ -221,6 +222,10 @@ func stop_boost ():
 		is_boost_sound_playing = false
 	boost_timer = 0.0
 	can_boost = false
+	
+	# Create a timer to reset can_boost after BOOST_COOLDOWN seconds
+	var boost_cooldown = get_tree().create_timer(BOOST_COOLDOWN)
+	boost_cooldown.timeout.connect(func(): can_boost = true)
 
 func die ():
 	if is_invincible: return
