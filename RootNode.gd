@@ -3,8 +3,9 @@ extends Node3D
 var list_of_players = []
 
 #@onready var _debug_init = turn_off_debug_mode()  # can also be turn_off_debug_mode
-
+@onready var current_map = $World.get_children()[0]
 var randomise_start_positions: bool = true
+
 
 func _ready():
 	if GameSettings.should_skip_main_menu:
@@ -44,6 +45,7 @@ func update_audio_listener_position():
 func show_main_menu():
 	get_tree().paused = true
 	$MenuContainer/Control/MainMenuContainer/VBoxContainer/SinglePlayerLocalButton.grab_focus()
+	update_map_display_text()
 
 func hide_main_menu(): 
 	$MenuContainer.visible = false
@@ -66,7 +68,7 @@ func start_game ():
 		$AudioListener3DBetweenPlayers.current = true
 
 func assign_random_spawn_points ():
-	var all_player_spawn_points = $World/PlayerSpawnPositions.get_children()
+	var all_player_spawn_points = current_map.get_node("PlayerSpawnPositions").get_children()
 	all_player_spawn_points.shuffle()
 
 	for player in list_of_players:
@@ -130,7 +132,7 @@ func _on_portal_entrance_area_3d_body_entered(body, portal_number: int):
 	if !(body is VehicleBody3D):
 		return
 
-	var exit_node = $World.get_node("PortalExitArea3D" + str(portal_number))
+	var exit_node = current_map.get_node("PortalExitArea3D" + str(portal_number))
 	var exit_location = exit_node.global_position
 	var exit_rotation = exit_node.global_rotation
 	body.position = exit_location
@@ -165,7 +167,7 @@ func _on_player_lost_a_life(player_number):
 		timer.timeout.connect(func(): update_audio_listener_position())
 
 func assign_new_spawn_point_to_player(player_number):
-	var all_player_spawn_points = $World/PlayerSpawnPositions.get_children()
+	var all_player_spawn_points = current_map.get_node("PlayerSpawnPositions").get_children()
 	var new_spawn_point = all_player_spawn_points.pick_random()
 	
 	var current_player = list_of_players.filter(func(p): 
@@ -222,3 +224,15 @@ func _on_debug_toggle_pressed():
 		turn_off_debug_mode()
 	else:
 		turn_on_debug_mode()
+
+func _on_change_map_pressed():
+	$World.cycle_to_next_map()
+	
+	# Reset player positions on the new map
+	if randomise_start_positions:
+		assign_random_spawn_points()
+
+	update_map_display_text()
+
+func update_map_display_text():
+	$MenuContainer/Control/MainMenuContainer/VBoxContainer/ChangeMap.text = "Change map: " + current_map.name + " "
