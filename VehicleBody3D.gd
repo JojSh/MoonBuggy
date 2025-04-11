@@ -138,6 +138,48 @@ func update_new_center_of_gravity_point(point):
 		_initial_gravity_point = point
 	_closest_gravity_point = point
 
+# Helper function to calculate orientation data
+func calculate_orientation_data() -> Dictionary:
+	var to_gravity_point = global_transform.origin - _closest_gravity_point
+	var gravity_dir = to_gravity_point.normalized()
+	
+	# Determine surface type
+	var is_flat_surface = abs(gravity_dir.y) < 0.1 && (abs(gravity_dir.x) > 0.9 || abs(gravity_dir.z) > 0.9)
+	
+	# Calculate desired up direction
+	var desired_up = Vector3.UP if is_flat_surface else gravity_dir
+	
+	return {
+		"desired_up": desired_up,
+		"is_flat_surface": is_flat_surface,
+		"gravity_dir": gravity_dir
+	}
+
+# Helper function to perform reorientation
+func perform_reorientation(orientation_data: Dictionary, gradual: bool = false, duration: float = 0.5):
+	if reorientation_cooldown > 0:
+		return
+		
+	reorientation_cooldown = REORIENTATION_COOLDOWN_DURATION
+	
+	if gradual:
+		start_reorientation(duration, orientation_data)
+		calculate_target_transform(orientation_data)
+	else:
+		# Immediate reorientation
+		var current_forward = -global_transform.basis.z
+		var right = current_forward.cross(orientation_data.desired_up).normalized()
+		var new_forward = orientation_data.desired_up.cross(right).normalized()
+		
+		var new_basis = Basis()
+		new_basis.x = right
+		new_basis.y = orientation_data.desired_up
+		new_basis.z = -new_forward
+		
+		global_transform.basis = new_basis
+		angular_velocity = Vector3.ZERO
+		global_transform.origin += orientation_data.desired_up * 0.5
+
 func reorient_vehicle(on_delay: bool = false):
 	# Cancel any in-progress gradual reorientation
 	is_reorienting = false
@@ -147,46 +189,12 @@ func reorient_vehicle(on_delay: bool = false):
 		print("Manual reorientation on cooldown: " + str(reorientation_cooldown) + "s remaining")
 		return
 	
-	# Start the cooldown timer
-	reorientation_cooldown = REORIENTATION_COOLDOWN_DURATION
-	
 	if on_delay:
 		var reorient_timer = get_tree().create_timer(0.2)
 		await reorient_timer.timeout
-
-	# 1. Calculate the desired up direction (opposite to gravity)
-	var desired_up: Vector3
-
-	# Check if we're on a flat surface (box collider gravity area)
-	var to_gravity_point = global_transform.origin - _closest_gravity_point
-	var roughly_on_horizontal_plane = abs(to_gravity_point.y) < 1.0
-
-	if roughly_on_horizontal_plane:
-		desired_up = Vector3.UP
-	else:
-		desired_up = to_gravity_point.normalized() # Use direction away from gravity point for spherical surfaces
-
-	# 2. Calculate the desired forward direction
-	# Use the current forward direction projected onto the plane perpendicular to desired_up
-	var current_forward = -global_transform.basis.z
-	var right = current_forward.cross(desired_up).normalized()
-	var new_forward = desired_up.cross(right).normalized()
-	
-	# 3. Construct the new basis
-	var new_basis = Basis()
-	new_basis.x = right
-	new_basis.y = desired_up
-	new_basis.z = -new_forward  # Negative because Godot uses -Z as forward
-	
-	# 4. Apply the new orientation
-	global_transform.basis = new_basis
-	
-	# 5. Zero out angular velocity to prevent rolling
-	angular_velocity = Vector3.ZERO
-	#linear_velocity = Vector3.ZERO # prevents the car from sliding but I think I like the slide after re orient
-	
-	# 6. Lift the vehicle slightly to prevent immediate collision
-	global_transform.origin += desired_up * 0.5
+		
+	var orientation_data = calculate_orientation_data()
+	perform_reorientation(orientation_data, false)
 
 func _integrate_forces(state: PhysicsDirectBodyState3D):
 	if _should_reset:
@@ -350,19 +358,20 @@ func handle_fire_input ():
 	if Input.is_action_just_pressed(str("p", player_number, "_fire")):
 		rocket_launcher.fire_rocket()
 
-func auto_reorient_vehicle_if_upside_down_too_long (delta):
+func auto_reorient_vehicle_if_upside_down_too_long(delta):
 	# Skip this check if we're already in a reorientation process
 	if is_reorienting:
 		return
 		
-	var up = global_transform.basis.y
-	var desired_up = (global_transform.origin - _closest_gravity_point).normalized()
-	if up.dot(desired_up) < -0.5:  # More than 120 degrees from desired up
+	var orientation_data = calculate_orientation_data()
+	
+	# Check if we're upside down relative to the desired up direction
+	if global_transform.basis.y.dot(orientation_data.desired_up) < -0.5:  # More than 120 degrees from desired up
 		time_upside_down += delta
 		if time_upside_down > MAX_UPSIDE_DOWN_TIME:
 			# For safety feature, reset cooldown and call regular reorient
 			reorientation_cooldown = 0.0  # Ensure we can reorient
-			reorient_vehicle()
+			perform_reorientation(orientation_data, false)
 			time_upside_down = 0.0
 	else:
 		time_upside_down = 0.0
@@ -525,53 +534,19 @@ func move_to_spawn_point ():
 	global_rotation = spawn_rotation
 
 func reorient_vehicle_over_time(duration: float = 0.5):
-	# Don't start a new reorientation if one is already in progress
-	if is_reorienting or reorientation_cooldown > 0:
-		return
-
-	# Calculate desired up direction and decide if reorientation is needed
-	var orientation_data = calculate_desired_orientation()
-	
-	# If already correctly oriented, no need to reorient
-	if orientation_data.already_oriented:
-		return
-	
-	# Initialize reorientation
-	start_reorientation(duration, orientation_data)
-	
-	# Calculate target transform
-	calculate_target_transform(orientation_data)
+	var orientation_data = calculate_orientation_data()
+	perform_reorientation(orientation_data, true, duration)
 
 # Calculates the desired up direction based on gravity and surface type
 # Returns a dictionary with orientation data
 func calculate_desired_orientation():
-	var data = {
-		"desired_up": Vector3.ZERO,
-		"is_flat_surface": false,
-		"already_oriented": false,
-		"gravity_dir": Vector3.ZERO
-	}
-
-	# Calculate gravity direction
-	var to_gravity_point = global_transform.origin - _closest_gravity_point
-	data.gravity_dir = to_gravity_point.normalized()
+	var data = calculate_orientation_data()
 	
-	# Determine if we're on a flat surface or spherical surface
-	var is_gravity_almost_horizontal = abs(data.gravity_dir.y) < 0.1 && (abs(data.gravity_dir.x) > 0.9 || abs(data.gravity_dir.z) > 0.9)
-	data.is_flat_surface = is_gravity_almost_horizontal || data.gravity_dir.dot(Vector3.UP) > 0.9
-
-	# Set desired up direction based on surface type
-	if data.is_flat_surface:
-		data.desired_up = Vector3.UP
-	else:
-		data.desired_up = data.gravity_dir
-
 	# Check if the car is already correctly oriented
 	data.already_oriented = global_transform.basis.y.dot(data.desired_up) > ORIENTATION_THRESHOLD
-
+	
 	return data
 
-# Initializes the reorientation process
 func start_reorientation(duration: float, orientation_data: Dictionary):
 	is_reorienting = true # this tells physics process to run the reorientation code each frame
 	reorientation_timer = 0.0
