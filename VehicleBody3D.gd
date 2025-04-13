@@ -39,6 +39,10 @@ var reorientation_target_origin: Vector3
 var reorientation_cooldown := 1.0  # Tracks the cooldown time remaining
 const REORIENTATION_COOLDOWN_DURATION := 3.0  # 3.0 second cooldown
 
+# Add this near the other class variables at the top
+enum SurfaceType { OUTER, INNER, FLAT }
+var current_surface_type: SurfaceType = SurfaceType.OUTER
+
 @export var player_number : int
 @export var current_lives : int
 @export var player_colour : StandardMaterial3D
@@ -138,20 +142,25 @@ func update_new_center_of_gravity_point(point):
 		_initial_gravity_point = point
 	_closest_gravity_point = point
 
-# Helper function to calculate orientation data
+# Update the orientation data calculation
 func calculate_orientation_data() -> Dictionary:
 	var to_gravity_point = global_transform.origin - _closest_gravity_point
 	var gravity_dir = to_gravity_point.normalized()
 	
-	# Determine surface type
-	var is_flat_surface = abs(gravity_dir.y) < 0.1 && (abs(gravity_dir.x) > 0.9 || abs(gravity_dir.z) > 0.9)
-	
-	# Calculate desired up direction
-	var desired_up = Vector3.UP if is_flat_surface else gravity_dir
+	# Calculate desired up direction based on surface type
+	var desired_up: Vector3
+	match current_surface_type:
+		SurfaceType.FLAT:
+			desired_up = Vector3.UP
+		SurfaceType.INNER:
+			desired_up = -gravity_dir
+		SurfaceType.OUTER:
+			desired_up = gravity_dir
 	
 	return {
 		"desired_up": desired_up,
-		"is_flat_surface": is_flat_surface,
+		"is_flat_surface": current_surface_type == SurfaceType.FLAT,
+		"is_on_inner_surface": current_surface_type == SurfaceType.INNER,
 		"gravity_dir": gravity_dir
 	}
 
@@ -203,10 +212,21 @@ func _integrate_forces(state: PhysicsDirectBodyState3D):
 
 	local_gravity = state.total_gravity.normalized()
 
+# Update the body entered function to read the surface type
 func _on_body_entered(body):
 	if (body.name.begins_with("Level")):
 		can_boost = true
 		update_new_center_of_gravity_point(body.global_position)
+		
+		# Find the gravity area child and read its surface_type property
+		var gravity_area = body.get_node("GravityArea3D")
+		if gravity_area:
+			current_surface_type = gravity_area.surface_type
+			print("Current surface type: " + SurfaceType.keys()[current_surface_type])
+		else:
+			# Default to outer surface if not found
+			print("No gravity area found, defaulting to outer surface")
+			current_surface_type = SurfaceType.OUTER
 
 func start_boost ():
 	var up_direction = global_transform.basis.y

@@ -1,8 +1,9 @@
-[gd_scene load_steps=24 format=3 uid="uid://bd042cv5b2km5"]
+[gd_scene load_steps=25 format=3 uid="uid://bd042cv5b2km5"]
 
 [ext_resource type="Script" path="res://GravityAreaParentLevel.gd" id="1_tgqft"]
 [ext_resource type="Texture2D" uid="uid://0snyqnypvtk6" path="res://icon.svg" id="2_xovhc"]
 [ext_resource type="Material" uid="uid://coug284mb8bhx" path="res://glowy_red.tres" id="3_ll7tw"]
+[ext_resource type="Script" path="res://maps/GravityArea3D.gd" id="3_pmgxf"]
 [ext_resource type="Material" uid="uid://cme2hqx1ya8pj" path="res://glowy_yellow.tres" id="4_l8o27"]
 [ext_resource type="Material" uid="uid://cse68vhm0xbdf" path="res://glowy_purple.tres" id="5_14luh"]
 [ext_resource type="Material" uid="uid://b0v5v2mk6c10l" path="res://glowy_blue.tres" id="6_wnw4h"]
@@ -57,76 +58,88 @@ data = PackedVector3Array(-0.0001, -0.2451, -4.978, -0.0001, -0.4894, -4.9601, 0
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_tuk6j")
 
-[node name="Level" type="StaticBody3D" parent="."]
+[node name="LevelCubeInner" type="StaticBody3D" parent="."]
 transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, -38.3565, 0)
 collision_mask = 7
 script = ExtResource("1_tgqft")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Level"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelCubeInner"]
 mesh = SubResource("BoxMesh_87f42")
 skeleton = NodePath("../../../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_a1vpj")
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="Level"]
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="LevelCubeInner"]
 shape = SubResource("ConcavePolygonShape3D_bi4br")
 
-[node name="GravityArea3D" type="Area3D" parent="Level"]
+[node name="GravityArea3D" type="Area3D" parent="LevelCubeInner"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -39, 2.08165e-12)
 collision_mask = 7
 priority = 1
 gravity_space_override = 3
+script = ExtResource("3_pmgxf")
+surface_type = 1
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/GravityArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCubeInner/GravityArea3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 shape = SubResource("BoxShape3D_y1d70")
 
-[node name="GravityArea3D6" type="Area3D" parent="Level"]
+[node name="GravityArea3D6" type="Area3D" parent="LevelCubeInner"]
 transform = Transform3D(-1, -8.74228e-08, 3.48787e-16, 8.74228e-08, -1, -3.48787e-16, 3.48787e-16, -3.48787e-16, 1, 2.08165e-12, 39, 2.08165e-12)
 collision_mask = 7
 priority = 1
 gravity_space_override = 3
+script = ExtResource("3_pmgxf")
+surface_type = 1
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/GravityArea3D6"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCubeInner/GravityArea3D6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 shape = SubResource("BoxShape3D_y1d70")
 
-[node name="GravityArea3D2" type="Area3D" parent="Level"]
+[node name="GravityArea3D2" type="Area3D" parent="LevelCubeInner"]
 transform = Transform3D(1, 0, -1.98958e-22, -1.5246e-23, -4.37114e-08, 1, 0, -1, -4.37114e-08, 2.08165e-12, 2.08165e-12, 39)
 collision_mask = 7
 priority = 1
 gravity_space_override = 3
+script = ExtResource("3_pmgxf")
+surface_type = 1
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/GravityArea3D2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCubeInner/GravityArea3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 shape = SubResource("BoxShape3D_y1d70")
 
-[node name="GravityArea3D3" type="Area3D" parent="Level"]
+[node name="GravityArea3D3" type="Area3D" parent="LevelCubeInner"]
 transform = Transform3D(-1, 8.74228e-08, 3.82137e-15, -1.5246e-23, -4.37114e-08, 1, 8.74228e-08, 1, 4.37114e-08, 2.28795e-12, 0, -39)
 collision_mask = 7
 priority = 1
 gravity_space_override = 3
+script = ExtResource("3_pmgxf")
+surface_type = 1
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/GravityArea3D3"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCubeInner/GravityArea3D3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 shape = SubResource("BoxShape3D_y1d70")
 
-[node name="GravityArea3D4" type="Area3D" parent="Level"]
+[node name="GravityArea3D4" type="Area3D" parent="LevelCubeInner"]
 transform = Transform3D(-4.37114e-08, -1, -4.37114e-08, -1.5246e-23, -4.37114e-08, 1, -1, 4.37114e-08, 1.91069e-15, 39, 2.08165e-12, 2.08165e-12)
 collision_mask = 7
 priority = 1
 gravity_space_override = 3
+script = ExtResource("3_pmgxf")
+surface_type = 1
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/GravityArea3D4"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCubeInner/GravityArea3D4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 shape = SubResource("BoxShape3D_y1d70")
 
-[node name="GravityArea3D5" type="Area3D" parent="Level"]
+[node name="GravityArea3D5" type="Area3D" parent="LevelCubeInner"]
 transform = Transform3D(-4.37114e-08, 1, 4.37114e-08, -1.5246e-23, -4.37114e-08, 1, 1, 4.37114e-08, 1.91069e-15, -39, 0, 2.27374e-12)
 collision_mask = 7
 priority = 1
 gravity_space_override = 3
+script = ExtResource("3_pmgxf")
+surface_type = 1
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/GravityArea3D5"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCubeInner/GravityArea3D5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 shape = SubResource("BoxShape3D_y1d70")
 
@@ -149,6 +162,7 @@ gravity_space_override = 3
 gravity_point = true
 gravity_point_center = Vector3(0, 0, 0)
 gravity_direction = Vector3(0, 0, 0)
+script = ExtResource("3_pmgxf")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphere1 - StaticBody3D2/GravityArea3D"]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
@@ -173,6 +187,7 @@ gravity_space_override = 3
 gravity_point = true
 gravity_point_center = Vector3(0, 0, 0)
 gravity_direction = Vector3(0, 0, 0)
+script = ExtResource("3_pmgxf")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphere2 - StaticBody3D/GravityArea3D"]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
@@ -197,6 +212,7 @@ gravity_space_override = 3
 gravity_point = true
 gravity_point_center = Vector3(0, 0, 0)
 gravity_direction = Vector3(0, 0, 0)
+script = ExtResource("3_pmgxf")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphere3 - StaticBody3D2/GravityArea3D"]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
@@ -221,6 +237,7 @@ gravity_space_override = 3
 gravity_point = true
 gravity_point_center = Vector3(0, 0, 0)
 gravity_direction = Vector3(0, 0, 0)
+script = ExtResource("3_pmgxf")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphereBig1 - StaticBody3D2/GravityArea3D"]
 transform = Transform3D(1.16, 0, 0, 0, 1.16, 0, 0, 0, 1.16, 0, 0, 0)
@@ -247,6 +264,7 @@ gravity_space_override = 3
 gravity_point = true
 gravity_point_center = Vector3(0, 0, 0)
 gravity_direction = Vector3(0, 0, 0)
+script = ExtResource("3_pmgxf")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphereBig2(old) - StaticBody3D/GravityArea3D"]
 transform = Transform3D(1.25, 0, 5.96046e-08, 0, 1.25, 0, -5.96046e-08, 0, 1.25, 0, 0, 0)
@@ -271,6 +289,7 @@ gravity_space_override = 3
 gravity_point = true
 gravity_point_center = Vector3(0, 0, 0)
 gravity_direction = Vector3(0, 0, 0)
+script = ExtResource("3_pmgxf")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSphereBig2 - StaticBody3D2/GravityArea3D"]
 transform = Transform3D(1.16, 0, 5.53131e-08, 0, 1.16, 0, -5.53131e-08, 0, 1.16, 0, 0, 0)
@@ -405,12 +424,12 @@ transform = Transform3D(-1, -8.74228e-08, 3.48787e-16, 8.74228e-08, -1, -3.48787
 [node name="Position8" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
 transform = Transform3D(0.707107, 1.60554e-24, 0.707107, 3.48787e-16, 1, -3.48787e-16, -0.707107, 4.93259e-16, 0.707107, -94.2981, 38.1964, -34.945)
 
-[connection signal="body_entered" from="Level/GravityArea3D" to="Level" method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="Level/GravityArea3D6" to="Level" method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="Level/GravityArea3D2" to="Level" method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="Level/GravityArea3D3" to="Level" method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="Level/GravityArea3D4" to="Level" method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="Level/GravityArea3D5" to="Level" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="LevelCubeInner/GravityArea3D" to="LevelCubeInner" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="LevelCubeInner/GravityArea3D6" to="LevelCubeInner" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="LevelCubeInner/GravityArea3D2" to="LevelCubeInner" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="LevelCubeInner/GravityArea3D3" to="LevelCubeInner" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="LevelCubeInner/GravityArea3D4" to="LevelCubeInner" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="LevelCubeInner/GravityArea3D5" to="LevelCubeInner" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="LevelSphere1 - StaticBody3D2/GravityArea3D" to="LevelSphere1 - StaticBody3D2" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="LevelSphere2 - StaticBody3D/GravityArea3D" to="LevelSphere2 - StaticBody3D" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="LevelSphere3 - StaticBody3D2/GravityArea3D" to="LevelSphere3 - StaticBody3D2" method="_on_area_3d_body_entered"]
