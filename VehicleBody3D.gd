@@ -41,7 +41,8 @@ const REORIENTATION_COOLDOWN_DURATION := 3.0  # 3.0 second cooldown
 
 # Add this near the other class variables at the top
 enum SurfaceType { OUTER, INNER, FLAT }
-var current_surface_type: SurfaceType = SurfaceType.OUTER
+var current_surface_type: SurfaceType = SurfaceType.OUTER  # Default to OUTER instead of NONE
+var is_on_corner_ramp := false  # Add this to track corner ramp contact
 
 @export var player_number : int
 @export var current_lives : int
@@ -65,7 +66,7 @@ signal player_lost_a_life(player_number)
 
 func _ready ():
 	global_position = spawn_point
-	connect("body_entered", Callable(self, "_on_body_entered"))
+
 	set_player_colour_from_exported_variable()
 	genenerate_collision_shapes_for_desctructible_parts()
 	_update_lives_display()
@@ -115,7 +116,7 @@ func _physics_process(delta: float):
 	handle_engine_sound()
 	handle_sudden_impact_feedback()
 
-	auto_reorient_vehicle_if_upside_down_too_long(delta)
+	# auto_reorient_vehicle_if_upside_down_too_long(delta) # DON't DELETE: need to put this back on at some point
 
 func set_player_colour_from_exported_variable ():
 	if player_colour != null and $Body.get_node_or_null("MeshInstance3D") is MeshInstance3D:
@@ -222,11 +223,15 @@ func _on_body_entered(body):
 		var gravity_area = body.get_node("GravityArea3D")
 		if gravity_area:
 			current_surface_type = gravity_area.surface_type
-			print("Current surface type: " + SurfaceType.keys()[current_surface_type])
 		else:
 			# Default to outer surface if not found
-			print("No gravity area found, defaulting to outer surface")
 			current_surface_type = SurfaceType.OUTER
+
+func set_on_corner_ramp_true():
+	is_on_corner_ramp = true
+
+func set_on_corner_ramp_false():
+	is_on_corner_ramp = false
 
 func start_boost ():
 	var up_direction = global_transform.basis.y
@@ -554,18 +559,11 @@ func move_to_spawn_point ():
 	global_rotation = spawn_rotation
 
 func reorient_vehicle_over_time(duration: float = 0.5):
+	if is_on_corner_ramp:
+		print("auto reorient over time BLOCKED")
+		return
 	var orientation_data = calculate_orientation_data()
 	perform_reorientation(orientation_data, true, duration)
-
-# Calculates the desired up direction based on gravity and surface type
-# Returns a dictionary with orientation data
-func calculate_desired_orientation():
-	var data = calculate_orientation_data()
-	
-	# Check if the car is already correctly oriented
-	data.already_oriented = global_transform.basis.y.dot(data.desired_up) > ORIENTATION_THRESHOLD
-	
-	return data
 
 func start_reorientation(duration: float, orientation_data: Dictionary):
 	is_reorienting = true # this tells physics process to run the reorientation code each frame
@@ -664,3 +662,6 @@ func draw_debug_reorientation():
 		global_transform.origin + reorientation_target_basis.y * 3.0, 
 		Color.YELLOW
 	)
+
+func set_surface_type(new_surface_type: SurfaceType):
+	current_surface_type = new_surface_type
