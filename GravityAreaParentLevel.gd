@@ -2,7 +2,9 @@ extends StaticBody3D
 
 func _on_area_3d_body_entered(body):
 	if body is VehicleBody3D:
-		# Temporarily increase priority
+		# Set the vehicle's surface type to match this gravity area
+		body.set_surface_type($GravityArea3D.surface_type)
+
 		$GravityArea3D.priority = 2
 
 		# Create timer to reset priority
