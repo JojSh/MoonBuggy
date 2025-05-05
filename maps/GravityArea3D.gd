@@ -6,4 +6,3 @@ enum SurfaceType { OUTER, INNER, FLAT }
 func _ready():
 	# Set the meta property so the vehicle can read it
 	set_meta("surface_type", surface_type)
-

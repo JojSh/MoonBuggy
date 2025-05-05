@@ -1,11 +1,22 @@
+@tool
 extends StaticBody3D
+
+@export var colour: Color
+@export var gravity_direction: Vector3 = Vector3.DOWN
+
+func _ready():
+	var material = $MeshInstance3D.get_surface_override_material(0).duplicate()
+	material.albedo_color = colour
+	$MeshInstance3D.set_surface_override_material(0, material)
+	$GravityArea3D.gravity_direction = gravity_direction
 
 func _on_area_3d_body_entered(body):
 	if body is VehicleBody3D:
 		# Set the vehicle's surface type to match this gravity area
 		body.set_surface_type($GravityArea3D.surface_type)
-		if $GravityArea3D.gravity_point == false: # it's not an OUTER (spherical world) surface
-			body.update_side_surface_gravity_direction(-$GravityArea3D.gravity_direction)
+
+		print('CURRENT SURFACE NAME:', name) #not being set to LevelCube2 !?
+		body.update_side_surface_gravity_direction(-$GravityArea3D.gravity_direction)
 
 		$GravityArea3D.priority = 2
 

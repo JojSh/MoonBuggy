@@ -21,4 +21,5 @@ func _on_area_3d_body_entered(body):
 
 
 func _on_area_3d_body_exited(body):
-	body.set_on_corner_ramp_false()
+	if body is VehicleBody3D:
+		body.set_on_corner_ramp_false()

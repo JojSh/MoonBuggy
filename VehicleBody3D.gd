@@ -37,6 +37,7 @@ var reorientation_target_basis: Basis
 var reorientation_initial_origin: Vector3
 var reorientation_target_origin: Vector3
 var reorientation_cooldown := 1.0  # Tracks the cooldown time remaining
+var desired_up: Vector3
 const REORIENTATION_COOLDOWN_DURATION := 3.0  # 3.0 second cooldown
 
 # Add this near the other class variables at the top
@@ -149,12 +150,13 @@ func calculate_orientation_data() -> Dictionary:
 	var gravity_dir = to_gravity_point.normalized()
 	
 	# Calculate desired up direction based on surface type
-	var desired_up: Vector3
+
 	match current_surface_type:
 		SurfaceType.FLAT:
 			desired_up = Vector3.UP
 		SurfaceType.INNER:
-			desired_up = -gravity_dir
+			#desired_up = -gravity_dir
+			pass
 		SurfaceType.OUTER:
 			desired_up = gravity_dir
 	
@@ -665,3 +667,6 @@ func draw_debug_reorientation():
 
 func set_surface_type(new_surface_type: SurfaceType):
 	current_surface_type = new_surface_type
+
+func update_side_surface_gravity_direction(direction):
+	desired_up = direction

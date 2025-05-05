@@ -1,0 +1,51 @@
+[gd_scene load_steps=8 format=3 uid="uid://cqqh4molf0nfl"]
+
+[ext_resource type="Script" path="res://FlatLevelGravityAreaParent.gd" id="1_m4aho"]
+[ext_resource type="Texture2D" uid="uid://cyirissu4e8hw" path="res://icon-mono-2.svg" id="2_nonm8"]
+[ext_resource type="Script" path="res://maps/GravityArea3D.gd" id="3_17vvy"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_tdmfc"]
+size = Vector3(100, 2, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7k7rn"]
+cull_mode = 2
+albedo_texture = ExtResource("2_nonm8")
+backlight_enabled = true
+backlight = Color(1, 1, 1, 1)
+uv1_scale = Vector3(100, 100, 100)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ba26r"]
+points = PackedVector3Array(-50, -1, -50, -50, 1, -50, 50, -1, -50, -50, -1, 50, -50, 1, 50, 50, 1, -50, 50, -1, 50, 50, 1, 50)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nkv2j"]
+size = Vector3(100, 10, 100)
+
+[node name="LevelFlatSurface" type="StaticBody3D"]
+transform = Transform3D(-4.37114e-08, -1, 3.82137e-15, 4.37114e-08, 1.91069e-15, 1, -1, 4.37114e-08, 4.37114e-08, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+collision_mask = 7
+script = ExtResource("1_m4aho")
+colour = Color(1, 1, 1, 1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(-1, 8.74228e-08, 8.74228e-08, -8.74228e-08, -1, 7.64274e-15, 8.74228e-08, 5.19979e-22, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+mesh = SubResource("BoxMesh_tdmfc")
+skeleton = NodePath("../../../../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_7k7rn")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+shape = SubResource("ConvexPolygonShape3D_ba26r")
+
+[node name="GravityArea3D" type="Area3D" parent="."]
+transform = Transform3D(1.26811e-14, 1.06581e-14, 1, -2.8213e-07, 1, -1.06581e-14, -1, -2.8213e-07, 1.26811e-14, -4.37135e-08, 1, 7.46238e-06)
+collision_mask = 7
+priority = 1
+gravity_space_override = 3
+script = ExtResource("3_17vvy")
+surface_type = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GravityArea3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0, 2.08165e-12)
+shape = SubResource("BoxShape3D_nkv2j")
+
+[connection signal="body_entered" from="GravityArea3D" to="." method="_on_area_3d_body_entered"]

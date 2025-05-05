@@ -1,16 +1,12 @@
-[gd_scene load_steps=23 format=3 uid="uid://bd042cv5b2km5"]
+[gd_scene load_steps=16 format=3 uid="uid://bd042cv5b2km5"]
 
 [ext_resource type="Script" path="res://GravityAreaParentLevel.gd" id="1_tgqft"]
 [ext_resource type="Texture2D" uid="uid://0snyqnypvtk6" path="res://icon.svg" id="2_xovhc"]
 [ext_resource type="Script" path="res://maps/GravityArea3D.gd" id="3_pmgxf"]
-[ext_resource type="Material" uid="uid://cme2hqx1ya8pj" path="res://glowy_yellow.tres" id="4_l8o27"]
-[ext_resource type="Material" uid="uid://coug284mb8bhx" path="res://glowy_red.tres" id="8_n2nkj"]
-[ext_resource type="Material" uid="uid://cse68vhm0xbdf" path="res://glowy_purple.tres" id="9_bj60w"]
+[ext_resource type="PackedScene" uid="uid://cqqh4molf0nfl" path="res://level_flat_surface.tscn" id="7_ugiqs"]
 [ext_resource type="PackedScene" uid="uid://d1wcxewl0xytx" path="res://portal_entrance_area_3d.tscn" id="9_wv04m"]
-[ext_resource type="Material" uid="uid://b0v5v2mk6c10l" path="res://glowy_blue.tres" id="10_d3ofn"]
 [ext_resource type="PackedScene" uid="uid://dieogt36ljkks" path="res://portal_exit_area_3d.tscn" id="10_pckbl"]
 [ext_resource type="Script" path="res://PickUpSpawner.gd" id="11_0v7n6"]
-[ext_resource type="Material" uid="uid://dnqxiy84bf34s" path="res://glowy_green.tres" id="11_ck6gw"]
 [ext_resource type="PackedScene" uid="uid://cs58csttl120j" path="res://curve_corner_ramp.tscn" id="12_w0b3n"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_umtnq"]
@@ -22,28 +18,19 @@ sky_material = SubResource("ProceduralSkyMaterial_umtnq")
 background_mode = 2
 sky = SubResource("Sky_kibm0")
 
-[sub_resource type="BoxMesh" id="BoxMesh_yvyjf"]
-size = Vector3(100, 100, 100)
+[sub_resource type="BoxMesh" id="BoxMesh_tdmfc"]
+size = Vector3(100, 2, 100)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p5yjl"]
-cull_mode = 1
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jy4ql"]
+cull_mode = 2
 albedo_texture = ExtResource("2_xovhc")
 uv1_scale = Vector3(100, 100, 100)
 
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_jx4ct"]
-data = PackedVector3Array(-50, 50, 50, 50, 50, 50, -50, -50, 50, 50, 50, 50, 50, -50, 50, -50, -50, 50, 50, 50, -50, -50, 50, -50, 50, -50, -50, -50, 50, -50, -50, -50, -50, 50, -50, -50, 50, 50, 50, 50, 50, -50, 50, -50, 50, 50, 50, -50, 50, -50, -50, 50, -50, 50, -50, 50, -50, -50, 50, 50, -50, -50, -50, -50, 50, 50, -50, -50, 50, -50, -50, -50, 50, 50, 50, -50, 50, 50, 50, 50, -50, -50, 50, 50, -50, 50, -50, 50, 50, -50, -50, -50, 50, 50, -50, 50, -50, -50, -50, 50, -50, 50, 50, -50, -50, -50, -50, -50)
-backface_collision = true
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ba26r"]
+points = PackedVector3Array(-50, -1, -50, -50, 1, -50, 50, -1, -50, -50, -1, 50, -50, 1, 50, 50, 1, -50, 50, -1, 50, 50, 1, 50)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_nkv2j"]
 size = Vector3(100, 10, 100)
-
-[sub_resource type="BoxMesh" id="BoxMesh_q8cur"]
-
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_c3xj7"]
-points = PackedVector3Array(0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5)
-
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_21acy"]
-points = PackedVector3Array(0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5)
 
 [node name="Map2" type="Node3D"]
 
@@ -153,7 +140,7 @@ transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, -3.48787e-16, -3.4
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 
 [node name="Position1" type="Node3D" parent="PlayerSpawnPositions"]
-transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 2.08165e-12, -43, 2.08165e-12)
+transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 2.08165e-12, 46.3993, 2.08165e-12)
 
 [node name="UnusedPlayerSpawnPositionsHolder" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -218.433, 0)
@@ -179,33 +166,63 @@ transform = Transform3D(-1, -8.74228e-08, 3.48787e-16, 8.74228e-08, -1, -3.48787
 [node name="Position8" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
 transform = Transform3D(0.707107, 1.60554e-24, 0.707107, 3.48787e-16, 1, -3.48787e-16, -0.707107, 4.93259e-16, 0.707107, -94.2981, 38.1964, -34.945)
 
-[node name="LevelCube" type="StaticBody3D" parent="."]
-transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+[node name="Node3D" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 2.08165e-12)
+
+[node name="LevelCube-Bottom" type="StaticBody3D" parent="Node3D"]
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 2.08165e-12, -51, 2.08165e-12)
 collision_mask = 7
 script = ExtResource("1_tgqft")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelCube"]
-mesh = SubResource("BoxMesh_yvyjf")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/LevelCube-Bottom"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 2.08165e-12, 0, 2.08165e-12)
+mesh = SubResource("BoxMesh_tdmfc")
 skeleton = NodePath("../../../../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_p5yjl")
+surface_material_override/0 = SubResource("StandardMaterial3D_jy4ql")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCube"]
-shape = SubResource("ConcavePolygonShape3D_jx4ct")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Node3D/LevelCube-Bottom"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+shape = SubResource("ConvexPolygonShape3D_ba26r")
 
-[node name="GravityArea3D" type="Area3D" parent="LevelCube"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -50, 2.08165e-12)
+[node name="GravityArea3D" type="Area3D" parent="Node3D/LevelCube-Bottom"]
+transform = Transform3D(1, -3.48787e-16, 0, 3.48787e-16, 1, -3.48787e-16, 0, 3.48787e-16, 1, 2.08165e-12, 2, 2.08165e-12)
 collision_mask = 7
 priority = 1
 gravity_space_override = 3
 script = ExtResource("3_pmgxf")
 surface_type = 1
 
-[node name="CollisionShape3D-Bottom" type="CollisionShape3D" parent="LevelCube/GravityArea3D"]
+[node name="CollisionShape3D-Bottom" type="CollisionShape3D" parent="Node3D/LevelCube-Bottom/GravityArea3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0, 2.08165e-12)
 shape = SubResource("BoxShape3D_nkv2j")
 
-[node name="GravityArea3D2" type="Area3D" parent="LevelCube"]
-transform = Transform3D(1, -8.74228e-08, -8.74228e-08, -8.74228e-08, -1, -3.48787e-16, -8.74228e-08, 7.99153e-15, -1, 2.08165e-12, 50, 2.08165e-12)
+[node name="LevelFlatSurfaceEast" parent="Node3D" instance=ExtResource("7_ugiqs")]
+transform = Transform3D(-4.37114e-08, -1, 3.82137e-15, 4.37114e-08, 1.91069e-15, 1, -1, 4.37114e-08, 4.37114e-08, 51, 2.08165e-12, 2.08165e-12)
+colour = Color(0.948982, 0, 0.289697, 1)
+gravity_direction = Vector3(1, 2.08165e-12, 2.08165e-12)
+
+[node name="LevelFlatSurfaceWest" parent="Node3D" instance=ExtResource("7_ugiqs")]
+transform = Transform3D(1.31134e-07, 1, -7.64274e-15, 4.37114e-08, 1.91069e-15, 1, 1, -1.31134e-07, -4.37114e-08, -51, 2.08165e-12, 2.08165e-12)
+colour = Color(0.302406, 0.803358, 0.386574, 1)
+gravity_direction = Vector3(-1, 2.08165e-12, 2.08165e-12)
+
+[node name="LevelFlatSurfaceTop" parent="Node3D" instance=ExtResource("7_ugiqs")]
+transform = Transform3D(1, -8.74228e-08, 8.74228e-08, -8.74228e-08, -1, -3.48787e-16, 8.74228e-08, -7.29395e-15, -1, 2.08165e-12, 51, 2.08165e-12)
+colour = Color(1, 0.823529, 0.341176, 1)
+gravity_direction = Vector3(2.08165e-12, 1, 2.08165e-12)
+
+[node name="LevelFlatSurfaceSouth" parent="Node3D" instance=ExtResource("7_ugiqs")]
+transform = Transform3D(1, -8.74228e-08, 8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -8.74228e-08, -1, 4.37114e-08, 2.08165e-12, 2.08165e-12, 51)
+colour = Color(0.975481, 0.301355, 0.909702, 1)
+gravity_direction = Vector3(2.08165e-12, 2.08165e-12, 1)
+
+[node name="LevelFlatSurfaceSouth2" parent="Node3D" instance=ExtResource("7_ugiqs")]
+transform = Transform3D(-1, 1.74846e-07, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, 1.74846e-07, 1, -4.37114e-08, 2.08165e-12, 2.08165e-12, -51)
+colour = Color(1, 0.444197, 0.196104, 1)
+gravity_direction = Vector3(2.08165e-12, 2.08165e-12, -1)
+
+[node name="GravityArea3D2" type="Area3D" parent="Node3D"]
+transform = Transform3D(-1, 8.74228e-08, 2.38419e-07, -8.74228e-08, -1, -3.48787e-16, 2.38419e-07, -2.1192e-14, 1, 0, 50, 2.1684e-19)
 collision_mask = 7
 priority = 1
 gravity_space_override = 3
@@ -214,12 +231,12 @@ gravity_direction = Vector3(2.08165e-12, 1, 2.08165e-12)
 script = ExtResource("3_pmgxf")
 surface_type = 1
 
-[node name="CollisionShape3D-Top" type="CollisionShape3D" parent="LevelCube/GravityArea3D2"]
+[node name="CollisionShape3D-Top" type="CollisionShape3D" parent="Node3D/GravityArea3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0, 2.08165e-12)
 shape = SubResource("BoxShape3D_nkv2j")
 
-[node name="GravityArea3D3" type="Area3D" parent="LevelCube"]
-transform = Transform3D(1, -6.97574e-16, -1.5246e-23, -1.5246e-23, -4.37114e-08, 1, -6.97574e-16, -1, -4.37114e-08, 2.08165e-12, 2.08165e-12, 50)
+[node name="GravityArea3D3" type="Area3D" parent="Node3D"]
+transform = Transform3D(-1, 1.50996e-07, 6.60025e-15, -1.5246e-23, -4.37114e-08, 1, 1.50996e-07, 1, 4.37114e-08, 0, 4.1633e-12, -50)
 collision_mask = 7
 priority = 1
 gravity_space_override = 3
@@ -228,12 +245,12 @@ gravity_direction = Vector3(2.08165e-12, 2.08165e-12, -1)
 script = ExtResource("3_pmgxf")
 surface_type = 1
 
-[node name="CollisionShape3D-South" type="CollisionShape3D" parent="LevelCube/GravityArea3D3"]
+[node name="CollisionShape3D-South" type="CollisionShape3D" parent="Node3D/GravityArea3D3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0, 2.08165e-12)
 shape = SubResource("BoxShape3D_nkv2j")
 
-[node name="GravityArea3D4" type="Area3D" parent="LevelCube"]
-transform = Transform3D(1, 0, -1.5246e-23, -1.5246e-23, -4.37114e-08, -1, 0, 1, -4.37114e-08, 2.08165e-12, 2.08165e-12, -50)
+[node name="GravityArea3D4" type="Area3D" parent="Node3D"]
+transform = Transform3D(-1, -1.50996e-07, 6.60025e-15, -1.5246e-23, -4.37114e-08, -1, 1.50996e-07, -1, 4.37114e-08, 0, 4.1633e-12, 50)
 collision_mask = 7
 priority = 1
 gravity_space_override = 3
@@ -242,26 +259,12 @@ gravity_direction = Vector3(2.08165e-12, 2.08165e-12, 1)
 script = ExtResource("3_pmgxf")
 surface_type = 1
 
-[node name="CollisionShape3D-South" type="CollisionShape3D" parent="LevelCube/GravityArea3D4"]
+[node name="CollisionShape3D-South" type="CollisionShape3D" parent="Node3D/GravityArea3D4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0, 2.08165e-12)
 shape = SubResource("BoxShape3D_nkv2j")
 
-[node name="GravityArea3D5" type="Area3D" parent="LevelCube"]
-transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, -1.5246e-23, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, -50, 2.08165e-12, 2.08165e-12)
-collision_mask = 7
-priority = 1
-gravity_space_override = 3
-gravity_point_center = Vector3(1, 2.08165e-12, 2.08165e-12)
-gravity_direction = Vector3(1, 2.08165e-12, 2.08165e-12)
-script = ExtResource("3_pmgxf")
-surface_type = 1
-
-[node name="CollisionShape3D-East" type="CollisionShape3D" parent="LevelCube/GravityArea3D5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0, 2.08165e-12)
-shape = SubResource("BoxShape3D_nkv2j")
-
-[node name="GravityArea3D6" type="Area3D" parent="LevelCube"]
-transform = Transform3D(-4.37114e-08, -1, 4.37114e-08, -1.5246e-23, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 50, 2.08165e-12, 2.08165e-12)
+[node name="GravityArea3D6" type="Area3D" parent="Node3D"]
+transform = Transform3D(-1.07285e-07, 1, -4.37114e-08, -1.5246e-23, -4.37114e-08, -1, -1, -1.07285e-07, 4.68956e-15, -50, 4.1633e-12, 7.5498e-06)
 collision_mask = 7
 priority = 1
 gravity_space_override = 3
@@ -270,130 +273,48 @@ gravity_direction = Vector3(-1, 2.08165e-12, 2.08165e-12)
 script = ExtResource("3_pmgxf")
 surface_type = 1
 
-[node name="CollisionShape3D-West" type="CollisionShape3D" parent="LevelCube/GravityArea3D6"]
+[node name="CollisionShape3D-West" type="CollisionShape3D" parent="Node3D/GravityArea3D6"]
 transform = Transform3D(-1, -8.74228e-08, 3.48787e-16, 8.74228e-08, -1, -1.58923e-21, 3.48787e-16, 2.40119e-21, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 shape = SubResource("BoxShape3D_nkv2j")
 
-[node name="Block" type="RigidBody3D" parent="LevelCube"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.7156, -49, 49)
-mass = 25.0
+[node name="Ramp1" parent="Node3D" instance=ExtResource("12_w0b3n")]
+transform = Transform3D(3, 0, 1.42109e-14, 0, 3, 0, 0, 0, 3, 0, -50, -47.5)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelCube/Block"]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 2.08165e-12, 2.08165e-12, 2.08165e-12)
-material_override = ExtResource("8_n2nkj")
-mesh = SubResource("BoxMesh_q8cur")
-skeleton = NodePath("")
+[node name="Ramp2" parent="Node3D" instance=ExtResource("12_w0b3n")]
+transform = Transform3D(-3, 1.04636e-15, -2.62268e-07, 1.04636e-15, 3, -1.04636e-15, 2.62268e-07, -1.04636e-15, -3, 0, -50, 47.5)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCube/Block"]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_c3xj7")
+[node name="Ramp3" parent="Node3D" instance=ExtResource("12_w0b3n")]
+transform = Transform3D(-3, 2.62268e-07, -1.14641e-14, -4.57379e-23, -1.31134e-07, -3, -2.62268e-07, -3, 1.31134e-07, 0, 47.5, 50)
 
-[node name="Block6" type="RigidBody3D" parent="LevelCube"]
-transform = Transform3D(3, 0, -1.42109e-14, 0, 3, 0, 0, 0, 3, 46.443, -3.1091, 1.80173)
-mass = 25.0
+[node name="Ramp4" parent="Node3D" instance=ExtResource("12_w0b3n")]
+transform = Transform3D(-3, 2.39746e-14, 2.62268e-07, -1.04636e-15, -3, 2.62268e-07, 2.62268e-07, 2.62268e-07, 3, 0, 50, -47.5)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelCube/Block6"]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 2.08165e-12, 2.08165e-12, 2.08165e-12)
-material_override = ExtResource("8_n2nkj")
-mesh = SubResource("BoxMesh_q8cur")
-skeleton = NodePath("")
+[node name="Ramp9" parent="Node3D" instance=ExtResource("12_w0b3n")]
+transform = Transform3D(-1.31134e-07, -1.42109e-14, 3, -3, -1.31134e-07, -1.31134e-07, 1.31134e-07, -3, 0, -48.125, -0.624996, 50)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCube/Block6"]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_c3xj7")
+[node name="Ramp10" parent="Node3D" instance=ExtResource("12_w0b3n")]
+transform = Transform3D(3.93402e-07, -1.42109e-14, -3, 3, -1.31134e-07, 3.93402e-07, -1.31134e-07, -3, 0, 47.5, -0.625, 50)
 
-[node name="Block2" type="RigidBody3D" parent="LevelCube"]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -11.1849, -9.84767, -46.904)
-mass = 25.0
+[node name="Ramp11" parent="Node3D" instance=ExtResource("12_w0b3n")]
+transform = Transform3D(-1.31134e-07, -3, 1.31134e-07, 3, -1.31134e-07, 1.31134e-07, -1.31134e-07, 1.31134e-07, 3, 50, -0.625, -47.5)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelCube/Block2"]
-material_override = ExtResource("4_l8o27")
-mesh = SubResource("BoxMesh_q8cur")
-skeleton = NodePath("")
+[node name="Ramp12" parent="Node3D" instance=ExtResource("12_w0b3n")]
+transform = Transform3D(3.93402e-07, 2.62268e-07, 3, 3, 1.31134e-07, -3.93402e-07, -1.31134e-07, 3, -2.62268e-07, -48.125, -0.625, -50)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCube/Block2"]
-shape = SubResource("ConvexPolygonShape3D_21acy")
+[node name="Ramp5" parent="Node3D" instance=ExtResource("12_w0b3n")]
+transform = Transform3D(-1.31134e-07, 0, 3, 0, 3, 0, -3, 0, -1.31134e-07, -48.125, -50, 0.625002)
 
-[node name="Block3" type="RigidBody3D" parent="LevelCube"]
-transform = Transform3D(3, 0, -1.42109e-14, 0, 3, 0, 0, 0, 3, -3.20907, -40.7742, -2.58384)
-mass = 25.0
+[node name="Ramp6" parent="Node3D" instance=ExtResource("12_w0b3n")]
+transform = Transform3D(3.93402e-07, -1.04636e-15, -3, 1.04636e-15, 3, -1.04636e-15, 3, -1.04636e-15, 3.93402e-07, 47.5, -50, 0.624993)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelCube/Block3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
-material_override = ExtResource("9_bj60w")
-mesh = SubResource("BoxMesh_q8cur")
-skeleton = NodePath("")
+[node name="Ramp7" parent="Node3D" instance=ExtResource("12_w0b3n")]
+transform = Transform3D(-1.31134e-07, -3, 1.31134e-07, -1.95156e-21, -1.31134e-07, -3, 3, -1.31134e-07, 8.75199e-15, 50, 47.5, 0.624992)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCube/Block3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
-shape = SubResource("ConvexPolygonShape3D_c3xj7")
+[node name="Ramp8" parent="Node3D" instance=ExtResource("12_w0b3n")]
+transform = Transform3D(3.93402e-07, 2.62268e-07, 3, -1.04636e-15, -3, 2.62268e-07, 3, -4.68076e-14, -3.93402e-07, -48.125, 50, 0.625002)
 
-[node name="Block4" type="RigidBody3D" parent="LevelCube"]
-transform = Transform3D(3, 0, -1.42109e-14, 0, 3, 0, 0, 0, 3, 1.77862, -4.46987, 48.4646)
-mass = 25.0
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelCube/Block4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
-material_override = ExtResource("10_d3ofn")
-mesh = SubResource("BoxMesh_q8cur")
-skeleton = NodePath("")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCube/Block4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
-shape = SubResource("ConvexPolygonShape3D_c3xj7")
-
-[node name="Block5" type="RigidBody3D" parent="LevelCube"]
-transform = Transform3D(3, 0, -1.42109e-14, 0, 3, 0, 0, 0, 3, -45.0075, -8.84907, -3.72859)
-mass = 25.0
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelCube/Block5"]
-material_override = ExtResource("11_ck6gw")
-mesh = SubResource("BoxMesh_q8cur")
-skeleton = NodePath("")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCube/Block5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
-shape = SubResource("ConvexPolygonShape3D_c3xj7")
-
-[node name="Ramp1" parent="LevelCube" instance=ExtResource("12_w0b3n")]
-transform = Transform3D(-3, 0, 4.52988e-07, 0, 3, 0, -4.52988e-07, 0, -3, -7.17231e-06, -50, 47.5)
-
-[node name="Ramp2" parent="LevelCube" instance=ExtResource("12_w0b3n")]
-transform = Transform3D(3, -1.04636e-15, -1.9072e-07, 1.04636e-15, 3, -1.04636e-15, 1.9072e-07, 1.04636e-15, 3, 7.17232e-06, -50, -47.5)
-
-[node name="Ramp3" parent="LevelCube" instance=ExtResource("12_w0b3n")]
-transform = Transform3D(3, -7.15256e-07, 3.12648e-14, -4.57379e-23, -1.31134e-07, -3, 7.15256e-07, 3, -1.31134e-07, 7.54981e-06, 47.5, -50)
-
-[node name="Ramp4" parent="LevelCube" instance=ExtResource("12_w0b3n")]
-transform = Transform3D(3, 1.56268e-14, 1.9072e-07, -1.04636e-15, -3, 2.62268e-07, 1.9072e-07, -2.62268e-07, -3, -7.1723e-06, 50, 47.5)
-
-[node name="Ramp9" parent="LevelCube" instance=ExtResource("12_w0b3n")]
-transform = Transform3D(1.31134e-07, -4.52988e-07, -3, -3, -1.31134e-07, -1.31134e-07, -1.31134e-07, 3, -4.52988e-07, 48.125, -0.624996, -50)
-
-[node name="Ramp10" parent="LevelCube" instance=ExtResource("12_w0b3n")]
-transform = Transform3D(-3.93402e-07, -4.52988e-07, 3, 3, -1.31134e-07, 3.93402e-07, 1.31134e-07, 3, 4.52988e-07, -47.5, -0.625, -50)
-
-[node name="Ramp11" parent="LevelCube" instance=ExtResource("12_w0b3n")]
-transform = Transform3D(1.31134e-07, 3, 3.21854e-07, 3, -1.31134e-07, 1.31134e-07, 1.31134e-07, 3.21854e-07, -3, -50, -0.625, 47.5)
-
-[node name="Ramp12" parent="LevelCube" instance=ExtResource("12_w0b3n")]
-transform = Transform3D(-3.93402e-07, 1.9072e-07, -3, 3, 1.31134e-07, -3.93402e-07, 1.31134e-07, -3, -1.9072e-07, 48.125, -0.625, 50)
-
-[node name="Ramp5" parent="LevelCube" instance=ExtResource("12_w0b3n")]
-transform = Transform3D(-3.21854e-07, 0, -3, 0, 3, 0, 3, 0, -3.21854e-07, 48.125, -50, -0.624995)
-
-[node name="Ramp6" parent="LevelCube" instance=ExtResource("12_w0b3n")]
-transform = Transform3D(5.95858e-08, 1.04636e-15, 3, 1.04636e-15, 3, -1.04636e-15, -3, 1.04636e-15, 5.95858e-08, -47.5, -50, -0.625)
-
-[node name="Ramp7" parent="LevelCube" instance=ExtResource("12_w0b3n")]
-transform = Transform3D(5.84122e-07, 3, -1.31134e-07, -1.95156e-21, -1.31134e-07, -3, -3, 5.84122e-07, -2.85527e-14, -50, 47.5, -0.625)
-
-[node name="Ramp8" parent="LevelCube" instance=ExtResource("12_w0b3n")]
-transform = Transform3D(5.95858e-08, -2.62268e-07, -3, -1.04636e-15, -3, 2.62268e-07, -3, 7.20619e-15, -5.95858e-08, 48.125, 50, -0.624995)
-
-[connection signal="body_entered" from="LevelCube/GravityArea3D" to="LevelCube" method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="LevelCube/GravityArea3D2" to="LevelCube" method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="LevelCube/GravityArea3D3" to="LevelCube" method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="LevelCube/GravityArea3D4" to="LevelCube" method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="LevelCube/GravityArea3D5" to="LevelCube" method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="LevelCube/GravityArea3D6" to="LevelCube" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="Node3D/LevelCube-Bottom/GravityArea3D" to="Node3D/LevelCube-Bottom" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="Node3D/GravityArea3D2" to="Node3D/LevelCube-Bottom" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="Node3D/GravityArea3D3" to="Node3D/LevelCube-Bottom" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="Node3D/GravityArea3D4" to="Node3D/LevelCube-Bottom" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="Node3D/GravityArea3D6" to="Node3D/LevelCube-Bottom" method="_on_area_3d_body_entered"]
