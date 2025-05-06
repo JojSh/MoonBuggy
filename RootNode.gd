@@ -6,7 +6,6 @@ var list_of_players = []
 @onready var current_map = $World.get_children()[0]
 var randomise_start_positions: bool = true
 
-
 func _ready():
 	if GameSettings.should_skip_main_menu:
 		hide_main_menu()

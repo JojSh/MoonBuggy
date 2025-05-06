@@ -8,12 +8,12 @@ const Map2 = preload("res://maps/map_2.tscn")
 const AVAILABLE_MAPS = [Map1, Map2]
 
 # Current map index
-var current_map_index = 0
+var current_map_index = GameSettings.current_map_index
 var current_map_instance = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	load_map(0)
+	load_map(current_map_index)
 
 # Loads a specific map by index
 func load_map(map_index):
@@ -23,6 +23,7 @@ func load_map(map_index):
 	
 	# Update current map index
 	current_map_index = map_index
+	GameSettings.current_map_index = map_index
 	
 	# Instantiate and add new map
 	current_map_instance = AVAILABLE_MAPS[current_map_index].instantiate()
