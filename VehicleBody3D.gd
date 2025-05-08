@@ -23,7 +23,6 @@ var can_boost := true
 var time_upside_down := 0.0
 var is_dead := false
 var death_camera: Camera3D
-var was_active_player := false  # Add this as a class variable
 var death_collision_shapes := {}  # Dictionary to store shapes for each part
 var inputs_paused := false
 var is_invincible := false
@@ -277,17 +276,26 @@ func die ():
 	set_process_input(false)
 	
 	$EngineSound.stop()
-	#cant remember why we wanted this?: maybe for single-player?
-	## Camera handling...
-	## Store if this was the active player
-	#was_active_player = ($Camera1.current or $Camera2.current or $Camera3.current)
-	#
-	## Only create death camera if this is the active player
-	#if was_active_player:
-		#death_camera = Camera3D.new()
-		#get_tree().root.add_child(death_camera)
-		#death_camera.global_transform = $Camera1.global_transform
-		#death_camera.current = true
+
+	# Find the current camera
+	var current_camera = [$Camera1, $Camera2, $Camera3].filter(func(camera): 
+		return camera.current == true
+	)[0]
+
+	# Create death camera
+	death_camera = Camera3D.new()
+	
+	# Find the SubViewport that contains this player
+	var viewport = get_viewport()
+	if viewport is SubViewport:
+		# In split-screen mode, add to the SubViewport
+		viewport.add_child(death_camera)
+	else:
+		# In single-player mode, add to root
+		get_tree().root.add_child(death_camera)
+	
+	death_camera.global_transform = current_camera.global_transform
+	death_camera.current = true
 
 	for original_part in original_parts:
 		generate_and_separate_clone_of_part(original_part, death_velocity, death_position)
@@ -464,11 +472,9 @@ func _respawn():
 	$EngineSound.play()
 	
 	# Switch camera back
-	if death_camera and was_active_player:
-		death_camera.queue_free()
-		$Camera1.current = true
+	death_camera.queue_free()
+	$Camera1.current = true
 
-	was_active_player = false
 	is_dead = false
 
 func _input(event):
