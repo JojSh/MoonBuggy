@@ -59,7 +59,7 @@ stream_3/weight = 1.0
 
 [node name="VehicleBody3D" type="VehicleBody3D"]
 transform = Transform3D(0.999543, 0, -0.0302419, 0, 1, 0, 0.0302419, 0, 0.999543, 0, 0, 0)
-collision_layer = 4
+collision_layer = 5
 mass = 70.0
 physics_material_override = SubResource("PhysicsMaterial_kudkn")
 center_of_mass_mode = 1
