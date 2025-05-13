@@ -7,7 +7,7 @@
 [sub_resource type="BoxMesh" id="BoxMesh_tdmfc"]
 size = Vector3(100, 2, 100)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n6njp"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n6ycn"]
 cull_mode = 2
 albedo_texture = ExtResource("2_nonm8")
 backlight_enabled = true
@@ -30,7 +30,7 @@ colour = Color(1, 1, 1, 1)
 transform = Transform3D(-1, 8.74228e-08, 8.74228e-08, -8.74228e-08, -1, 7.64274e-15, 8.74228e-08, 5.19979e-22, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 mesh = SubResource("BoxMesh_tdmfc")
 skeleton = NodePath("../../../../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_n6njp")
+surface_material_override/0 = SubResource("StandardMaterial3D_n6ycn")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
