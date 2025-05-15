@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://FlatLevelGravityAreaParent.gd" id="1_m4aho"]
 [ext_resource type="Texture2D" uid="uid://cyirissu4e8hw" path="res://icon-mono-2.svg" id="2_nonm8"]
-[ext_resource type="Script" path="res://maps/GravityArea3D.gd" id="3_17vvy"]
+[ext_resource type="Script" path="res://GravityArea3D.gd" id="3_17vvy"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_tdmfc"]
 size = Vector3(100, 2, 100)

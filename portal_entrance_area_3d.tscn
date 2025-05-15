@@ -28,7 +28,7 @@ collision_mask = 7
 script = ExtResource("1_36ng6")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, -1.42109e-14, 0, 1, 0, 1.42109e-14, 0, 1, 0, 0, 0)
+transform = Transform3D(1, 0, -7.93436e-15, 0, 1, 0, 2.13163e-14, 0, 1, 0, 0, 0)
 material_override = SubResource("ShaderMaterial_sesa2")
 mesh = SubResource("SphereMesh_iaqk8")
 skeleton = NodePath("../..")

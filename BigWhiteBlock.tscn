@@ -2,6 +2,8 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7xcfu"]
 albedo_color = Color(1, 1, 1, 0)
+normal_scale = 16.0
+rim_tint = 1.0
 backlight_enabled = true
 backlight = Color(1, 1, 1, 1)
 
@@ -13,7 +15,7 @@ points = PackedVector3Array(-1.5, -1.49971, -1.49971, 1.5, 1.49978, 1.49978, 1.5
 
 [node name="Block" type="RigidBody3D"]
 transform = Transform3D(1, 0, 3.48787e-16, 0, 1, 0, -3.48787e-16, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
-mass = 25.0
+mass = 100.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)

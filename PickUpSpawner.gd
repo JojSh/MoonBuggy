@@ -26,7 +26,7 @@ var pickup_weights = [
 
 # Timer for spawning items
 var spawn_timer = null
-var spawn_interval = 2.0  # Seconds between spawns
+var spawn_interval = 5.0  # Seconds between spawns
 
 func _ready():
 	# Get spawn point nodes
@@ -64,11 +64,11 @@ func spawn_random_item():
 		return null
 
 	# Choose a random available position
-	var random_index = available_indices[randi() % available_indices.size()]
-	var spawn_point = spawn_points[random_index]
+	var rng_index = available_indices[randi() % available_indices.size()]
+	var spawn_point = spawn_points[rng_index]
 
 	# Mark position as occupied
-	occupied_positions[random_index] = true
+	occupied_positions[rng_index] = true
 
 	# Choose a random item type (weighted selection)
 	var item_scene = select_weighted_pickup()
@@ -80,11 +80,11 @@ func spawn_random_item():
 	item.global_rotation = spawn_point.global_rotation
 
 	# Connect to item's collected signal
-	item.connect("collected", _on_item_collected.bind(random_index))
+	item.connect("collected", _on_item_collected.bind(rng_index))
 	
 	# Connect to the moved_off_position signal if it exists
 	if item.has_signal("moved_off_position"):
-		item.connect("moved_off_position", _on_item_moved_off_position.bind(random_index))
+		item.connect("moved_off_position", _on_item_moved_off_position.bind(rng_index))
 
 	return item
 
