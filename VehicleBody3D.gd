@@ -8,27 +8,28 @@ const STARTING_RELOAD_LEVEL := 1
 const MAX_UPSIDE_DOWN_TIME := 3.0
 const RESPAWN_TIME := 3.0
 const SEPARATION_FORCE := 6.0
-const ORIENTATION_THRESHOLD := 0.85  # Corresponds to ~32 degrees difference - lower value means more reorientations
 const BOOST_COOLDOWN := 3.0  # Time in seconds before boost can be used again
 
 var previous_speed := linear_velocity.length()
 var _steer_target := 0.0
 var _closest_gravity_point: Vector3
 var _initial_gravity_point: Vector3
-var local_gravity := Vector3.DOWN
 var _should_reset := false
 var is_boost_sound_playing := false
 var boost_timer := 0.0
 var can_boost := true
-var time_upside_down := 0.0
 var is_dead := false
+var time_upside_down := 0.0
 var death_camera: Camera3D
 var death_collision_shapes := {}  # Dictionary to store shapes for each part
 var inputs_paused := false
 var is_invincible := false
 var is_reorienting := false  # Track if we're currently in a gradual reorientation
+var spawn_point : Vector3
+var spawn_rotation : Vector3
 
 # Variables for gradual reorientation
+const REORIENTATION_COOLDOWN_DURATION := 3.0  # 3.0 second cooldown
 var reorientation_timer := 0.0
 var reorientation_duration := 0.5
 var reorientation_initial_basis: Basis
@@ -37,9 +38,8 @@ var reorientation_initial_origin: Vector3
 var reorientation_target_origin: Vector3
 var reorientation_cooldown := 1.0  # Tracks the cooldown time remaining
 var desired_up: Vector3
-const REORIENTATION_COOLDOWN_DURATION := 3.0  # 3.0 second cooldown
 
-# Add this near the other class variables at the top
+# surface type variables
 enum SurfaceType { OUTER, INNER, FLAT }
 var current_surface_type: SurfaceType = SurfaceType.OUTER  # Default to OUTER instead of NONE
 var is_on_corner_ramp := false  # Add this to track corner ramp contact
@@ -49,8 +49,6 @@ var is_on_corner_ramp := false  # Add this to track corner ramp contact
 @export var player_colour : StandardMaterial3D
 @export var engine_force_value := 40.0
 @export var jump_initial_impulse := 20.0
-var spawn_point : Vector3
-var spawn_rotation : Vector3
 @export var is_eliminated := false  # Add this near other @export variables
 
 @onready var _start_position := global_transform.origin
@@ -116,7 +114,7 @@ func _physics_process(delta: float):
 	handle_engine_sound()
 	handle_sudden_impact_feedback()
 
-	# auto_reorient_vehicle_if_upside_down_too_long(delta) # DON't DELETE: need to put this back on at some point
+	auto_reorient_vehicle_if_upside_down_too_long(delta)
 
 func set_player_colour_from_exported_variable ():
 	if player_colour != null and $Body.get_node_or_null("MeshInstance3D") is MeshInstance3D:
@@ -149,7 +147,6 @@ func calculate_orientation_data() -> Dictionary:
 	var gravity_dir = to_gravity_point.normalized()
 	
 	# Calculate desired up direction based on surface type
-
 	match current_surface_type:
 		SurfaceType.FLAT:
 			desired_up = Vector3.UP
@@ -212,14 +209,12 @@ func _integrate_forces(state: PhysicsDirectBodyState3D):
 		state.transform.origin = _start_position
 		_should_reset = false
 
-	local_gravity = state.total_gravity.normalized()
-
 # Update the body entered function to read the surface type
 func _on_body_entered(body):
 	if (body.name.begins_with("Level")):
 		can_boost = true
 		update_new_center_of_gravity_point(body.global_position)
-		
+
 		# Find the gravity area child and read its surface_type property
 		var gravity_area = body.get_node("GravityArea3D")
 		if gravity_area:
@@ -252,11 +247,11 @@ func stop_boost ():
 		$Beams/Beam/BeamTrigger.play("RESET")
 		$Beams/Beam2/BeamTrigger.play("RESET")
 		$Beams.visible = false
-		
 		is_boost_sound_playing = false
+
 	boost_timer = 0.0
 	can_boost = false
-	
+
 	# Create a timer to reset can_boost after BOOST_COOLDOWN seconds
 	var boost_cooldown = get_tree().create_timer(BOOST_COOLDOWN)
 	boost_cooldown.timeout.connect(func(): can_boost = true)
@@ -269,12 +264,9 @@ func die ():
 	# Store death position and velocity before disabling physics
 	var death_position = global_position
 	var death_velocity = linear_velocity  # Capture the vehicle's velocity
-	
-	#collision_layer = 0
-	#collision_mask = 0 
+
 	set_physics_process(false)
 	set_process_input(false)
-	
 	$EngineSound.stop()
 
 	# Find the current camera
