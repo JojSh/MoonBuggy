@@ -3,7 +3,7 @@ extends VehicleBody3D
 const STEER_SPEED = 2.5
 const STEER_LIMIT = 0.4
 const BRAKE_STRENGTH = 2.0
-const STARTING_BOOST_LEVEL := 0.5 # 6.0 # each boost level = +0.5s extra boost duration
+const STARTING_BOOST_LEVEL := 5.5 # 6.0 # each boost level = +0.5s extra boost duration
 const STARTING_RELOAD_LEVEL := 1
 const MAX_UPSIDE_DOWN_TIME := 3.0
 const RESPAWN_TIME := 3.0
@@ -155,7 +155,9 @@ func calculate_orientation_data() -> Dictionary:
 			pass
 		SurfaceType.OUTER:
 			desired_up = gravity_dir
-	
+
+	update_camera_pivot_desired_up(desired_up)
+
 	return {
 		"desired_up": desired_up,
 		"is_flat_surface": current_surface_type == SurfaceType.FLAT,
@@ -270,7 +272,7 @@ func die ():
 	$EngineSound.stop()
 
 	# Find the current camera
-	var current_camera = [$Camera1, $Camera2, $Camera3].filter(func(camera): 
+	var current_camera = [$CameraPivot/Camera1, $Camera2, $Camera3, $Camera4].filter(func(camera): 
 		return camera.current == true
 	)[0]
 
@@ -313,12 +315,14 @@ func handle_return_to_start_position_input ():
 
 func handle_cycle_through_cameras_input ():
 	if Input.is_action_just_pressed(str("p", player_number, "_toggle_camera")):
-		if $Camera1.current:
+		if $CameraPivot/Camera1.current:
 			$Camera2.current = true
 		elif $Camera2.current:
 			$Camera3.current = true
+		elif $Camera3.current:
+			$Camera4.current = true
 		else:
-			$Camera1.current = true
+			$CameraPivot/Camera1.current = true
 
 func handle_boost_input (delta):
 	if Input.is_action_pressed(str("p", player_number, "_boost_jump")) and can_boost:
@@ -465,7 +469,7 @@ func _respawn():
 	
 	# Switch camera back
 	death_camera.queue_free()
-	$Camera1.current = true
+	$CameraPivot/Camera1.current = true
 
 	is_dead = false
 
@@ -668,3 +672,7 @@ func set_surface_type(new_surface_type: SurfaceType):
 
 func update_side_surface_gravity_direction(direction):
 	desired_up = direction
+	update_camera_pivot_desired_up(desired_up)
+
+func update_camera_pivot_desired_up (direction):
+	$CameraPivot.desired_up = direction

@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://tp634kdqbfd"]
+[gd_scene load_steps=25 format=3 uid="uid://tp634kdqbfd"]
 
 [ext_resource type="Script" path="res://VehicleBody3D.gd" id="1_1u0r3"]
 [ext_resource type="Material" uid="uid://sr36pdmgqpu5" path="res://wheel.tres" id="2_1s618"]
@@ -14,6 +14,7 @@
 [ext_resource type="AudioStream" uid="uid://2nm77xynp64v" path="res://sounds/rasp_impact4.ogg" id="9_7yhqf"]
 [ext_resource type="AudioStream" uid="uid://dyasqu703no36" path="res://sounds/pickup_pop.ogg" id="9_p1vwo"]
 [ext_resource type="PackedScene" uid="uid://bg6bppthjrr05" path="res://beam_container.tscn" id="10_ym3a5"]
+[ext_resource type="Script" path="res://CameraPivot.gd" id="14_46ga6"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_kudkn"]
 bounce = 0.2
@@ -58,7 +59,7 @@ stream_3/stream = ExtResource("9_7yhqf")
 stream_3/weight = 1.0
 
 [node name="VehicleBody3D" type="VehicleBody3D"]
-transform = Transform3D(0.999543, 0, -0.0302419, 0, 1, 0, 0.0302419, 0, 0.999543, 0, 0, 0)
+transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 0, 0, 0)
 collision_layer = 4
 collision_mask = 5
 mass = 70.0
@@ -74,6 +75,7 @@ current_lives = 3
 engine_force_value = 80.0
 
 [node name="Body" type="Node3D" parent="."]
+transform = Transform3D(-1, 6.97574e-16, -8.74228e-08, 6.97574e-16, 1, -6.97574e-16, 8.74228e-08, -6.97574e-16, -1, -4.85682e-09, -3.87541e-17, -0.111111)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Body"]
 mesh = SubResource("BoxMesh_dp7yc")
@@ -143,7 +145,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24, 0.017, -0.014)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.017, -0.014)
 
 [node name="RocketLauncher" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.5)
+transform = Transform3D(-1, 6.97574e-16, -8.74228e-08, 6.97574e-16, 1, -6.97574e-16, 8.74228e-08, -6.97574e-16, -1, 3.88546e-08, 0.5, 0.388889)
 script = ExtResource("3_rwhxb")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RocketLauncher"]
@@ -152,7 +154,7 @@ mesh = ExtResource("3_mseli")
 skeleton = NodePath("")
 
 [node name="Wheel1" type="VehicleWheel3D" parent="."]
-transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, -0.599998, -0.25, -0.5)
+transform = Transform3D(1, 6.97574e-16, 2.38419e-07, -6.97574e-16, 1, 6.97574e-16, -2.38419e-07, -6.97574e-16, 1, 0.599998, -0.25, 0.388889)
 engine_force = 0.01
 brake = 0.01
 steering = 0.000174533
@@ -172,7 +174,7 @@ mesh = SubResource("TorusMesh_i1nhk")
 surface_material_override/0 = ExtResource("2_1s618")
 
 [node name="Wheel2" type="VehicleWheel3D" parent="."]
-transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, -0.599998, -0.25, 0.5)
+transform = Transform3D(1, 6.97574e-16, 2.38419e-07, -6.97574e-16, 1, 6.97574e-16, -2.38419e-07, -6.97574e-16, 1, 0.599998, -0.25, -0.611111)
 engine_force = 0.01
 brake = 0.01
 use_as_traction = true
@@ -190,7 +192,7 @@ mesh = SubResource("TorusMesh_i1nhk")
 surface_material_override/0 = ExtResource("2_1s618")
 
 [node name="Wheel3" type="VehicleWheel3D" parent="."]
-transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0.599998, -0.25, -0.5)
+transform = Transform3D(1, 6.97574e-16, 2.38419e-07, -6.97574e-16, 1, 6.97574e-16, -2.38419e-07, -6.97574e-16, 1, -0.599998, -0.25, 0.388889)
 engine_force = 0.01
 brake = 0.01
 steering = 0.000174533
@@ -210,7 +212,7 @@ mesh = SubResource("TorusMesh_i1nhk")
 surface_material_override/0 = ExtResource("2_1s618")
 
 [node name="Wheel4" type="VehicleWheel3D" parent="."]
-transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0.599998, -0.25, 0.5)
+transform = Transform3D(1, 6.97574e-16, 2.38419e-07, -6.97574e-16, 1, 6.97574e-16, -2.38419e-07, -6.97574e-16, 1, -0.599998, -0.25, -0.611111)
 engine_force = 0.01
 brake = 0.01
 use_as_traction = true
@@ -228,6 +230,7 @@ mesh = SubResource("TorusMesh_i1nhk")
 surface_material_override/0 = ExtResource("2_1s618")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(-1, 6.97574e-16, -8.74228e-08, 6.97574e-16, 1, -6.97574e-16, 8.74228e-08, -6.97574e-16, -1, -4.85682e-09, -3.87541e-17, -0.111111)
 shape = SubResource("BoxShape3D_s5yfx")
 
 [node name="EngineSound" type="AudioStreamPlayer" parent="."]
@@ -245,19 +248,31 @@ stream = ExtResource("9_p1vwo")
 stream = SubResource("AudioStreamRandomizer_7fnw1")
 volume_db = -9.0
 
-[node name="Camera1" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.996195, 0.0871557, 0, -0.0871557, 0.996195, 0, 1, 3)
+[node name="CameraPivot" type="Node3D" parent="."]
+transform = Transform3D(-1, 6.97574e-16, -8.61895e-08, 6.97574e-16, 1, -6.97574e-16, 8.59641e-08, -6.97574e-16, -1, -4.85682e-09, -3.87541e-17, -0.111111)
+script = ExtResource("14_46ga6")
+smooth_speed = 10.0
+
+[node name="Camera1" type="Camera3D" parent="CameraPivot"]
+transform = Transform3D(1, -4.03349e-16, 3.44492e-16, 3.44493e-16, 0.987689, 0.156434, -4.03349e-16, -0.156435, 0.987688, 2.08165e-12, 1.5, 4)
 current = true
 
 [node name="Camera2" type="Camera3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0.173648, 0.984808, 0, 0.984808, -0.173648, -1, -7.5904e-09, -4.30473e-08, 15, 0, 0)
+transform = Transform3D(-4.37114e-08, -0.173648, -0.984808, 3.43488e-16, 0.984808, -0.173648, 1, -7.5904e-09, -4.30473e-08, -15, 2.08165e-12, 2.08165e-12)
+visible = false
 fov = 53.6
 
 [node name="Camera3" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 15, 0)
+transform = Transform3D(-1, 8.74228e-08, 3.82137e-15, -1.5246e-23, -4.37114e-08, 1, 8.74228e-08, 1, 4.37114e-08, -1.82479e-30, 15, 0)
+visible = false
 fov = 53.6
 
+[node name="Camera4" type="Camera3D" parent="."]
+transform = Transform3D(-1, 7.6194e-09, -8.70901e-08, 3.4746e-16, 0.996195, 0.0871557, 8.74228e-08, 0.0871557, -0.996195, 2.08165e-12, 1, -3)
+current = true
+
 [node name="Beams" type="Node3D" parent="."]
+transform = Transform3D(-1, 6.97574e-16, -8.74228e-08, 6.97574e-16, 1, -6.97574e-16, 8.74228e-08, -6.97574e-16, -1, -4.85682e-09, -3.87541e-17, -0.111111)
 
 [node name="Beam" parent="Beams" instance=ExtResource("10_ym3a5")]
 transform = Transform3D(0.5, 0, 0, 0, 0.136803, -0.480921, 0, 0.480921, 0.136803, 0.3, -0.427582, 0.486286)
