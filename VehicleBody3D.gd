@@ -114,6 +114,10 @@ func _physics_process(delta: float):
 	handle_engine_sound()
 	handle_sudden_impact_feedback()
 
+	# Update camera with current state information
+	if _closest_gravity_point != Vector3.ZERO:
+		var orientation_data = calculate_orientation_data()
+
 	auto_reorient_vehicle_if_upside_down_too_long(delta)
 
 func set_player_colour_from_exported_variable ():
@@ -156,7 +160,7 @@ func calculate_orientation_data() -> Dictionary:
 		SurfaceType.OUTER:
 			desired_up = gravity_dir
 
-	update_camera_pivot_desired_up(desired_up)
+	update_camera_state(desired_up)
 
 	return {
 		"desired_up": desired_up,
@@ -672,7 +676,14 @@ func set_surface_type(new_surface_type: SurfaceType):
 
 func update_side_surface_gravity_direction(direction):
 	desired_up = direction
-	update_camera_pivot_desired_up(desired_up)
+	update_camera_state(desired_up)
 
-func update_camera_pivot_desired_up (direction):
-	$CameraPivot.desired_up = direction
+func update_camera_state(new_desired_up: Vector3):
+	# Detect current states
+	var airborne = !can_boost
+	var boosting = is_boost_sound_playing
+	var gravity_transitioning = is_reorienting  # Vehicle reorientation often indicates gravity transition
+	
+	# Update camera with both direction and state
+	$CameraPivot.set_desired_up(new_desired_up)
+	$CameraPivot.set_camera_state(airborne, boosting, gravity_transitioning)
