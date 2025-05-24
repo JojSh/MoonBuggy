@@ -8,6 +8,10 @@ var is_airborne := false
 var is_boosting := false
 var is_gravity_transitioning := false
 
+# Teleportation detection to prevent rubber banding
+var last_parent_position := Vector3.ZERO
+var startup_timer := 0.0
+
 @onready var desired_up = Vector3.UP
 @onready var current_up = Vector3.UP
 @onready var parent_node: Node3D
@@ -15,23 +19,44 @@ var is_gravity_transitioning := false
 func _ready():
 	parent_node = get_parent()
 	direction = parent_node.global_transform.basis.z
+	last_parent_position = parent_node.global_transform.origin
 
 func _physics_process(delta):
 	if !parent_node:
 		return
-	
+
+	startup_timer += delta
 	var current_velocity = parent_node.get_linear_velocity()
 	var velocity_length = current_velocity.length_squared()
-	
-	# Calculate state-based speeds
+
+	# Check for teleportation and reset camera immediately if detected
+	var current_parent_position = parent_node.global_transform.origin
+	var teleport_distance = last_parent_position.distance_to(current_parent_position)
+
+	if teleport_distance > 10.0:
+		direction = parent_node.global_transform.basis.z
+		current_up = desired_up
+		global_transform.basis = get_rotation_from_direction(direction)
+
+	last_parent_position = current_parent_position
+
+	# Calculate state-based speeds and determine target direction
 	var speeds = update_smoothing_speeds()
-	
-	# Interpolate direction and up vector
-	if velocity_length <= 1:
-		direction = lerp(direction, parent_node.global_transform.basis.z, speeds.direction * delta)
+	var target_direction: Vector3
+
+	if startup_timer < 1.0:
+		# During startup, always use parent direction and slow smoothing
+		target_direction = parent_node.global_transform.basis.z
+		speeds.direction *= 0.1
+	elif velocity_length <= 4.0:
+		# Low velocity - follow parent orientation
+		target_direction = parent_node.global_transform.basis.z
 	else:
-		direction = lerp(direction, current_velocity.normalized(), speeds.direction * delta)
-	
+		# High velocity - follow movement direction
+		target_direction = current_velocity.normalized()
+
+	# Apply smoothing
+	direction = lerp(direction, target_direction, speeds.direction * delta)
 	current_up = lerp(current_up, desired_up, speeds.up * delta)
 	global_transform.basis = get_rotation_from_direction(direction)
 
@@ -44,7 +69,7 @@ func get_rotation_from_direction(look_direction: Vector3) -> Basis:
 func update_smoothing_speeds() -> Dictionary:
 	var dir_speed = base_direction_speed
 	var up_speed = base_up_speed
-	
+
 	if is_boosting:
 		up_speed *= 0.4
 	elif is_airborne:
@@ -52,7 +77,7 @@ func update_smoothing_speeds() -> Dictionary:
 		up_speed *= 0.2
 	elif is_gravity_transitioning:
 		up_speed *= 0.15
-	
+
 	return {"direction": dir_speed, "up": up_speed}
 
 func set_camera_state(airborne: bool, boosting: bool, gravity_transitioning: bool = false):

@@ -64,6 +64,10 @@ signal player_lost_a_life(player_number)
 
 func _ready ():
 	global_position = spawn_point
+	
+	# Reset camera pivot position to its intended relative position after moving to spawn
+	# This prevents rubber banding from position mismatches in the scene file
+	$CameraPivot.position = Vector3.ZERO  # Reset position to be relative to vehicle center
 
 	set_player_colour_from_exported_variable()
 	genenerate_collision_shapes_for_desctructible_parts()
@@ -147,6 +151,15 @@ func update_new_center_of_gravity_point(point):
 
 # Update the orientation data calculation
 func calculate_orientation_data() -> Dictionary:
+	# Don't update camera if gravity point isn't properly initialized
+	if _closest_gravity_point == Vector3.ZERO:
+		return {
+			"desired_up": Vector3.UP,  # Default safe value
+			"is_flat_surface": true,
+			"is_on_inner_surface": false,
+			"gravity_dir": Vector3.UP
+		}
+	
 	var to_gravity_point = global_transform.origin - _closest_gravity_point
 	var gravity_dir = to_gravity_point.normalized()
 	
