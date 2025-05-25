@@ -18,6 +18,10 @@ func _process(delta):
 	if list_of_players.size() > 1:
 		update_audio_listener_position()
 
+	if (GameSettings.debug_mode_on) and Input.is_action_just_pressed(str("debug_restart_current_game")):
+		print("RESTARTS")
+		restart_game()
+
 # Function to update the audio listener position to stay equidistant between all active players
 func update_audio_listener_position():
 	var active_players = list_of_players.filter(func(player):
