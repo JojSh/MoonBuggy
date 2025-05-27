@@ -64,7 +64,7 @@ signal player_lost_a_life(player_number)
 
 func _ready ():
 	global_position = spawn_point
-	
+
 	# Reset camera pivot position to its intended relative position after moving to spawn
 	# This prevents rubber banding from position mismatches in the scene file
 	$CameraPivot.position = Vector3.ZERO  # Reset position to be relative to vehicle center
