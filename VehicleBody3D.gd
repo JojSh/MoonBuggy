@@ -700,3 +700,6 @@ func update_camera_state(new_desired_up: Vector3):
 	# Update camera with both direction and state
 	$CameraPivot.set_desired_up(new_desired_up)
 	$CameraPivot.set_camera_state(airborne, boosting, gravity_transitioning)
+
+func notify_chase_cam_of_teleportation ():
+	$CameraPivot.on_teleportation()

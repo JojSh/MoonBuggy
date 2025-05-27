@@ -142,6 +142,7 @@ func _on_portal_entrance_area_3d_body_entered(body, portal_number: int):
 	body.rotation = exit_rotation
 	body.angular_velocity = Vector3.ZERO
 	body.linear_velocity = Vector3.ZERO
+	body.notify_chase_cam_of_teleportation()
 
 func _on_player_eliminated(player_number):
 	var alive_players = list_of_players.filter(func(player):

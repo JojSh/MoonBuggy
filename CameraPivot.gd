@@ -3,17 +3,12 @@ extends Node3D
 var direction = Vector3.FORWARD
 @export_range (0.5, 10) var base_direction_speed = 5.0
 @export_range (0.5, 10) var base_up_speed = 2.0
-@export var enable_teleport_detection: bool = true
-
 var is_airborne := false
 var is_boosting := false
 var is_gravity_transitioning := false
 
 # Timer to pause/slow smoothing during startup and after teleportation
 var pause_smoothing_timer := 1.0
-
-# Teleportation detection
-var last_parent_position := Vector3.ZERO
 
 @onready var desired_up = Vector3.UP
 @onready var current_up = Vector3.UP
@@ -22,25 +17,12 @@ var last_parent_position := Vector3.ZERO
 func _ready():
 	parent_node = get_parent()
 	direction = parent_node.global_transform.basis.z
-	last_parent_position = parent_node.global_transform.origin
 
 func _physics_process(delta):
 	if !parent_node:
 		return
 
 	pause_smoothing_timer -= delta
-	
-	# Check for teleportation and reset camera immediately if detected
-	var current_parent_position = parent_node.global_transform.origin
-	var teleport_distance = last_parent_position.distance_to(current_parent_position)
-
-	if enable_teleport_detection and teleport_distance > 10.0:
-		direction = parent_node.global_transform.basis.z
-		current_up = desired_up
-		global_transform.basis = get_rotation_from_direction(direction)
-		pause_smoothing_timer = 2.0  # Pause smoothing for 2 seconds after teleport
-		last_parent_position = current_parent_position
-		return
 
 	var current_velocity = parent_node.get_linear_velocity()
 	var velocity_length = current_velocity.length_squared()
@@ -65,8 +47,6 @@ func _physics_process(delta):
 	direction = lerp(direction, target_direction, speeds.direction * delta)
 	current_up = lerp(current_up, desired_up, speeds.up * delta)
 	global_transform.basis = get_rotation_from_direction(direction)
-	
-	last_parent_position = current_parent_position
 
 func get_rotation_from_direction(look_direction: Vector3) -> Basis:
 	look_direction = look_direction.normalized()
@@ -95,3 +75,10 @@ func set_camera_state(airborne: bool, boosting: bool, gravity_transitioning: boo
 
 func set_desired_up(new_desired_up: Vector3):
 	desired_up = new_desired_up
+
+func on_teleportation():
+	print("Camera teleportation reset triggered")
+	direction = parent_node.global_transform.basis.z
+	current_up = desired_up
+	global_transform.basis = get_rotation_from_direction(direction)
+	pause_smoothing_timer = 2.0  # Pause smoothing for 2 seconds after teleport
