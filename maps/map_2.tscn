@@ -25,14 +25,14 @@ environment = SubResource("Environment_tuk6j")
 transform = Transform3D(-0.141421, -2.62347e-23, -0.141421, 6.97574e-17, 0.2, -6.97574e-17, 0.141421, -9.86519e-17, -0.141421, -45, -44.9366, -42)
 
 [node name="PortalExitArea3D1" parent="." instance=ExtResource("10_pckbl")]
-transform = Transform3D(-0.114715, -1.00287e-08, 0.16383, 1.74846e-08, -0.2, -6.97574e-17, 0.16383, 1.43225e-08, 0.114715, 36.6106, 48.1375, 37.0567)
+transform = Transform3D(0.114715, -1.00287e-08, -0.16383, -1.74845e-08, -0.2, -6.97572e-17, -0.16383, 1.43225e-08, -0.114715, 36.6106, 48.1375, 37.0567)
 collision_mask = 7
 
 [node name="PortalEntranceArea3D2" parent="." instance=ExtResource("9_wv04m")]
 transform = Transform3D(0.0415571, 0.153565, -0.121206, -0.0498058, 0.128132, 0.145264, 0.189189, 0, 0.0648661, -46.6169, 45.2815, 46.0068)
 
 [node name="PortalExitArea3D2" parent="." instance=ExtResource("10_pckbl")]
-transform = Transform3D(-0.153209, 9.82764e-17, 0.128557, 6.97572e-17, 0.2, -6.97572e-17, -0.128557, -8.59807e-18, -0.153209, 36.5103, -49.0725, -38.4606)
+transform = Transform3D(0.153209, -9.82764e-17, -0.128557, 6.97573e-17, 0.2, -6.97573e-17, 0.128557, 8.59808e-18, 0.153209, 36.5103, -49.0725, -38.4606)
 collision_mask = 7
 
 [node name="PickUpSpawner" type="Node3D" parent="."]
