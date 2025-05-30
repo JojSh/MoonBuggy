@@ -7,22 +7,17 @@ var is_airborne := false
 var is_boosting := false
 var is_gravity_transitioning := false
 
-# Timer to pause/slow smoothing during startup and after teleportation
-var pause_smoothing_timer := 1.0
-
 @onready var desired_up = Vector3.UP
 @onready var current_up = Vector3.UP
 @onready var parent_node: Node3D
 
 func _ready():
 	parent_node = get_parent()
-	direction = parent_node.global_transform.basis.z
+	# direction = parent_node.global_transform.basis.z # off to stop camera rotating from un front on spawn. Think we don't need this? leave it here commented out for a while bear in mind if any issues.
 
 func _physics_process(delta):
 	if !parent_node:
 		return
-
-	pause_smoothing_timer -= delta
 
 	var current_velocity = parent_node.get_linear_velocity()
 	var velocity_length = current_velocity.length_squared()
@@ -31,12 +26,7 @@ func _physics_process(delta):
 	var speeds = update_smoothing_speeds()
 	var target_direction: Vector3
 
-	if pause_smoothing_timer > 0.0:
-		# During startup or post-teleport, always use parent direction and slow smoothing
-		target_direction = parent_node.global_transform.basis.z
-		speeds.direction *= 0.1
-		speeds.up *= 0.1
-	elif velocity_length <= 4.0:
+	if velocity_length <= 4.0:
 		# Low velocity - follow parent orientation
 		target_direction = parent_node.global_transform.basis.z
 	else:
@@ -81,4 +71,4 @@ func on_teleportation():
 	direction = parent_node.global_transform.basis.z
 	current_up = desired_up
 	global_transform.basis = get_rotation_from_direction(direction)
-	pause_smoothing_timer = 2.0  # Pause smoothing for 2 seconds after teleport
+	# Note: pause_smoothing_timer removed - now using ChaseCamLocked during teleportation

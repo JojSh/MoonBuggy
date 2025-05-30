@@ -67,7 +67,7 @@ func _ready ():
 
 	# Reset camera pivot position to its intended relative position after moving to spawn
 	# This prevents rubber banding from position mismatches in the scene file
-	$CameraPivot.position = Vector3.ZERO  # Reset position to be relative to vehicle center
+	$ChaseCamPivot.position = Vector3.ZERO  # Reset position to be relative to vehicle center
 
 	set_player_colour_from_exported_variable()
 	genenerate_collision_shapes_for_desctructible_parts()
@@ -289,7 +289,7 @@ func die ():
 	$EngineSound.stop()
 
 	# Find the current camera
-	var current_camera = [$CameraPivot/Camera1, $Camera2, $Camera3, $Camera4].filter(func(camera): 
+	var current_camera = [$ChaseCamPivot/ChaseCam, $SideCam, $FirstPersonCam, $ThirdPersonCam, $ChaseCamLocked].filter(func(camera): 
 		return camera.current == true
 	)[0]
 
@@ -332,14 +332,18 @@ func handle_return_to_start_position_input ():
 
 func handle_cycle_through_cameras_input ():
 	if Input.is_action_just_pressed(str("p", player_number, "_toggle_camera")):
-		if $CameraPivot/Camera1.current:
-			$Camera2.current = true
-		elif $Camera2.current:
-			$Camera3.current = true
-		elif $Camera3.current:
-			$Camera4.current = true
+		# Don't allow camera cycling if the locked camera is active (during teleportation)
+		#if $ChaseCamLocked.current:
+			#return
+			
+		if $ChaseCamPivot/ChaseCam.current:
+			$SideCam.current = true
+		elif $SideCam.current:
+			$FirstPersonCam.current = true
+		elif $FirstPersonCam.current:
+			$ThirdPersonCam.current = true
 		else:
-			$CameraPivot/Camera1.current = true
+			$ChaseCamPivot/ChaseCam.current = true
 
 func handle_boost_input (delta):
 	if Input.is_action_pressed(str("p", player_number, "_boost_jump")) and can_boost:
@@ -486,7 +490,8 @@ func _respawn():
 	
 	# Switch camera back
 	death_camera.queue_free()
-	$CameraPivot/Camera1.current = true
+	$ChaseCamPivot/ChaseCam.current = true
+	notify_chase_cam_of_teleportation()
 
 	is_dead = false
 
@@ -634,7 +639,7 @@ func calculate_spherical_surface_transform(current_forward: Vector3, desired_up:
 func construct_target_basis(forward: Vector3, up: Vector3):
 	var right = forward.cross(up).normalized()
 	var new_forward = up.cross(right).normalized()
-	
+
 	# Construct the target basis
 	reorientation_target_basis = Basis()
 	reorientation_target_basis.x = right
@@ -696,10 +701,19 @@ func update_camera_state(new_desired_up: Vector3):
 	var airborne = !can_boost
 	var boosting = is_boost_sound_playing
 	var gravity_transitioning = is_reorienting  # Vehicle reorientation often indicates gravity transition
-	
+
 	# Update camera with both direction and state
-	$CameraPivot.set_desired_up(new_desired_up)
-	$CameraPivot.set_camera_state(airborne, boosting, gravity_transitioning)
+	$ChaseCamPivot.set_desired_up(new_desired_up)
+	$ChaseCamPivot.set_camera_state(airborne, boosting, gravity_transitioning)
 
 func notify_chase_cam_of_teleportation ():
-	$CameraPivot.on_teleportation()
+	if $ChaseCamPivot/ChaseCam.current == true:
+		# Reset the chase cam direction for when we switch back to it
+		$ChaseCamPivot.on_teleportation()
+
+		# Switch to locked camera during teleportation
+		$ChaseCamLocked.current = true
+
+		# Create timer to switch back to normal chase cam after 2 seconds
+		var teleport_timer = get_tree().create_timer(2)
+		teleport_timer.timeout.connect(func(): $ChaseCamPivot/ChaseCam.current = true)
