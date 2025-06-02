@@ -61,9 +61,13 @@ func start_game ():
 	setup_split_screen()
 	MusicManager.start_music()
 
+	# After split screen setup, configure each player's cameras and signals
+	# This ensures cameras are in their final viewport context
 	for player in list_of_players:
 		player.player_eliminated.connect(_on_player_eliminated)
 		player.player_lost_a_life.connect(_on_player_lost_a_life)
+		player.get_node("ChaseCamPivot/ChaseCam").current = true
+		player.notify_chase_cam_of_teleportation()
 	
 	# Initialize audio listener position if we're in multiplayer mode
 	if GameSettings.desired_number_players > 1:
