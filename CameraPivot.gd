@@ -27,8 +27,24 @@ func _physics_process(delta):
 	var target_direction: Vector3
 
 	if velocity_length <= 4.0:
-		# Low velocity - follow parent orientation
-		target_direction = parent_node.global_transform.basis.z
+		# Low velocity - but check if vehicle is in extreme orientation
+		var vehicle_forward = parent_node.global_transform.basis.z
+		
+		# Use the orientation state from the parent vehicle instead of recalculating
+		var stuck_orientation = parent_node.is_upside_down or parent_node.is_stuck_on_nose or parent_node.is_stuck_on_tail
+		
+		if stuck_orientation:
+			# Vehicle is in extreme orientation - use a safe camera direction
+			# Project the vehicle's forward onto a horizontal plane relative to desired_up
+			var horizontal_forward = vehicle_forward - vehicle_forward.dot(desired_up) * desired_up
+			if horizontal_forward.length_squared() > 0.01:
+				target_direction = horizontal_forward.normalized()
+			else:
+				# If forward is too vertical, use current direction or a fallback
+				target_direction = direction if direction.length_squared() > 0.01 else Vector3.FORWARD
+		else:
+			# Vehicle is in normal orientation - follow parent orientation
+			target_direction = vehicle_forward
 	else:
 		# High velocity - follow movement direction
 		target_direction = current_velocity.normalized()

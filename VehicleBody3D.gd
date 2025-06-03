@@ -39,6 +39,15 @@ var reorientation_target_origin: Vector3
 var reorientation_cooldown := 1.0  # Tracks the cooldown time remaining
 var desired_up: Vector3
 
+# Add timer for orientation checking
+var orientation_check_timer := 0.0
+const ORIENTATION_CHECK_INTERVAL := 1.0  # Check once per second
+
+# Vehicle orientation state (for camera and other systems to access)
+var is_upside_down := false
+var is_stuck_on_nose := false
+var is_stuck_on_tail := false
+
 # surface type variables
 enum SurfaceType { OUTER, INNER, FLAT }
 var current_surface_type: SurfaceType = SurfaceType.OUTER  # Default to OUTER instead of NONE
@@ -122,7 +131,7 @@ func _physics_process(delta: float):
 	if _closest_gravity_point != Vector3.ZERO:
 		var orientation_data = calculate_orientation_data()
 
-	auto_reorient_vehicle_if_upside_down_too_long(delta)
+	auto_reorient_vehicle_if_stuck_too_long(delta)
 
 func set_player_colour_from_exported_variable ():
 	if player_colour != null and $Body.get_node_or_null("MeshInstance3D") is MeshInstance3D:
@@ -410,23 +419,34 @@ func handle_fire_input ():
 	if Input.is_action_just_pressed(str("p", player_number, "_fire")):
 		rocket_launcher.fire_rocket()
 
-func auto_reorient_vehicle_if_upside_down_too_long(delta):
+func auto_reorient_vehicle_if_stuck_too_long(delta):
 	# Skip this check if we're already in a reorientation process
 	if is_reorienting:
 		return
-		
-	var orientation_data = calculate_orientation_data()
 	
-	# Check if we're upside down relative to the desired up direction
-	if global_transform.basis.y.dot(orientation_data.desired_up) < -0.5:  # More than 120 degrees from desired up
-		time_upside_down += delta
-		if time_upside_down > MAX_UPSIDE_DOWN_TIME:
-			# For safety feature, reset cooldown and call regular reorient
-			reorientation_cooldown = 0.0  # Ensure we can reorient
-			perform_reorientation(orientation_data, false)
+	# Update the orientation check timer
+	orientation_check_timer += delta
+	
+	# Only perform expensive checks once per second
+	if orientation_check_timer >= ORIENTATION_CHECK_INTERVAL:
+		orientation_check_timer = 0.0
+		
+		var orientation_data = calculate_orientation_data()
+		
+		# Check for problematic orientations and store state
+		is_upside_down = global_transform.basis.y.dot(orientation_data.desired_up) < -0.5  # More than 120 degrees from desired up
+		is_stuck_on_nose = (-global_transform.basis.z).dot(orientation_data.desired_up) < -0.5  # Forward vector pointing down
+		is_stuck_on_tail = (-global_transform.basis.z).dot(orientation_data.desired_up) > 0.5  # Forward vector pointing up
+		
+		if is_upside_down or is_stuck_on_nose or is_stuck_on_tail:
+			time_upside_down += ORIENTATION_CHECK_INTERVAL  # Add the full interval since we checked
+			if time_upside_down > MAX_UPSIDE_DOWN_TIME:
+				# For safety feature, reset cooldown and call regular reorient
+				reorientation_cooldown = 0.0  # Ensure we can reorient
+				perform_reorientation(orientation_data, false)
+				time_upside_down = 0.0
+		else:
 			time_upside_down = 0.0
-	else:
-		time_upside_down = 0.0
 
 func generate_and_separate_clone_of_part (og_part, death_velocity, death_position):
 	og_part.visible = false
