@@ -6,6 +6,7 @@ var direction = Vector3.FORWARD
 var is_airborne := false
 var is_boosting := false
 var is_gravity_transitioning := false
+var stuck_off_wheels := false
 
 @onready var desired_up = Vector3.UP
 @onready var current_up = Vector3.UP
@@ -30,10 +31,7 @@ func _physics_process(delta):
 		# Low velocity - but check if vehicle is in extreme orientation
 		var vehicle_forward = parent_node.global_transform.basis.z
 		
-		# Use the orientation state from the parent vehicle instead of recalculating
-		var stuck_orientation = parent_node.is_upside_down or parent_node.is_stuck_on_nose or parent_node.is_stuck_on_tail
-		
-		if stuck_orientation:
+		if stuck_off_wheels:
 			# Vehicle is in extreme orientation - use a safe camera direction
 			# Project the vehicle's forward onto a horizontal plane relative to desired_up
 			var horizontal_forward = vehicle_forward - vehicle_forward.dot(desired_up) * desired_up
@@ -81,6 +79,9 @@ func set_camera_state(airborne: bool, boosting: bool, gravity_transitioning: boo
 
 func set_desired_up(new_desired_up: Vector3):
 	desired_up = new_desired_up
+
+func set_stuck_off_wheels(is_stuck: bool):
+	stuck_off_wheels = is_stuck
 
 func on_teleportation():
 	print("Camera teleportation reset triggered")

@@ -438,7 +438,11 @@ func auto_reorient_vehicle_if_stuck_too_long(delta):
 		is_stuck_on_nose = (-global_transform.basis.z).dot(orientation_data.desired_up) < -0.5  # Forward vector pointing down
 		is_stuck_on_tail = (-global_transform.basis.z).dot(orientation_data.desired_up) > 0.5  # Forward vector pointing up
 		
-		if is_upside_down or is_stuck_on_nose or is_stuck_on_tail:
+		# Notify camera of stuck state
+		var is_stuck = is_upside_down or is_stuck_on_nose or is_stuck_on_tail
+		$ChaseCamPivot.set_stuck_off_wheels(is_stuck)
+		
+		if is_stuck:
 			time_upside_down += ORIENTATION_CHECK_INTERVAL  # Add the full interval since we checked
 			if time_upside_down > MAX_UPSIDE_DOWN_TIME:
 				# For safety feature, reset cooldown and call regular reorient
