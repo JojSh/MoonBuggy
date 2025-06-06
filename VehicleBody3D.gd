@@ -120,8 +120,8 @@ func _physics_process(delta: float):
 		reorient_vehicle()
 
 	if Input.is_action_just_pressed("debug_test_functionality_trigger") and GameSettings.debug_mode_on:
-		#test_random_gravity_point()
-		print("No debug functionality assigned to input right now")
+		test_random_gravity_point()
+		#print("No debug functionality assigned to input right now")
 
 	handle_cycle_through_cameras_input()
 	handle_return_to_start_position_input()
@@ -791,3 +791,39 @@ func find_contacted_gravity_source():
 	
 	return null
 
+# save this somewhere else for future use:
+func test_random_gravity_point():
+	print("Testing random gravity point assignment...")
+	var all_gravity_sources = find_all_gravity_sources()
+	
+	if all_gravity_sources.size() > 0:
+		var random_source = all_gravity_sources.pick_random()
+		var old_point = _closest_gravity_point
+		_closest_gravity_point = random_source.global_position
+		print("Set gravity point to random source: ", random_source.name, " at position: ", _closest_gravity_point)
+		print("Previous gravity point was: ", old_point)
+	else:
+		print("No gravity sources found!")
+
+func find_all_gravity_sources() -> Array:
+	var gravity_sources = []
+	var space_state = get_world_3d().direct_space_state
+	
+	# Use a large sphere to find all Level bodies in the scene
+	var shape = SphereShape3D.new()
+	shape.radius = 1000.0  # Large radius to capture all level bodies
+	
+	var query = PhysicsShapeQueryParameters3D.new()
+	query.shape = shape
+	query.transform.origin = global_transform.origin
+	query.collision_mask = 1
+	query.exclude = [self]
+	
+	var results = space_state.intersect_shape(query)
+	
+	for result in results:
+		var body = result.collider
+		if body.name.begins_with("Level"):
+			gravity_sources.append(body)
+	
+	return gravity_sources
