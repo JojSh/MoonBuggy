@@ -43,6 +43,9 @@ var desired_up: Vector3
 var orientation_check_timer := 0.0
 const ORIENTATION_CHECK_INTERVAL := 1.0  # Check once per second
 
+var gravity_validation_timer := 0.0
+const GRAVITY_VALIDATION_INTERVAL := 10.0 # Validate every 10 seconds
+
 # Vehicle orientation state (for camera and other systems to access)
 var is_upside_down := false
 var is_stuck_on_nose := false
@@ -96,9 +99,10 @@ func _physics_process(delta: float):
 		return
 		# need some extra code to remove death parts ?
 
-	# Update reorientation cooldown
 	if reorientation_cooldown > 0:
 		reorientation_cooldown -= delta
+
+	validate_gravity_point_on_interval(delta)
 
 	if (GameSettings.debug_mode_on):
 		DebugDraw.draw_line(global_transform.origin, _closest_gravity_point, Color.GREEN)
@@ -114,6 +118,10 @@ func _physics_process(delta: float):
 	if Input.is_action_just_pressed(str("p", player_number, "_flip")):
 		# Player explicitly requested a flip
 		reorient_vehicle()
+
+	if Input.is_action_just_pressed("debug_test_functionality_trigger") and GameSettings.debug_mode_on:
+		#test_random_gravity_point()
+		print("No debug functionality assigned to input right now")
 
 	handle_cycle_through_cameras_input()
 	handle_return_to_start_position_input()
@@ -741,3 +749,45 @@ func notify_chase_cam_of_teleportation ():
 		# Create timer to switch back to normal chase cam after 2 seconds
 		var teleport_timer = get_tree().create_timer(2)
 		teleport_timer.timeout.connect(func(): $ChaseCamPivot/ChaseCam.current = true)
+
+func validate_gravity_point_on_interval(delta: float):
+	gravity_validation_timer += delta
+	
+	if gravity_validation_timer >= GRAVITY_VALIDATION_INTERVAL:
+		gravity_validation_timer = 0.0
+		
+		var contacted_surface = find_contacted_gravity_source()
+		if contacted_surface and contacted_surface.global_position != _closest_gravity_point:
+			update_new_center_of_gravity_point(contacted_surface.global_position)
+
+func find_contacted_gravity_source():
+	var space_state = get_world_3d().direct_space_state
+	
+	# Try raycast first
+	var query = PhysicsRayQueryParameters3D.create(global_transform.origin, global_transform.origin + Vector3(0, -2.0, 0))
+	query.collision_mask = 1
+	query.exclude = [self]
+	
+	var result = space_state.intersect_ray(query)
+	if result and result.collider.name.begins_with("Level"):
+		print("found level using raycast")
+		return result.collider
+	
+	# Fallback to sphere cast
+	var shape = SphereShape3D.new()
+	shape.radius = 3.0
+	
+	var shape_query = PhysicsShapeQueryParameters3D.new()
+	shape_query.shape = shape
+	shape_query.transform.origin = global_transform.origin
+	shape_query.collision_mask = 1
+	shape_query.exclude = [self]
+	
+	var shape_results = space_state.intersect_shape(shape_query)
+	for contact in shape_results:
+		if contact.collider.name.begins_with("Level"):
+			print("found level using sphere cast")
+			return contact.collider
+	
+	return null
+
