@@ -617,7 +617,6 @@ func move_to_spawn_point ():
 
 func reorient_vehicle_over_time(duration: float = 0.5):
 	if is_on_corner_ramp:
-		print("auto reorient over time BLOCKED")
 		return
 	var orientation_data = calculate_orientation_data()
 	perform_reorientation(orientation_data, true, duration)
@@ -769,7 +768,6 @@ func find_contacted_gravity_source():
 	
 	var result = space_state.intersect_ray(query)
 	if result and result.collider.name.begins_with("Level"):
-		print("found level using raycast")
 		return result.collider
 	
 	# Fallback to sphere cast
