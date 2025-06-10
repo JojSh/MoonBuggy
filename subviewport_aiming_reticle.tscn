@@ -1,6 +1,9 @@
 [gd_scene load_steps=2 format=3 uid="uid://02pucoy7xppp"]
 
 [sub_resource type="FontFile" id="FontFile_o0kwj"]
+subpixel_positioning = 0
+msdf_pixel_range = 14
+msdf_size = 128
 cache/0/16/0/ascent = 0.0
 cache/0/16/0/descent = 0.0
 cache/0/16/0/underline_position = 0.0

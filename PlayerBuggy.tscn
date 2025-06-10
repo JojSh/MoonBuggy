@@ -248,25 +248,27 @@ stream = ExtResource("9_p1vwo")
 stream = SubResource("AudioStreamRandomizer_7fnw1")
 volume_db = -9.0
 
-[node name="CameraPivot" type="Node3D" parent="."]
-transform = Transform3D(-1, 6.97574e-16, -8.61895e-08, 6.97574e-16, 1, -6.97574e-16, 8.59641e-08, -6.97574e-16, -1, -4.85682e-09, -3.87541e-17, -0.111111)
+[node name="ChaseCamPivot" type="Node3D" parent="."]
+transform = Transform3D(-1, 6.97574e-16, -8.61895e-08, 6.97574e-16, 1, -6.97574e-16, 8.59641e-08, -6.97574e-16, -1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("14_46ga6")
 
-[node name="Camera1" type="Camera3D" parent="CameraPivot"]
+[node name="ChaseCam" type="Camera3D" parent="ChaseCamPivot"]
 transform = Transform3D(1, -4.03349e-16, 3.44492e-16, 3.44493e-16, 0.987689, 0.156434, -4.03349e-16, -0.156435, 0.987688, 2.08165e-12, 1.5, 4)
 current = true
 
-[node name="Camera2" type="Camera3D" parent="."]
+[node name="SideCam" type="Camera3D" parent="."]
 transform = Transform3D(-4.37114e-08, -0.173648, -0.984808, 3.43488e-16, 0.984808, -0.173648, 1, -7.5904e-09, -4.30473e-08, -15, 2.08165e-12, 2.08165e-12)
+current = true
 fov = 53.6
 
-[node name="Camera3" type="Camera3D" parent="."]
+[node name="FirstPersonCam" type="Camera3D" parent="."]
 transform = Transform3D(-1, 3.48787e-16, 8.74228e-08, 3.48787e-16, 1, -3.48787e-16, -8.74228e-08, -3.48787e-16, -1, 2.08143e-12, 2.08187e-12, 0.635967)
-current = true
 
-[node name="Camera4" type="Camera3D" parent="."]
+[node name="ThirdPersonCam" type="Camera3D" parent="."]
 transform = Transform3D(-1, 7.6194e-09, -8.70901e-08, 3.4746e-16, 0.996195, 0.0871557, 8.74228e-08, 0.0871557, -0.996195, 2.08165e-12, 1, -3)
-current = true
+
+[node name="ChaseCamLocked" type="Camera3D" parent="."]
+transform = Transform3D(-0.999998, -0.00174534, 8.63464e-08, -0.00172384, 0.987687, 0.156434, -0.000273117, 0.156434, -0.987688, 2.08165e-12, 1.5, -4)
 
 [node name="Beams" type="Node3D" parent="."]
 transform = Transform3D(-1, 6.97574e-16, -8.74228e-08, 6.97574e-16, 1, -6.97574e-16, 8.74228e-08, -6.97574e-16, -1, -4.85682e-09, -3.87541e-17, -0.111111)

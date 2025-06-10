@@ -73,6 +73,8 @@ var is_on_corner_ramp := false  # Add this to track corner ramp contact
 
 signal player_eliminated(player_number)
 signal player_lost_a_life(player_number)
+signal hide_crosshair()
+signal show_crosshair()
 
 func _ready ():
 	global_position = spawn_point
@@ -119,8 +121,10 @@ func _physics_process(delta: float):
 		# Player explicitly requested a flip
 		reorient_vehicle()
 
-	if Input.is_action_just_pressed("debug_test_functionality_trigger") and GameSettings.debug_mode_on:
-		print("No debug functionality assigned to input right now")
+	if Input.is_action_pressed(str("p", player_number, "_debug_test_functionality_trigger")) and GameSettings.debug_mode_on:
+		emit_signal("show_crosshair")
+	if Input.is_action_just_released(str("p", player_number, "_debug_test_functionality_trigger")):
+		emit_signal("hide_crosshair")
 
 	handle_cycle_through_cameras_input()
 	handle_return_to_start_position_input()
@@ -348,18 +352,18 @@ func handle_return_to_start_position_input ():
 
 func handle_cycle_through_cameras_input ():
 	if Input.is_action_just_pressed(str("p", player_number, "_toggle_camera")):
-		# Don't allow camera cycling if the locked camera is active (during teleportation)
-		#if $ChaseCamLocked.current:
-			#return
-			
 		if $ChaseCamPivot/ChaseCam.current:
 			$SideCam.current = true
+			emit_signal("hide_crosshair")
 		elif $SideCam.current:
 			$FirstPersonCam.current = true
+			emit_signal("show_crosshair")
 		elif $FirstPersonCam.current:
 			$ThirdPersonCam.current = true
+			emit_signal("show_crosshair")
 		else:
 			$ChaseCamPivot/ChaseCam.current = true
+			emit_signal("hide_crosshair")
 
 func handle_boost_input (delta):
 	if Input.is_action_pressed(str("p", player_number, "_boost_jump")) and can_boost:

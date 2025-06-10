@@ -58,7 +58,7 @@ func start_game ():
 	register_active_players()
 	if (randomise_start_positions):
 		assign_random_spawn_points()
-	setup_split_screen()
+	setup_screens()
 	MusicManager.start_music()
 
 	# After split screen setup, configure each player's cameras and signals
@@ -84,15 +84,19 @@ func assign_random_spawn_points ():
 		player.move_to_spawn_point()
 		all_player_spawn_points.push_back(selected_spawn_point)
 
-func setup_split_screen():
+func setup_screens():
 	if GameSettings.desired_number_players == 1:
 		# Single player mode - cleanup split screen containers
 		for split_screen in $PlayerScreenManager/SplitScreens.get_children():
 			split_screen.queue_free()
 
 		$AudioListener3DBetweenPlayers.queue_free()
+		var player1 = $PlayerScreenManager/PlayerContainer/PlayerBuggy1
+		$PlayerScreenManager/PlayerContainer.remove_child(player1)
+		$SinglePlayerCamera.add_child(player1)
+		$SinglePlayerCamera.connect_crosshair_control_signals()
 		return
-		
+
 	# Get the appropriate grid container for player count
 	var grid_container = $PlayerScreenManager/SplitScreens.get_node("GridContainer" + str(GameSettings.desired_number_players) + "P")
 	
@@ -106,7 +110,7 @@ func setup_split_screen():
 	for container in unused_containers: container.queue_free()
 	
 	# Free the single player camera
-	$Camera3D.queue_free()
+	$SinglePlayerCamera.queue_free()
 	
 	# Move players to their respective viewports
 	var viewports = grid_container.get_children()
@@ -115,12 +119,13 @@ func setup_split_screen():
 		var viewport_container = viewports[i]
 		var player = list_of_players[i]
 		var viewport = viewport_container.get_node("SubViewport")
-		
+
 		# Remove player from original parent
 		$PlayerScreenManager/PlayerContainer.remove_child(player)
 		# Add to new viewport
 		viewport.add_child(player)
-	
+		viewport.connect_crosshair_control_signals()
+
 	# If in multiplayer mode, make sure the central audio listener is active
 	if GameSettings.desired_number_players > 1:
 		$AudioListener3DBetweenPlayers.current = true

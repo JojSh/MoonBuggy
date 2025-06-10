@@ -1,8 +1,10 @@
-[gd_scene load_steps=13 format=3 uid="uid://cfp77dx8lxb0i"]
+[gd_scene load_steps=15 format=3 uid="uid://cfp77dx8lxb0i"]
 
 [ext_resource type="Script" path="res://RootNode.gd" id="1_06hsa"]
 [ext_resource type="Script" path="res://GameOverScreen.gd" id="2_p4gfa"]
+[ext_resource type="PackedScene" uid="uid://bya5s6afh24y2" path="res://split_screen_sub_viewport.tscn" id="6_eup8v"]
 [ext_resource type="PackedScene" uid="uid://02pucoy7xppp" path="res://subviewport_aiming_reticle.tscn" id="6_vtpqb"]
+[ext_resource type="Script" path="res://SinglePlayerCamera.gd" id="7_0tkgs"]
 [ext_resource type="Script" path="res://WorldMapManager.gd" id="7_682lk"]
 [ext_resource type="PackedScene" uid="uid://tp634kdqbfd" path="res://PlayerBuggy.tscn" id="8_jsgp5"]
 [ext_resource type="Material" uid="uid://cf4w258oi4pca" path="res://car-green.tres" id="10_luqu7"]
@@ -194,13 +196,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer2P/SubViewportContainer1"]
-handle_input_locally = false
-audio_listener_enable_3d = true
-size = Vector2i(1920, 2160)
-render_target_update_mode = 4
-
-[node name="AimingReticle" parent="PlayerScreenManager/SplitScreens/GridContainer2P/SubViewportContainer1/SubViewport" instance=ExtResource("6_vtpqb")]
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer2P/SubViewportContainer1" instance=ExtResource("6_eup8v")]
 
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer2P"]
 layout_mode = 2
@@ -208,13 +204,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer2P/SubViewportContainer2"]
-handle_input_locally = false
-audio_listener_enable_3d = true
-size = Vector2i(1920, 2160)
-render_target_update_mode = 4
-
-[node name="AimingReticle" parent="PlayerScreenManager/SplitScreens/GridContainer2P/SubViewportContainer2/SubViewport" instance=ExtResource("6_vtpqb")]
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer2P/SubViewportContainer2" instance=ExtResource("6_eup8v")]
 
 [node name="GridContainer3P" type="GridContainer" parent="PlayerScreenManager/SplitScreens"]
 anchors_preset = 15
@@ -232,13 +222,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer1"]
-handle_input_locally = false
-audio_listener_enable_3d = true
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer1" instance=ExtResource("6_eup8v")]
 size = Vector2i(1920, 1078)
-render_target_update_mode = 4
-
-[node name="AimingReticle" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer1/SubViewport" instance=ExtResource("6_vtpqb")]
 
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer3P"]
 layout_mode = 2
@@ -246,13 +231,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer2"]
-handle_input_locally = false
-audio_listener_enable_3d = true
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer2" instance=ExtResource("6_eup8v")]
 size = Vector2i(1920, 1078)
-render_target_update_mode = 4
-
-[node name="AimingReticle" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer2/SubViewport" instance=ExtResource("6_vtpqb")]
 
 [node name="SubViewportContainer3" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer3P"]
 layout_mode = 2
@@ -260,13 +240,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer3"]
-handle_input_locally = false
-audio_listener_enable_3d = true
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer3" instance=ExtResource("6_eup8v")]
 size = Vector2i(1920, 1078)
-render_target_update_mode = 4
-
-[node name="AimingReticle" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer3/SubViewport" instance=ExtResource("6_vtpqb")]
 
 [node name="GridContainer4P" type="GridContainer" parent="PlayerScreenManager/SplitScreens"]
 anchors_preset = 15
@@ -284,13 +259,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer1"]
-handle_input_locally = false
-audio_listener_enable_3d = true
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer1" instance=ExtResource("6_eup8v")]
 size = Vector2i(1920, 1078)
-render_target_update_mode = 4
-
-[node name="AimingReticle" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer1/SubViewport" instance=ExtResource("6_vtpqb")]
 
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
 layout_mode = 2
@@ -298,13 +268,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer2"]
-handle_input_locally = false
-audio_listener_enable_3d = true
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer2" instance=ExtResource("6_eup8v")]
 size = Vector2i(1920, 1078)
-render_target_update_mode = 4
-
-[node name="AimingReticle" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer2/SubViewport" instance=ExtResource("6_vtpqb")]
 
 [node name="SubViewportContainer3" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
 layout_mode = 2
@@ -312,13 +277,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer3"]
-handle_input_locally = false
-audio_listener_enable_3d = true
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer3" instance=ExtResource("6_eup8v")]
 size = Vector2i(1920, 1078)
-render_target_update_mode = 4
-
-[node name="AimingReticle" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer3/SubViewport" instance=ExtResource("6_vtpqb")]
 
 [node name="SubViewportContainer4" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
 layout_mode = 2
@@ -326,17 +286,14 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer4"]
-handle_input_locally = false
-audio_listener_enable_3d = true
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer4" instance=ExtResource("6_eup8v")]
 size = Vector2i(1920, 1078)
-render_target_update_mode = 4
 
-[node name="AimingReticle" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer4/SubViewport" instance=ExtResource("6_vtpqb")]
+[node name="SinglePlayerCamera" type="Camera3D" parent="."]
+script = ExtResource("7_0tkgs")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-
-[node name="AimingReticle" parent="Camera3D" instance=ExtResource("6_vtpqb")]
+[node name="AimingReticle" parent="SinglePlayerCamera" instance=ExtResource("6_vtpqb")]
+visible = false
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.767322, 0.641262, 0, -0.641262, 0.767322, 0, 14.1741, 4.37678)
