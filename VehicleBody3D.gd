@@ -3,7 +3,7 @@ extends VehicleBody3D
 const STEER_SPEED = 2.5
 const STEER_LIMIT = 0.4
 const BRAKE_STRENGTH = 2.0
-const STARTING_BOOST_LEVEL := 5.5 # 6.0 # each boost level = +0.5s extra boost duration
+const STARTING_BOOST_LEVEL := 1.5 # 6.0 # each boost level = +0.5s extra boost duration
 const STARTING_RELOAD_LEVEL := 1
 const MAX_UPSIDE_DOWN_TIME := 3.0
 const RESPAWN_TIME := 3.0
@@ -233,7 +233,7 @@ func reorient_vehicle(on_delay: bool = false):
 	
 	# Don't start if we're in the cooldown period
 	if reorientation_cooldown > 0:
-		print("Manual reorientation on cooldown: " + str(reorientation_cooldown) + "s remaining")
+		#print("Manual reorientation on cooldown: " + str(reorientation_cooldown) + "s remaining")
 		return
 	
 	if on_delay:
@@ -368,7 +368,6 @@ func handle_cycle_through_cameras_input ():
 func handle_boost_input (delta):
 	if Input.is_action_pressed(str("p", player_number, "_boost_jump")) and can_boost:
 		var current_max_boost_duration = current_boost_level / 2 # each 1 level = 0.5s extra boost duration
-
 		if boost_timer < current_max_boost_duration:
 			start_boost()
 			boost_timer += delta
@@ -529,6 +528,10 @@ func _respawn():
 	notify_chase_cam_of_teleportation()
 
 	is_dead = false
+	
+	if (GameSettings.debug_mode_on):
+		current_boost_level = 5.5
+		_update_boost_display()
 
 func _input(event):
 	if is_dead or inputs_paused:
@@ -618,6 +621,10 @@ func set_new_spawn_point (point):
 func move_to_spawn_point ():
 	global_position = spawn_point
 	global_rotation = spawn_rotation
+
+	if (GameSettings.debug_mode_on):
+		current_boost_level = 5.5
+		_update_boost_display()
 
 func reorient_vehicle_over_time(duration: float = 0.5):
 	if is_on_corner_ramp:
@@ -787,7 +794,6 @@ func find_contacted_gravity_source():
 	var shape_results = space_state.intersect_shape(shape_query)
 	for contact in shape_results:
 		if contact.collider.name.begins_with("Level"):
-			print("found level using sphere cast")
 			return contact.collider
 	
 	return null
