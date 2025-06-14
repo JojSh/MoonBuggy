@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://tp634kdqbfd"]
+[gd_scene load_steps=26 format=3 uid="uid://tp634kdqbfd"]
 
 [ext_resource type="Script" path="res://VehicleBody3D.gd" id="1_1u0r3"]
 [ext_resource type="Material" uid="uid://sr36pdmgqpu5" path="res://wheel.tres" id="2_1s618"]
@@ -15,6 +15,7 @@
 [ext_resource type="AudioStream" uid="uid://dyasqu703no36" path="res://sounds/pickup_pop.ogg" id="9_p1vwo"]
 [ext_resource type="PackedScene" uid="uid://bg6bppthjrr05" path="res://beam_container.tscn" id="10_ym3a5"]
 [ext_resource type="Script" path="res://CameraPivot.gd" id="14_46ga6"]
+[ext_resource type="PackedScene" uid="uid://b0kwytl5gjk58" path="res://targeting_laser.tscn" id="15_2k4m3"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_kudkn"]
 bounce = 0.2
@@ -284,3 +285,6 @@ transform = Transform3D(0.5, 0, 0, 0, 0.136803, -0.480921, 0, 0.480921, 0.136803
 [node name="Camera3" type="Camera3D" parent="UnusedCameraAngle"]
 transform = Transform3D(-1, 8.74228e-08, 3.47259e-15, -3.48787e-16, -4.37114e-08, 1, 8.74228e-08, 1, 4.37114e-08, -5.2318e-15, 15, 5.2318e-15)
 fov = 53.6
+
+[node name="TargetingLaser" parent="." instance=ExtResource("15_2k4m3")]
+transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, -1.369e-16, 0.5, 0.392504)

@@ -70,6 +70,7 @@ var is_on_corner_ramp := false  # Add this to track corner ramp contact
 @onready var current_boost_level := STARTING_BOOST_LEVEL
 @onready var current_reload_level := STARTING_RELOAD_LEVEL
 @onready var desired_engine_pitch: float = $EngineSound.pitch_scale
+@onready var targeting_laser = $TargetingLaser
 
 signal player_eliminated(player_number)
 signal player_lost_a_life(player_number)
@@ -121,10 +122,17 @@ func _physics_process(delta: float):
 		# Player explicitly requested a flip
 		reorient_vehicle()
 
-	if Input.is_action_pressed(str("p", player_number, "_debug_test_functionality_trigger")) and GameSettings.debug_mode_on:
-		emit_signal("show_crosshair")
-	if Input.is_action_just_released(str("p", player_number, "_debug_test_functionality_trigger")):
-		emit_signal("hide_crosshair")
+	if Input.is_action_pressed(str("p", player_number, "_hold_to_aim")):
+		if ($ChaseCamPivot/ChaseCam.current or $SideCam.current):
+			targeting_laser.show_laser()
+			update_targeting_laser()
+		else:
+			emit_signal("show_crosshair")
+	elif Input.is_action_just_released(str("p", player_number, "_hold_to_aim")):
+		if ($ChaseCamPivot/ChaseCam.current or $SideCam.current):
+			targeting_laser.hide_laser()
+		else:
+			emit_signal("hide_crosshair")
 
 	handle_cycle_through_cameras_input()
 	handle_return_to_start_position_input()
@@ -797,3 +805,19 @@ func find_contacted_gravity_source():
 			return contact.collider
 	
 	return null
+
+func update_targeting_laser():
+	var space_state = get_world_3d().direct_space_state
+	var query = PhysicsRayQueryParameters3D.create(
+		global_transform.origin,
+		global_transform.origin + -global_transform.basis.z * 10000.0  # Increased to 10000 units
+	)
+	query.collision_mask = 1
+	query.exclude = [self]
+	
+	var result = space_state.intersect_ray(query)
+	if result:
+		var distance = global_transform.origin.distance_to(result.position)
+		targeting_laser.update_laser_length(distance)
+	else:
+		targeting_laser.update_laser_length(10000.0)  # Increased to match raycast distance
