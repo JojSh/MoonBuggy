@@ -3,9 +3,10 @@ extends Node3D
 # Map scene resources
 const Map1 = preload("res://maps/map_1.tscn")
 const Map2 = preload("res://maps/map_2.tscn")
+const ObstacleCourse1P = preload("res://maps/obstable_course_1p.tscn")
 
 # Array of all available maps
-const AVAILABLE_MAPS = [Map1, Map2]
+const AVAILABLE_MAPS = [Map1, Map2, ObstacleCourse1P]
 
 # Current map index
 var current_map_index = GameSettings.current_map_index
@@ -31,7 +32,6 @@ func load_map(map_index):
 	
 	# Notify that map has changed (optional)
 	var current_map_name = AVAILABLE_MAPS[current_map_index].resource_path.get_file().trim_suffix(".tscn").capitalize().replace("_", " ")
-	print("Changed to map: " + str(current_map_name))
 	var root_node = get_tree().get_root().get_node("RootNode")
 	if root_node:
 		root_node.current_map = current_map_instance

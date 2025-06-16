@@ -84,7 +84,6 @@ func set_stuck_off_wheels(is_stuck: bool):
 	stuck_off_wheels = is_stuck
 
 func on_teleportation():
-	print("Camera teleportation reset triggered")
 	direction = parent_node.global_transform.basis.z
 	current_up = desired_up
 	global_transform.basis = get_rotation_from_direction(direction)

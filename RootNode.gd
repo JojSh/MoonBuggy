@@ -248,4 +248,24 @@ func _on_change_map_pressed():
 	update_map_display_text()
 
 func update_map_display_text():
+	if (current_map.name == "ObstacleCourseP1"):
+		hide_multiplayer_options()
+	else:
+		unhide_multiplayer_options()
 	$MenuContainer/Control/MainMenuContainer/VBoxContainer/ChangeMap.text = "Change map: " + current_map.name + " "
+
+func hide_multiplayer_options ():
+	var twoPlayerButton = $MenuContainer/Control/MainMenuContainer/VBoxContainer/TwoPlayerSplitScreenButton
+	var threePlayerButton = $MenuContainer/Control/MainMenuContainer/VBoxContainer/ThreePlayerSplitScreenButton
+	var fourPlayerButton = $MenuContainer/Control/MainMenuContainer/VBoxContainer/FourPlayerSplitScreenButton
+
+	for button in [twoPlayerButton, threePlayerButton, fourPlayerButton]:
+		button.visible = false
+
+func unhide_multiplayer_options ():
+	var twoPlayerButton = $MenuContainer/Control/MainMenuContainer/VBoxContainer/TwoPlayerSplitScreenButton
+	var threePlayerButton = $MenuContainer/Control/MainMenuContainer/VBoxContainer/ThreePlayerSplitScreenButton
+	var fourPlayerButton = $MenuContainer/Control/MainMenuContainer/VBoxContainer/FourPlayerSplitScreenButton
+
+	for button in [twoPlayerButton, threePlayerButton, fourPlayerButton]:
+		button.visible = true
