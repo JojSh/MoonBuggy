@@ -85,11 +85,11 @@ func _create_debug_sphere (position: Vector3, radius: float, duration: float = 1
 	timer.timeout.connect(func(): debug_node.queue_free())
 
 func is_out_of_bounds():
-	const MIN_Z = -250
+	const MIN_Z = -520
 	const MAX_Z = 250
 	const MIN_X = -200
 	const MAX_X = 200
-	const MIN_Y = -50
+	const MIN_Y = -150
 	const MAX_Y = 150
 
 	return (
