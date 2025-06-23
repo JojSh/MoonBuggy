@@ -85,6 +85,7 @@ func _create_debug_sphere (position: Vector3, radius: float, duration: float = 1
 	timer.timeout.connect(func(): debug_node.queue_free())
 
 func is_out_of_bounds():
+	# maybe this should be read from the map?
 	const MIN_Z = -520
 	const MAX_Z = 250
 	const MIN_X = -200

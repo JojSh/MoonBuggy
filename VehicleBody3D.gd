@@ -122,17 +122,18 @@ func _physics_process(delta: float):
 		# Player explicitly requested a flip
 		reorient_vehicle()
 
-	if Input.is_action_pressed(str("p", player_number, "_hold_to_aim")):
-		if ($ChaseCamPivot/ChaseCam.current or $SideCam.current):
-			targeting_laser.show_laser()
-			update_targeting_laser()
-		else:
-			emit_signal("show_crosshair")
-	elif Input.is_action_just_released(str("p", player_number, "_hold_to_aim")):
-		if ($ChaseCamPivot/ChaseCam.current or $SideCam.current):
-			targeting_laser.hide_laser()
-		else:
-			emit_signal("hide_crosshair")
+	if (player_number == 1): #temporary until assigned for players 2-4
+		if Input.is_action_pressed(str("p", player_number, "_hold_to_aim")):
+			if ($ChaseCamPivot/ChaseCam.current or $SideCam.current):
+				targeting_laser.show_laser()
+				update_targeting_laser()
+			else:
+				emit_signal("show_crosshair")
+		elif Input.is_action_just_released(str("p", player_number, "_hold_to_aim")):
+			if ($ChaseCamPivot/ChaseCam.current or $SideCam.current):
+				targeting_laser.hide_laser()
+			else:
+				emit_signal("hide_crosshair")
 
 	handle_cycle_through_cameras_input()
 	handle_return_to_start_position_input()
