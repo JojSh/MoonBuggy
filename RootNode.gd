@@ -69,6 +69,9 @@ func start_game ():
 		player.get_node("ChaseCamPivot/ChaseCam").current = true
 		player.notify_chase_cam_of_teleportation()
 	
+	# Connect to checkpoint manager signals
+	connect_checkpoint_signals()
+	
 	# Initialize audio listener position if we're in multiplayer mode
 	if GameSettings.desired_number_players > 1:
 		update_audio_listener_position()
@@ -83,6 +86,13 @@ func assign_random_spawn_points ():
 		player.set_new_spawn_point(selected_spawn_point)
 		player.move_to_spawn_point()
 		all_player_spawn_points.push_back(selected_spawn_point)
+
+func connect_checkpoint_signals():
+	# Connect to checkpoint manager if current map has one
+	if current_map and current_map.has_node("CheckpointManager"):
+		var checkpoint_manager = current_map.get_node("CheckpointManager")
+		if not checkpoint_manager.level_complete.is_connected(_on_level_complete):
+			checkpoint_manager.level_complete.connect(_on_level_complete)
 
 func setup_screens():
 	if GameSettings.desired_number_players == 1:
@@ -269,3 +279,11 @@ func unhide_multiplayer_options ():
 
 	for button in [twoPlayerButton, threePlayerButton, fourPlayerButton]:
 		button.visible = true
+
+func _on_level_complete():
+	# Show level complete message
+	show_game_over_menu("Level Complete!")
+	# Pause all players' inputs
+	for player in list_of_players:
+		if is_instance_valid(player):
+			player.pause_inputs()

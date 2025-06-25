@@ -1,0 +1,48 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://burop7gvtl1jh"]
+
+[sub_resource type="Shader" id="Shader_1"]
+code = "
+shader_type spatial;
+render_mode unshaded;
+
+uniform float time_scale : hint_range(0.1, 5.0) = 1.0;
+uniform vec3 primary_color : source_color = vec3(1.0, 0.2, 0.0);
+uniform vec3 secondary_color : source_color = vec3(1.0, 0.8, 0.0);
+uniform float pulse_speed : hint_range(0.5, 10.0) = 3.0;
+uniform float glow_intensity : hint_range(1.0, 20.0) = 8.0;
+
+void fragment() {
+	vec2 uv = UV;
+	float time = TIME * time_scale;
+	
+	// Create pulsing effect
+	float pulse = sin(time * pulse_speed) * 0.5 + 0.5;
+	
+	// Create rotating gradient
+	float angle = atan(uv.y - 0.5, uv.x - 0.5);
+	float rotating_gradient = sin(angle * 4.0 + time * 2.0) * 0.5 + 0.5;
+	
+	// Create radial wave effect
+	float dist_from_center = distance(uv, vec2(0.5));
+	float radial_wave = sin(dist_from_center * 10.0 - time * 6.0) * 0.3 + 0.7;
+	
+	// Combine effects
+	vec3 color = mix(primary_color, secondary_color, rotating_gradient);
+	color *= pulse * radial_wave * glow_intensity;
+	
+	// Add extra brightness for final checkpoint excitement
+	color += vec3(pulse * 0.5);
+	
+	ALBEDO = color;
+	EMISSION = color * 0.8;
+}
+"
+
+[resource]
+render_priority = 0
+shader = SubResource("Shader_1")
+shader_parameter/time_scale = 1.5
+shader_parameter/primary_color = Color(1, 0.2, 0, 1)
+shader_parameter/secondary_color = Color(1, 0.8, 0, 1)
+shader_parameter/pulse_speed = 4.0
+shader_parameter/glow_intensity = 12.0

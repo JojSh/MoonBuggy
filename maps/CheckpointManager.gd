@@ -1,6 +1,6 @@
 extends Node3D
 
-#signal checkpoint_reached(checkpoint_index: int)
+signal level_complete
 
 var checkpoint_rings: Array[Area3D] = []
 var current_checkpoint_index: int = 0
@@ -22,7 +22,8 @@ func collect_and_connect_checkpoints ():
 
 func activate_checkpoint (index: int):
 	var ring = checkpoint_rings[index]
-	ring.activate()
+	var is_final = (index == checkpoint_rings.size() - 1)
+	ring.activate(is_final)
 
 func deactivate_checkpoint (index: int):
 	var ring = checkpoint_rings[index]
@@ -40,5 +41,4 @@ func _on_checkpoint_triggered ():
 		activate_checkpoint(current_checkpoint_index)
 		#checkpoint_reached.emit(current_checkpoint_index - 1)
 	else:
-		pass
-		#checkpoint_reached.emit(current_checkpoint_index - 1)
+		level_complete.emit()
