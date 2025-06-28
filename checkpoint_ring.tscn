@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://b7nbydaou5n6t"]
+[gd_scene load_steps=9 format=3 uid="uid://b7nbydaou5n6t"]
 
 [ext_resource type="Script" path="res://maps/CheckpointRing.gd" id="1_xw5q0"]
 [ext_resource type="Material" uid="uid://dsf3ecpk3dn5x" path="res://inactive_checkpoint_ring.tres" id="2_8ivcl"]
@@ -12,6 +12,58 @@ inner_radius = 4.4
 outer_radius = 5.0
 ring_segments = 16
 
+[sub_resource type="Animation" id="Animation_caojs"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(2.08165e-12, 2.08165e-12, 2.08165e-12)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(2.91608e-09, -3.80548e-14, -2.53317e-15)]
+}
+
+[sub_resource type="Animation" id="Animation_fedlq"]
+resource_name = "wobble"
+length = 4.0
+loop_mode = 1
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 1, 2.08165e-12, 2.08165e-12, 0.3, 2, 1, 2.08165e-12, 2.08165e-12, -0.2, 3, 1, 2.08165e-12, 2.08165e-12, 0.3, 4, 1, 0, 0, 0)
+tracks/1/type = "rotation_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.5, 1, 0.02, 0, -0.015, 0.9998, 1, 1, 0, 0, 0.02, 0.9998, 1.5, 1, -0.015, 0, 0.015, 0.9998, 2, 1, -0.02, 0, 0, 0.9998, 2.5, 1, -0.01, 0, -0.02, 0.9998, 3, 1, 0.015, 0, -0.015, 0.9998, 3.5, 1, 0.02, 0, 0.01, 0.9998, 4, 1, 0, 0, 0, 1)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_uaa1f"]
+_data = {
+"RESET": SubResource("Animation_caojs"),
+"wobble": SubResource("Animation_fedlq")
+}
+
 [node name="CheckpointRing" type="Area3D"]
 transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 collision_mask = 4
@@ -22,12 +74,18 @@ transform = Transform3D(1, 8.74228e-08, 8.74228e-08, 8.74228e-08, -1, -3.48787e-
 shape = SubResource("ConvexPolygonShape3D_7m3i4")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, -4.25831e-16, -2.72331e-14, -2.53317e-15, 1, 1.94743e-09, 3.80548e-14, 2.91608e-09, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+transform = Transform3D(1, 2.53317e-15, -3.80548e-14, -2.53317e-15, 1, -2.91608e-09, 3.80548e-14, 2.91608e-09, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 mesh = SubResource("TorusMesh_txmap")
 surface_material_override/0 = ExtResource("2_8ivcl")
 
 [node name="CheckedSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_jxgur")
 volume_db = 6.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../MeshInstance3D")
+libraries = {
+"": SubResource("AnimationLibrary_uaa1f")
+}
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

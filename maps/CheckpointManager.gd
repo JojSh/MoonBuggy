@@ -18,7 +18,7 @@ func collect_and_connect_checkpoints ():
 			checkpoint_rings.append(child)
 			child.checkpoint_triggered.connect(_on_checkpoint_triggered)
 
-	checkpoint_rings.sort_custom(func(a, b): return a.name < b.name)
+	#checkpoint_rings.sort_custom(func(a, b): return a.name < b.name)
 
 func activate_checkpoint (index: int):
 	var ring = checkpoint_rings[index]
@@ -35,6 +35,7 @@ func hide_checkpoint (index: int):
 
 func _on_checkpoint_triggered ():
 	hide_checkpoint(current_checkpoint_index)
+	deactivate_checkpoint(current_checkpoint_index)
 	current_checkpoint_index += 1
 	
 	if current_checkpoint_index < checkpoint_rings.size():

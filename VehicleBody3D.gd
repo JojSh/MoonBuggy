@@ -506,7 +506,7 @@ func generate_and_separate_clone_of_part (og_part, death_velocity, death_positio
 	direction = direction.normalized()
 	duplicate_part_rgdbdy.apply_impulse(direction * SEPARATION_FORCE)
 
-func _respawn():
+func _respawn ():
 	reorientation_cooldown = 1.0
 	# Reset position and rotation
 	global_position = spawn_point
@@ -524,8 +524,6 @@ func _respawn():
 			part.visible = true
 	
 	# Re-enable physics and collision
-	collision_layer = 1  # Set to original layer
-	collision_mask = 1   # Set to original mask
 	set_physics_process(true)
 	set_process_input(true)
 	
