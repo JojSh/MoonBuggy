@@ -86,7 +86,7 @@ func _create_debug_sphere (position: Vector3, radius: float, duration: float = 1
 
 func is_out_of_bounds():
 	# maybe this should be read from the map?
-	const MIN_Z = -520
+	const MIN_Z = -550
 	const MAX_Z = 250
 	const MIN_X = -200
 	const MAX_X = 200

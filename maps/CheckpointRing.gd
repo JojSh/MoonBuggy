@@ -12,6 +12,10 @@ func _ready():
 
 func _on_body_entered (body):
 	if active:
+		# Ignore dead players to prevent triggering checkpoints during death
+		if body.has_method("is_dead") and body.is_dead:
+			return
+
 		$CheckedSound.play()
 		checkpoint_triggered.emit()
 

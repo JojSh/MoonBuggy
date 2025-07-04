@@ -3,7 +3,7 @@ extends VehicleBody3D
 const STEER_SPEED = 2.5
 const STEER_LIMIT = 0.4
 const BRAKE_STRENGTH = 2.0
-const STARTING_BOOST_LEVEL := 1.5 # 6.0 # each boost level = +0.5s extra boost duration
+const STARTING_BOOST_LEVEL := 6.0 # 1.5  # each boost level = +0.5s extra boost duration
 const STARTING_RELOAD_LEVEL := 1
 const MAX_UPSIDE_DOWN_TIME := 3.0
 const RESPAWN_TIME := 3.0
@@ -143,6 +143,9 @@ func _physics_process(delta: float):
 	handle_acceleration_input()
 	handle_reverse_input()
 	handle_fire_input()
+	
+	if (player_number == 1 && Input.is_action_just_pressed("p1_debug_test_functionality_trigger")):
+		print("testing debug input")
 
 	handle_engine_sound()
 	handle_sudden_impact_feedback()
@@ -308,7 +311,7 @@ func die ():
 	if is_invincible: return
 	if is_dead: return
 	is_dead = true
-	
+
 	# Store death position and velocity before disabling physics
 	var death_position = global_position
 	var death_velocity = linear_velocity  # Capture the vehicle's velocity
@@ -333,7 +336,7 @@ func die ():
 	else:
 		# In single-player mode, add to root
 		get_tree().root.add_child(death_camera)
-	
+
 	death_camera.global_transform = current_camera.global_transform
 	death_camera.current = true
 
@@ -347,7 +350,6 @@ func die ():
 		return
 	else:
 		emit_signal("player_lost_a_life", player_number)
-
 	# Start respawn timer
 	get_tree().create_timer(RESPAWN_TIME).timeout.connect(_respawn)
 
@@ -608,7 +610,7 @@ func activate_rocket_diarrhea ():
 
 	$RocketLauncher.deactivate_diarrhea()
 	$Body/MeshInstance3D.material_override = null # remove the shader
-	collision_layer = 1
+	collision_layer = 1 # poptential issue?
 	
 	var invincibility_buffer_timer = get_tree().create_timer(0.5)
 	await invincibility_buffer_timer.timeout

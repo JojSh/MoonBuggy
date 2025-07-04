@@ -5,6 +5,7 @@ var list_of_players = []
 #@onready var _debug_init = turn_off_debug_mode()  # can also be turn_off_debug_mode
 @onready var current_map = $World.get_children()[0]
 var randomise_start_positions: bool = true
+var checkpointed_respawn_point
 
 func _ready():
 	if GameSettings.should_skip_main_menu:
@@ -93,6 +94,7 @@ func connect_checkpoint_signals():
 		var checkpoint_manager = current_map.get_node("CheckpointManager")
 		if not checkpoint_manager.level_complete.is_connected(_on_level_complete):
 			checkpoint_manager.level_complete.connect(_on_level_complete)
+			checkpoint_manager.set_checkpoint_as_respawn_point.connect(_on_set_checkpoint_as_respawn_point)
 
 func setup_screens():
 	if GameSettings.desired_number_players == 1:
@@ -180,16 +182,27 @@ func _on_player_eliminated(player_number):
 		update_audio_listener_position()
 
 func _on_player_lost_a_life(player_number):
-	assign_new_spawn_point_to_player(player_number)
-	# next up: ^ this is causing the camera to go mental and fly away on death.
-	
-	# Update audio listener position when player respawns
-	if GameSettings.desired_number_players > 1:
-		# Add a short delay to ensure the player has fully respawned
-		var timer = get_tree().create_timer(0.1)
-		timer.timeout.connect(func(): update_audio_listener_position())
+	if checkpointed_respawn_point:
+		assign_checkpointed_spawn_point_to_player(player_number, checkpointed_respawn_point)
+	else:
+		assign_new_spawn_point_to_player(player_number)
+		# next up: ^ this is causing the camera to go mental and fly away on death.
+		
+		# Update audio listener position when player respawns
+		if GameSettings.desired_number_players > 1:
+			# Add a short delay to ensure the player has fully respawned
+			var timer = get_tree().create_timer(0.1)
+			timer.timeout.connect(func(): update_audio_listener_position())
 
-func assign_new_spawn_point_to_player(player_number):
+func assign_checkpointed_spawn_point_to_player (player_number, checkpoint):
+	var current_player = list_of_players.filter(func(p): 
+		return p.player_number == player_number
+	)[0]
+	
+	current_player.set_new_spawn_point(checkpoint)
+	current_player.move_to_spawn_point()
+
+func assign_new_spawn_point_to_player (player_number):
 	var all_player_spawn_points = current_map.get_node("PlayerSpawnPositions").get_children()
 	var new_spawn_point = all_player_spawn_points.pick_random()
 	
@@ -287,3 +300,7 @@ func _on_level_complete():
 	for player in list_of_players:
 		if is_instance_valid(player):
 			player.pause_inputs()
+
+func _on_set_checkpoint_as_respawn_point (point):
+	var player_1 = list_of_players[0]
+	checkpointed_respawn_point = point

@@ -1,6 +1,6 @@
 [gd_scene load_steps=26 format=3 uid="uid://tp634kdqbfd"]
 
-[ext_resource type="Script" path="res://VehicleBody3D.gd" id="1_1u0r3"]
+[ext_resource type="Script" path="res://PlayerBuggy.gd" id="1_1u0r3"]
 [ext_resource type="Material" uid="uid://sr36pdmgqpu5" path="res://wheel.tres" id="2_1s618"]
 [ext_resource type="Material" uid="uid://cf4w258oi4pca" path="res://car-green.tres" id="3_4flkc"]
 [ext_resource type="ArrayMesh" uid="uid://bu4kaojj6gik0" path="res://AngryRocket3.obj" id="3_mseli"]

@@ -1,6 +1,7 @@
 extends Node3D
 
 signal level_complete
+signal set_checkpoint_as_respawn_point
 
 var checkpoint_rings: Array[Area3D] = []
 var current_checkpoint_index: int = 0
@@ -36,10 +37,10 @@ func hide_checkpoint (index: int):
 func _on_checkpoint_triggered ():
 	hide_checkpoint(current_checkpoint_index)
 	deactivate_checkpoint(current_checkpoint_index)
+	set_checkpoint_as_respawn_point.emit(checkpoint_rings[current_checkpoint_index])
 	current_checkpoint_index += 1
 	
 	if current_checkpoint_index < checkpoint_rings.size():
 		activate_checkpoint(current_checkpoint_index)
-		#checkpoint_reached.emit(current_checkpoint_index - 1)
 	else:
 		level_complete.emit()

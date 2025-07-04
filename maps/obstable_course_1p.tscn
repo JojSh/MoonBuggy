@@ -110,7 +110,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -47, 2.08165e-12
 shape = SubResource("BoxShape3D_y1d70")
 
 [node name="Block" type="RigidBody3D" parent="LevelFlat"]
-transform = Transform3D(1, 0, 3.48787e-16, 0, 1, 0, -3.48787e-16, 0, 1, -3, 1, -2)
+transform = Transform3D(1, -4.8501e-15, 7.64741e-15, 2.31921e-15, 1, 4.91294e-08, 4.53664e-16, -5.22478e-08, 1, 31.3724, 1.00002, -2)
 mass = 25.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelFlat/Block"]
@@ -177,7 +177,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.0
 shape = SubResource("ConvexPolygonShape3D_4ru31")
 
 [node name="Block6" type="RigidBody3D" parent="LevelFlat"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.99999, 1, -34.726)
+transform = Transform3D(1, -4.8501e-15, 7.64741e-15, 2.31921e-15, 1, 4.91294e-08, 4.53664e-16, -5.22478e-08, 1, -35.3563, 1, -34.726)
 mass = 25.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelFlat/Block6"]
@@ -244,7 +244,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.0
 shape = SubResource("ConvexPolygonShape3D_4ru31")
 
 [node name="Block12" type="RigidBody3D" parent="LevelFlat"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.2977, 1, -81.8271)
+transform = Transform3D(1, -2.1075e-14, 1.61744e-14, 2.31921e-15, 1, 8.03204e-08, 4.53664e-16, -2.13201e-07, 1, -5.9837, 1, -81.8271)
 mass = 25.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelFlat/Block12"]
@@ -311,7 +311,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.0
 shape = SubResource("ConvexPolygonShape3D_4ru31")
 
 [node name="Block17" type="RigidBody3D" parent="LevelFlat"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.4898, 1, 137.097)
+transform = Transform3D(1, -1.089e-14, 1.61744e-14, 2.31921e-15, 1, 8.03204e-08, 4.53664e-16, -1.06981e-07, 1, 31.4898, -1.66483, 208.355)
 mass = 25.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelFlat/Block17"]
@@ -320,6 +320,7 @@ mesh = SubResource("BoxMesh_6unxr")
 skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelFlat/Block17"]
+transform = Transform3D(1, -2.2447e-15, 4.33123e-15, 5.42849e-16, 1, 2.83355e-08, 4.53664e-16, -2.40692e-08, 1, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_s41nm")
 
 [node name="Block18" type="RigidBody3D" parent="LevelFlat"]
@@ -751,7 +752,7 @@ transform = Transform3D(-4.37114e-08, 3.48787e-16, 1, 3.48787e-16, 1, -3.48787e-
 [node name="UnusedPlayerSpawnPositionsHolder" type="Node3D" parent="."]
 
 [node name="Position2" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
-transform = Transform3D(-1, 3.48787e-16, -1.50996e-07, 3.48787e-16, 1, -3.48787e-16, 1.50996e-07, -3.48787e-16, -1, 2.08165e-12, -49, -60)
+transform = Transform3D(1, -3.48787e-16, 2.38419e-07, 3.48787e-16, 1, -3.48787e-16, -2.38419e-07, 3.48787e-16, 1, -92.5886, -18.1, -180.695)
 
 [node name="Position3" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -49, 60)
@@ -773,51 +774,56 @@ transform = Transform3D(-1, -8.74228e-08, 3.48787e-16, 8.74228e-08, -1, -3.48787
 
 [node name="test marker" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 142.057, -517.939)
+visible = false
 material_override = ExtResource("5_1frbt")
 mesh = SubResource("BoxMesh_4l38o")
 skeleton = NodePath("")
 
 [node name="CheckpointManager" type="Node3D" parent="."]
-transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, -94, 32, -330)
+transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("11_ovy1g")
 
 [node name="CheckpointRing1" parent="CheckpointManager" instance=ExtResource("11_1be78")]
-transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 2.64698e-23, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, -29, 71, -200)
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, -125.655, 102.615, -530.202)
 
 [node name="CheckpointRing2" parent="CheckpointManager" instance=ExtResource("11_1be78")]
-transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 2.64698e-23, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, -16.713, 71, -200)
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, -104.826, 102.615, -530.202)
 
 [node name="CheckpointRing3" parent="CheckpointManager" instance=ExtResource("11_1be78")]
-transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 2.64698e-23, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, -1.8507, 71, -200)
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, -86.2045, 102.615, -530.202)
 
 [node name="CheckpointRing4" parent="CheckpointManager" instance=ExtResource("11_1be78")]
-transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 2.64698e-23, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 18.7499, 71, -200)
-
-[node name="CheckpointRing5" parent="CheckpointManager" instance=ExtResource("11_1be78")]
-transform = Transform3D(1, -2.64698e-23, 1.5246e-23, -1.21652e-31, -4.37114e-08, -1, 0, 1, -4.37114e-08, 2, 40, -101)
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, -64.578, 102.615, -530.202)
 
 [node name="unused chackpoints2" type="Node3D" parent="."]
 visible = false
 
 [node name="CheckpointRing1" parent="unused chackpoints2" instance=ExtResource("11_1be78")]
 transform = Transform3D(1, 1.06581e-14, 3.48783e-16, 3.48787e-16, -4.37114e-08, -1, -1.06581e-14, 1, -4.37114e-08, -110.796, 80.1254, -454.836)
-visible = false
 
 [node name="CheckpointRing2" parent="unused chackpoints2" instance=ExtResource("11_1be78")]
 transform = Transform3D(1, 1.06581e-14, 3.48783e-16, 3.48787e-16, -4.37114e-08, -1, -1.06581e-14, 1, -4.37114e-08, -78.4346, 46.2547, -356.108)
-visible = false
 
 [node name="CheckpointRing3" parent="unused chackpoints2" instance=ExtResource("11_1be78")]
 transform = Transform3D(1, 1.06581e-14, 3.48783e-16, 3.48787e-16, -4.37114e-08, -1, -1.06581e-14, 1, -4.37114e-08, -119.192, 14.1647, -262.828)
-visible = false
 
 [node name="CheckpointRing4" parent="unused chackpoints2" instance=ExtResource("11_1be78")]
 transform = Transform3D(1, 1.06581e-14, 3.48783e-16, 3.48787e-16, -4.37114e-08, -1, -1.06581e-14, 1, -4.37114e-08, -91.4602, -24.126, -151.481)
-visible = false
 
 [node name="CheckpointRing5" parent="unused chackpoints2" instance=ExtResource("11_1be78")]
-transform = Transform3D(0.707107, 0.707107, -3.09086e-08, 3.48787e-16, -4.37114e-08, -1, -0.707107, 0.707107, -3.09086e-08, -46.0305, -14.5031, -66.4984)
-visible = false
+transform = Transform3D(0.707107, 0.707107, -3.09086e-08, 3.48787e-16, -4.37114e-08, -1, -0.707107, 0.707107, -3.09086e-08, -46.0305, -14.5031, -66.498)
+
+[node name="CheckpointRing6" parent="unused chackpoints2" instance=ExtResource("11_1be78")]
+transform = Transform3D(0.707107, 0.707107, -3.09086e-08, 3.48787e-16, -4.37114e-08, -1, -0.707107, 0.707107, -3.09086e-08, -17.6037, 5.0984, -38.326)
+
+[node name="CheckpointRing7" parent="unused chackpoints2" instance=ExtResource("11_1be78")]
+transform = Transform3D(0.707107, 0.707107, -3.09086e-08, 3.48787e-16, -4.37114e-08, -1, -0.707107, 0.707107, -3.09086e-08, 11.845, -10.3687, -16.323)
+
+[node name="CheckpointRing8" parent="unused chackpoints2" instance=ExtResource("11_1be78")]
+transform = Transform3D(0.707107, 0.707107, -3.09086e-08, 3.48787e-16, -4.37114e-08, -1, -0.707107, 0.707107, -3.09086e-08, 4.041, -14.8948, 51.093)
+
+[node name="CheckpointRing9" parent="unused chackpoints2" instance=ExtResource("11_1be78")]
+transform = Transform3D(2.73408e-08, 1, -4.37114e-08, -1.44472e-16, -4.37114e-08, -1, -1, -2.73408e-08, 4.37083e-15, 94.268, 40.5347, 36.871)
 
 [connection signal="body_entered" from="LevelFlat/GravityArea3D" to="LevelFlat" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="LevelSphere1 - StaticBody3D2/GravityArea3D" to="LevelSphere1 - StaticBody3D2" method="_on_area_3d_body_entered"]
