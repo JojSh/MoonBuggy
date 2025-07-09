@@ -25,9 +25,7 @@ func _process(delta):
 
 # Function to update the audio listener position to stay equidistant between all active players
 func update_audio_listener_position():
-	var active_players = list_of_players.filter(func(player):
-		return is_instance_valid(player) and not player.is_dead
-	)
+	var active_players = get_active_players()
 	
 	if active_players.size() == 0:
 		return
@@ -57,10 +55,14 @@ func hide_main_menu():
 
 func start_game ():
 	register_active_players()
-	if (randomise_start_positions):
-		assign_random_spawn_points()
+	if (current_map.name == "ObstacleCourseP1"):
+		list_of_players[0].switch_on_obstacle_course_mode()
+	else:
+		list_of_players[0].switch_off_obstacle_course_mode()
+	assign_spawn_points()
 	setup_screens()
 	MusicManager.start_music()
+	
 
 	# After split screen setup, configure each player's cameras and signals
 	# This ensures cameras are in their final viewport context
@@ -78,9 +80,10 @@ func start_game ():
 		update_audio_listener_position()
 		$AudioListener3DBetweenPlayers.current = true
 
-func assign_random_spawn_points ():
+func assign_spawn_points ():
 	var all_player_spawn_points = current_map.get_node("PlayerSpawnPositions").get_children()
-	all_player_spawn_points.shuffle()
+	if randomise_start_positions:
+		all_player_spawn_points.shuffle()
 
 	for player in list_of_players:
 		var selected_spawn_point = all_player_spawn_points.pop_front()
@@ -166,9 +169,7 @@ func _on_portal_entrance_area_3d_body_entered(body, portal_number: int):
 	body.notify_chase_cam_of_teleportation()
 
 func _on_player_eliminated(player_number):
-	var alive_players = list_of_players.filter(func(player):
-		return is_instance_valid(player) and player.is_dead == false
-	)
+	var alive_players = get_active_players()
 	
 	if alive_players.size() == 1:
 		var winner_text = str("Player ", alive_players[0].player_number, " wins!")
@@ -195,20 +196,23 @@ func _on_player_lost_a_life(player_number):
 			timer.timeout.connect(func(): update_audio_listener_position())
 
 func assign_checkpointed_spawn_point_to_player (player_number, checkpoint):
-	var current_player = list_of_players.filter(func(p): 
-		return p.player_number == player_number
-	)[0]
+	var current_player = get_current_player(player_number)
 	
-	current_player.set_new_spawn_point(checkpoint)
+	# Create a new spawn point entity with the checkpoint's transform
+	var spawn_point = Node3D.new()
+	spawn_point.transform = checkpoint.transform
+	
+	# Adjust the spawn point transform if needed
+	# Convert degrees to radians for rotation
+	spawn_point.rotation.x -= deg_to_rad(90)
+	
+	current_player.set_new_spawn_point(spawn_point)
 	current_player.move_to_spawn_point()
 
 func assign_new_spawn_point_to_player (player_number):
 	var all_player_spawn_points = current_map.get_node("PlayerSpawnPositions").get_children()
 	var new_spawn_point = all_player_spawn_points.pick_random()
-	
-	var current_player = list_of_players.filter(func(p): 
-		return p.player_number == player_number
-	)[0]
+	var current_player = get_current_player(player_number)
 	
 	current_player.set_new_spawn_point(new_spawn_point)
 	current_player.move_to_spawn_point()
@@ -265,12 +269,12 @@ func _on_change_map_pressed():
 	$World.cycle_to_next_map()
 	
 	# Reset player positions on the new map
-	if randomise_start_positions:
-		assign_random_spawn_points()
+	assign_spawn_points()
 
 	update_map_display_text()
 
 func update_map_display_text():
+	#var current_player = get_current_player(1)
 	if (current_map.name == "ObstacleCourseP1"):
 		hide_multiplayer_options()
 	else:
@@ -304,3 +308,17 @@ func _on_level_complete():
 func _on_set_checkpoint_as_respawn_point (point):
 	var player_1 = list_of_players[0]
 	checkpointed_respawn_point = point
+
+func get_current_player (player_number):
+	var current_player = list_of_players.filter(func(p): 
+		return p.player_number == player_number
+	)[0]
+	
+	return current_player
+
+func get_active_players ():
+	var active_players = list_of_players.filter(func(player):
+		return is_instance_valid(player) and not player.is_dead
+	)
+
+	return active_players

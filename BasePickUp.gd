@@ -10,13 +10,15 @@ var _initial_gravity_point: Vector3
 
 @export var position_threshold = 3.0  # Distance threshold to consider the pickup moved
 @export var effect_method = ""  # The method to call on the vehicle body
+@export var auto_spawn : bool = true
 
 func _ready():
 	# Wait a short time to ensure the position is set by the spawner
-	var init_timer = get_tree().create_timer(0.3)
-	await init_timer.timeout
-	save_initial_position()
-	check_for_moved_off_spawn_pos()
+	if (auto_spawn):
+		var init_timer = get_tree().create_timer(0.3)
+		await init_timer.timeout
+		save_initial_position()
+		check_for_moved_off_spawn_pos()
 
 func save_initial_position():
 	initial_position = global_position

@@ -3,7 +3,7 @@ extends VehicleBody3D
 const STEER_SPEED = 2.5
 const STEER_LIMIT = 0.4
 const BRAKE_STRENGTH = 2.0
-const STARTING_BOOST_LEVEL := 6.0 # 1.5  # each boost level = +0.5s extra boost duration
+const STARTING_BOOST_LEVEL : float = 0 # 1.5  # each boost level = +0.5s extra boost duration
 const STARTING_RELOAD_LEVEL := 1
 const MAX_UPSIDE_DOWN_TIME := 3.0
 const RESPAWN_TIME := 3.0
@@ -27,6 +27,7 @@ var is_invincible := false
 var is_reorienting := false  # Track if we're currently in a gradual reorientation
 var spawn_point : Vector3
 var spawn_rotation : Vector3
+var playing_obstacle_course_mode := false
 
 # Variables for gradual reorientation
 const REORIENTATION_COOLDOWN_DURATION := 3.0  # 3.0 second cooldown
@@ -515,7 +516,8 @@ func _respawn ():
 	rotation = spawn_rotation
 	linear_velocity = Vector3.ZERO
 	angular_velocity = Vector3.ZERO
-	current_boost_level = STARTING_BOOST_LEVEL
+	if (not playing_obstacle_course_mode):
+		current_boost_level = STARTING_BOOST_LEVEL
 
 	_update_lives_display()
 	_update_boost_display()
@@ -822,3 +824,9 @@ func update_targeting_laser():
 		targeting_laser.update_laser_length(distance)
 	else:
 		targeting_laser.update_laser_length(10000.0)  # Increased to match raycast distance
+
+func switch_on_obstacle_course_mode ():
+	playing_obstacle_course_mode = true
+
+func switch_off_obstacle_course_mode ():
+	playing_obstacle_course_mode = false
