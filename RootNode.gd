@@ -62,7 +62,6 @@ func start_game ():
 	assign_spawn_points()
 	setup_screens()
 	MusicManager.start_music()
-	
 
 	# After split screen setup, configure each player's cameras and signals
 	# This ensures cameras are in their final viewport context

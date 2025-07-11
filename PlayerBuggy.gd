@@ -3,7 +3,7 @@ extends VehicleBody3D
 const STEER_SPEED = 2.5
 const STEER_LIMIT = 0.4
 const BRAKE_STRENGTH = 2.0
-const STARTING_BOOST_LEVEL : float = 0 # 1.5  # each boost level = +0.5s extra boost duration
+const STARTING_BOOST_LEVEL : float = 3.0 # 1.5  # each boost level = +0.5s extra boost duration
 const STARTING_RELOAD_LEVEL := 1
 const MAX_UPSIDE_DOWN_TIME := 3.0
 const RESPAWN_TIME := 3.0
