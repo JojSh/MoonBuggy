@@ -6,6 +6,7 @@ var list_of_players = []
 @onready var current_map = $World.get_children()[0]
 var randomise_start_positions: bool = true
 var checkpointed_respawn_point
+var obstacle_course_timer
 
 func _ready():
 	if GameSettings.should_skip_main_menu:
@@ -57,8 +58,10 @@ func start_game ():
 	register_active_players()
 	if (current_map.name == "ObstacleCourseP1"):
 		list_of_players[0].switch_on_obstacle_course_mode()
+		setup_obstacle_course_timer()
 	else:
 		list_of_players[0].switch_off_obstacle_course_mode()
+		remove_obstacle_course_timer()
 	assign_spawn_points()
 	setup_screens()
 	MusicManager.start_music()
@@ -297,8 +300,13 @@ func unhide_multiplayer_options ():
 		button.visible = true
 
 func _on_level_complete():
-	# Show level complete message
-	show_game_over_menu("Level Complete!")
+	# Stop the timer if it's running
+	if obstacle_course_timer:
+		obstacle_course_timer.stop_timer()
+		var completion_time = obstacle_course_timer.get_completion_time()
+		show_game_over_menu("Level Complete!\nTime: " + completion_time)
+	else:
+		show_game_over_menu("Level Complete!")
 	# Pause all players' inputs
 	for player in list_of_players:
 		if is_instance_valid(player):
@@ -321,3 +329,17 @@ func get_active_players ():
 	)
 
 	return active_players
+
+func setup_obstacle_course_timer():
+	# Load and instantiate the timer
+	const ObstacleCourseTimer = preload("res://ObstacleCourseTimer.tscn")
+	obstacle_course_timer = ObstacleCourseTimer.instantiate()
+	add_child(obstacle_course_timer)
+	
+	# Start the timer when the game begins
+	obstacle_course_timer.start_timer()
+
+func remove_obstacle_course_timer():
+	if obstacle_course_timer:
+		obstacle_course_timer.queue_free()
+		obstacle_course_timer = null
