@@ -56,7 +56,7 @@ func hide_main_menu():
 
 func start_game ():
 	register_active_players()
-	if (current_map.name == "ObstacleCourseP1"):
+	if (current_map.name.begins_with("ObstacleCourse")):
 		list_of_players[0].switch_on_obstacle_course_mode()
 		setup_obstacle_course_timer()
 	else:
@@ -277,7 +277,7 @@ func _on_change_map_pressed():
 
 func update_map_display_text():
 	#var current_player = get_current_player(1)
-	if (current_map.name == "ObstacleCourseP1"):
+	if (current_map.name.begins_with("ObstacleCourse")):
 		hide_multiplayer_options()
 	else:
 		unhide_multiplayer_options()

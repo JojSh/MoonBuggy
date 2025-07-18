@@ -4,9 +4,10 @@ extends Node3D
 const Map1 = preload("res://maps/map_1.tscn")
 const Map2 = preload("res://maps/map_2.tscn")
 const ObstacleCourse1P = preload("res://maps/obstable_course_1p.tscn")
+const ObstacleCourse1P2 = preload("res://maps/obstable_course_1p2.tscn")
 
 # Array of all available maps
-const AVAILABLE_MAPS = [Map1, Map2, ObstacleCourse1P]
+const AVAILABLE_MAPS = [Map1, Map2, ObstacleCourse1P, ObstacleCourse1P2]
 
 # Current map index
 var current_map_index = GameSettings.current_map_index

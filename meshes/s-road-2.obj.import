@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://urgn0vu6sev1"
+path="res://.godot/imported/s-road-2.obj-96f41aa7da5e9787219878a268b01974.mesh"
+
+[deps]
+
+files=["res://.godot/imported/s-road-2.obj-96f41aa7da5e9787219878a268b01974.mesh"]
+
+source_file="res://meshes/s-road-2.obj"
+dest_files=["res://.godot/imported/s-road-2.obj-96f41aa7da5e9787219878a268b01974.mesh", "res://.godot/imported/s-road-2.obj-96f41aa7da5e9787219878a268b01974.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false
