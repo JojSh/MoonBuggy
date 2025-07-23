@@ -9,7 +9,7 @@ const STARTING_COOLDOWN_TIME = 5.0
 
 func fire_rocket():
 	if !can_fire: return
-	$MeshInstance3D.set_visible(false)
+	hide_rocket()
 	var rocket_projectile = RocketProjectile.instantiate()
 	get_tree().get_root().add_child(rocket_projectile)
 	rocket_projectile.global_transform = $MeshInstance3D.global_transform
@@ -37,7 +37,7 @@ func fire_rocket():
 	can_fire = false
 	var timer = get_tree().create_timer(current_cooldown_time)
 	await timer.timeout
-	$MeshInstance3D.set_visible(true)
+	show_rocket()
 	if diarrhea_active:
 		can_fire = true  # Set can_fire to true before recursive call
 		fire_rocket()
@@ -45,6 +45,7 @@ func fire_rocket():
 		can_fire = true
 
 func reduce_cooldown_time (current_reload_level):
+	show_rocket()
 	if current_reload_level < 5:
 		current_cooldown_time = STARTING_COOLDOWN_TIME - current_reload_level
 	elif current_reload_level == 5:
@@ -62,3 +63,9 @@ func activate_diarrhea():
 func deactivate_diarrhea():
 	diarrhea_active = false
 	current_cooldown_time = cooldown_time_before_diarrhea
+
+func hide_rocket ():
+	$MeshInstance3D.set_visible(false)
+
+func show_rocket ():
+	$MeshInstance3D.set_visible(true)
