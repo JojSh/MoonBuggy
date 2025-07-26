@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://db74hm1deeydx"]
+[gd_scene load_steps=45 format=3 uid="uid://db74hm1deeydx"]
 
 [ext_resource type="Environment" uid="uid://c5eh8m3f8t03j" path="res://bright_sky.tres" id="1_i78qc"]
 [ext_resource type="Texture2D" uid="uid://0snyqnypvtk6" path="res://icon.svg" id="2_w3ndf"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://b7nbydaou5n6t" path="res://checkpoint_ring.tscn" id="11_or5iy"]
 [ext_resource type="Script" path="res://maps/CheckpointManager.gd" id="12_s2vcl"]
 [ext_resource type="PackedScene" uid="uid://df7ht11kiiqun" path="res://reload_speed_pick_up.tscn" id="14_2uvjb"]
+[ext_resource type="PackedScene" uid="uid://g61ejgte8er3" path="res://KillZone.tscn" id="15_5sqf8"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_55m80"]
 size = Vector3(80, 0.2, 30)
@@ -541,10 +542,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.0
 shape = SubResource("ConvexPolygonShape3D_4ru31")
 
 [node name="Ramp" type="RigidBody3D" parent="LevelFlatSlope/Features"]
-transform = Transform3D(1, -1.18373e-14, 1.85421e-14, 5.42849e-16, 1, 8.79402e-08, 4.53664e-16, -1.08605e-07, 1, -4.35596, 0.709579, -198.037)
+transform = Transform3D(1, -3.40765e-15, -4.8916e-14, 1.70906e-15, 1, 9.42224e-08, -3.61898e-15, -1.05222e-07, 1, -0.995148, 0.709538, -198.037)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelFlatSlope/Features/Ramp"]
-transform = Transform3D(-4.37114e-08, 3.20874e-16, 1, -4.60355e-09, 1, 2.92807e-15, -1, 2.03543e-09, -4.37114e-08, 2.08165e-12, -0.35, -0.079)
+transform = Transform3D(-4.37114e-08, 1.45065e-16, 1, -7.11317e-09, 1, 4.35967e-15, -1, -1.58153e-08, -4.37114e-08, 0, -0.349979, -0.07901)
 mesh = SubResource("PrismMesh_suh1j")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelFlatSlope/Features/Ramp"]
@@ -566,7 +567,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.0
 shape = SubResource("ConvexPolygonShape3D_4ru31")
 
 [node name="Ramp2" type="RigidBody3D" parent="LevelFlatSlope/Features"]
-transform = Transform3D(1, -7.86304e-14, 2.56475e-14, 2.31921e-15, 1, 1.17742e-07, 4.53664e-16, -9.58835e-07, 1, -0.397018, 0.709579, -198.037)
+transform = Transform3D(1, -7.06326e-14, 8.22013e-16, 3.48542e-15, 1, 1.24025e-07, -3.61898e-15, -1.00765e-06, 1, 2.96381, 0.709538, -198.037)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelFlatSlope/Features/Ramp2"]
 transform = Transform3D(-4.37114e-08, 6.03822e-15, 1, -2.41986e-09, 1, 4.35852e-15, -1, 1.91602e-09, -4.37114e-08, 0, -0.350006, -0.0800018)
@@ -1114,13 +1115,13 @@ shape = SubResource("SphereShape3D_uaobl")
 
 [node name="PlayerSpawnPositions" type="Node3D" parent="."]
 
-[node name="Position1" type="Node3D" parent="PlayerSpawnPositions"]
-transform = Transform3D(1, -3.48787e-16, 1.06581e-14, 3.48787e-16, 1, -3.48787e-16, -1.06581e-14, 3.48787e-16, 1, -92.174, 71.1192, -531.344)
+[node name="Position2" type="Node3D" parent="PlayerSpawnPositions"]
+transform = Transform3D(0.923639, -4.55831e-16, -0.383264, 3.48787e-16, 1, -3.48787e-16, 0.383264, 1.88476e-16, 0.923639, -74.6956, 72.5057, -180.551)
 
 [node name="UnusedPlayerSpawnPositionsHolder" type="Node3D" parent="."]
 
-[node name="Position2" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
-transform = Transform3D(0.923639, -4.55831e-16, -0.383264, 3.48787e-16, 1, -3.48787e-16, 0.383264, 1.88476e-16, 0.923639, -74.6956, 72.5057, -180.551)
+[node name="Position1" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
+transform = Transform3D(1, -3.48787e-16, 1.06581e-14, 3.48787e-16, 1, -3.48787e-16, -1.06581e-14, 3.48787e-16, 1, -92.174, 71.1192, -531.344)
 
 [node name="Position3" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -94.3919, 46.1884, -38.3747)
@@ -1149,33 +1150,36 @@ skeleton = NodePath("")
 
 [node name="unused chackpoints1" type="Node3D" parent="."]
 
+[node name="CheckpointRing1" parent="unused chackpoints1" instance=ExtResource("11_or5iy")]
+transform = Transform3D(1, 1.06581e-14, 3.48783e-16, 3.48787e-16, -4.37114e-08, -1, -1.06581e-14, 1, -4.37114e-08, -116.911, 73.1238, -456.004)
+
+[node name="CheckpointRing2" parent="unused chackpoints1" instance=ExtResource("11_or5iy")]
+transform = Transform3D(0.938338, -0.345595, 0.00921092, 0.00737651, -0.00662279, -0.999951, 0.345639, 0.93836, -0.00366513, -81.6128, 72.2887, -370.429)
+
+[node name="CheckpointRing3" parent="unused chackpoints1" instance=ExtResource("11_or5iy")]
+transform = Transform3D(0.907836, 0.419307, 0.00391988, 0.00737651, -0.00662279, -0.999951, -0.41926, 0.90782, -0.00910543, -93.8571, 72.2887, -226.883)
+
 [node name="CheckpointManager" type="Node3D" parent="."]
 transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("12_s2vcl")
 
-[node name="CheckpointRing1" parent="CheckpointManager" instance=ExtResource("11_or5iy")]
-transform = Transform3D(1, 1.03093e-14, -3.98169e-21, -3.71741e-30, -4.37114e-08, -1, -1.03093e-14, 1, -4.37114e-08, -116.911, 73.1238, -456.004)
-
-[node name="CheckpointRing2" parent="CheckpointManager" instance=ExtResource("11_or5iy")]
-transform = Transform3D(0.938338, -0.345595, 0.00921092, 0.00737651, -0.00662279, -0.999951, 0.345639, 0.93836, -0.00366513, -81.6128, 72.2887, -370.429)
-
-[node name="CheckpointRing3" parent="CheckpointManager" instance=ExtResource("11_or5iy")]
+[node name="CheckpointRing4" parent="CheckpointManager" instance=ExtResource("11_or5iy")]
 transform = Transform3D(1, 1.03093e-14, -3.98169e-21, -3.7174e-30, -4.37114e-08, -1, -1.03093e-14, 1, -4.37114e-08, -92.5894, 72.5237, -123.007)
 
-[node name="CheckpointRing4" parent="CheckpointManager" instance=ExtResource("11_or5iy")]
+[node name="CheckpointRing5" parent="CheckpointManager" instance=ExtResource("11_or5iy")]
 transform = Transform3D(1, 1.01656e-14, 3.20431e-16, 7.00239e-15, -0.665295, -0.74658, -7.37628e-15, 0.74658, -0.665295, -93.7114, 27.7695, -70.5478)
 
-[node name="CheckpointRing5" parent="CheckpointManager" instance=ExtResource("11_or5iy")]
+[node name="CheckpointRing6" parent="CheckpointManager" instance=ExtResource("11_or5iy")]
 transform = Transform3D(1, 2.73408e-08, 2.3858e-15, -4.93259e-16, -4.37114e-08, -1, 2.73408e-08, 1, -4.37114e-08, -91.9441, 40.6282, -36.4069)
 
-[node name="CheckpointRing6" parent="CheckpointManager" instance=ExtResource("11_or5iy")]
+[node name="CheckpointRing7" parent="CheckpointManager" instance=ExtResource("11_or5iy")]
 transform = Transform3D(1, 2.73408e-08, 2.73459e-15, -1.93329e-08, -0.707107, -0.707107, 1.93329e-08, 0.707107, -0.707107, -94.6151, -43.6647, 18.7795)
 
-[node name="CheckpointRing7" parent="CheckpointManager" instance=ExtResource("11_or5iy")]
-transform = Transform3D(1, -3.1462e-16, -3.95914e-20, 4.99517e-17, -5.20299e-08, -1, -3.09077e-16, 1, -9.69818e-08, -94.6151, -60.7529, 86.1124)
-
 [node name="CheckpointRing8" parent="CheckpointManager" instance=ExtResource("11_or5iy")]
-transform = Transform3D(1, -3.1462e-16, -3.95914e-20, 4.99517e-17, -5.20299e-08, -1, -3.09077e-16, 1, -9.69818e-08, -94.6151, -128.65, 413.824)
+transform = Transform3D(1, -3.1462e-16, -3.95914e-20, 4.99517e-17, -5.20299e-08, -1, -3.09077e-16, 1, -9.69818e-08, -95.3579, -62.2766, 86.1509)
+
+[node name="CheckpointRing9" parent="CheckpointManager" instance=ExtResource("11_or5iy")]
+transform = Transform3D(1, -3.1462e-16, -3.95914e-20, 4.99517e-17, -5.20299e-08, -1, -3.09077e-16, 1, -9.69818e-08, -94.6151, -139.733, 425.502)
 
 [node name="unused chackpoints2" type="Node3D" parent="."]
 visible = false
@@ -1200,6 +1204,17 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -92.61
 
 [node name="BoostPickUp4" parent="." instance=ExtResource("10_hq51m")]
 transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, -93.1203, -66.2829, -36.9617)
+
+[node name="KillZone" parent="." instance=ExtResource("15_5sqf8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -94.568, 54.4629, -397.87)
+size = Vector3(300, 10, 400)
+
+[node name="KillZone2" parent="." instance=ExtResource("15_5sqf8")]
+transform = Transform3D(1, -2.70327e-16, 3.39847e-16, 3.39847e-16, 0.97437, -0.224951, -2.70327e-16, 0.224951, 0.97437, -94.568, -148.579, 141.638)
+size = Vector3(300, 10, 700)
+
+[node name="Marker3D" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -252.231, 379.317)
 
 [connection signal="body_entered" from="LevelFlatSlope/GravityArea3D" to="LevelFlatSlope" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="LevelSRoad-IncGravArea/GravityArea3D" to="LevelSRoad-IncGravArea" method="_on_area_3d_body_entered"]

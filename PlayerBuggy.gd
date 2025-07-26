@@ -3,7 +3,7 @@ extends VehicleBody3D
 const STEER_SPEED = 2.5
 const STEER_LIMIT = 0.4
 const BRAKE_STRENGTH = 2.0
-const STARTING_BOOST_LEVEL : float = 3.0 # 1.5  # each boost level = +0.5s extra boost duration
+const STARTING_BOOST_LEVEL : float = 0.0 # 1.5  # each boost level = +0.5s extra boost duration
 const STARTING_RELOAD_LEVEL := 1
 const MAX_UPSIDE_DOWN_TIME := 3.0
 const RESPAWN_TIME := 3.0
@@ -28,6 +28,8 @@ var is_reorienting := false  # Track if we're currently in a gradual reorientati
 var spawn_point : Vector3
 var spawn_rotation : Vector3
 var playing_obstacle_course_mode := false
+var current_boost_level: float
+var current_reload_level: int
 
 # Variables for gradual reorientation
 const REORIENTATION_COOLDOWN_DURATION := 3.0  # 3.0 second cooldown
@@ -64,12 +66,10 @@ var is_on_corner_ramp := false  # Add this to track corner ramp contact
 @export var jump_initial_impulse := 20.0
 @export var is_eliminated := false  # Add this near other @export variables
 
-@onready var _start_position := global_transform.origin
+var _start_position: Vector3
 @onready var rocket_launcher = $RocketLauncher
 @onready var original_parts: Array[Node3D] = [$Body, $Wheel1, $Wheel2, $Wheel3, $Wheel4, $RocketLauncher]
 @onready var debris_manager = get_node("/root/DebrisManager")
-@onready var current_boost_level := STARTING_BOOST_LEVEL
-@onready var current_reload_level := STARTING_RELOAD_LEVEL
 @onready var desired_engine_pitch: float = $EngineSound.pitch_scale
 @onready var targeting_laser = $TargetingLaser
 
@@ -79,6 +79,7 @@ signal hide_crosshair()
 signal show_crosshair()
 
 func _ready ():
+	_start_position = global_transform.origin
 	global_position = spawn_point
 
 	# Reset camera pivot position to its intended relative position after moving to spawn
@@ -87,6 +88,7 @@ func _ready ():
 
 	set_player_colour_from_exported_variable()
 	genenerate_collision_shapes_for_desctructible_parts()
+	
 	_update_lives_display()
 	_update_boost_display()
 
@@ -97,7 +99,7 @@ func _physics_process(delta: float):
 		stop_boost()
 		return
 
-	if global_position.y <= -100: # fallen off level
+	if global_position.y <= -300: # fallen off level
 		die()
 		$ImpactSound.play()
 		return
@@ -438,7 +440,7 @@ func handle_reverse_input ():
 			engine_force *= Input.get_action_strength(str("p", player_number, "_reverse"))
 
 func handle_fire_input ():
-	if Input.is_action_just_pressed(str("p", player_number, "_fire")):
+	if current_reload_level > 0 && Input.is_action_just_pressed(str("p", player_number, "_fire")):
 		rocket_launcher.fire_rocket()
 
 func auto_reorient_vehicle_if_stuck_too_long(delta):
@@ -516,8 +518,10 @@ func _respawn ():
 	rotation = spawn_rotation
 	linear_velocity = Vector3.ZERO
 	angular_velocity = Vector3.ZERO
+
 	if (not playing_obstacle_course_mode):
 		current_boost_level = STARTING_BOOST_LEVEL
+		current_reload_level = STARTING_RELOAD_LEVEL
 
 	_update_lives_display()
 	_update_boost_display()
@@ -827,6 +831,12 @@ func update_targeting_laser():
 
 func switch_on_obstacle_course_mode ():
 	playing_obstacle_course_mode = true
+	current_boost_level = 0.0
+	current_reload_level = 0
+	$RocketLauncher.hide_rocket()
 
 func switch_off_obstacle_course_mode ():
 	playing_obstacle_course_mode = false
+	current_boost_level = STARTING_BOOST_LEVEL
+	current_reload_level = STARTING_RELOAD_LEVEL
+	$RocketLauncher.show_rocket()
