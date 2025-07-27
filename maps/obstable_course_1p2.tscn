@@ -1115,13 +1115,13 @@ shape = SubResource("SphereShape3D_uaobl")
 
 [node name="PlayerSpawnPositions" type="Node3D" parent="."]
 
-[node name="Position2" type="Node3D" parent="PlayerSpawnPositions"]
-transform = Transform3D(0.923639, -4.55831e-16, -0.383264, 3.48787e-16, 1, -3.48787e-16, 0.383264, 1.88476e-16, 0.923639, -74.6956, 72.5057, -180.551)
+[node name="Position1" type="Node3D" parent="PlayerSpawnPositions"]
+transform = Transform3D(1, -3.48787e-16, 1.06581e-14, 3.48787e-16, 1, -3.48787e-16, -1.06581e-14, 3.48787e-16, 1, -92.174, 71.1192, -531.344)
 
 [node name="UnusedPlayerSpawnPositionsHolder" type="Node3D" parent="."]
 
-[node name="Position1" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
-transform = Transform3D(1, -3.48787e-16, 1.06581e-14, 3.48787e-16, 1, -3.48787e-16, -1.06581e-14, 3.48787e-16, 1, -92.174, 71.1192, -531.344)
+[node name="Position2" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
+transform = Transform3D(0.923639, -4.55831e-16, -0.383264, 3.48787e-16, 1, -3.48787e-16, 0.383264, 1.88476e-16, 0.923639, -74.6956, 72.5057, -180.551)
 
 [node name="Position3" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -94.3919, 46.1884, -38.3747)
@@ -1150,18 +1150,18 @@ skeleton = NodePath("")
 
 [node name="unused chackpoints1" type="Node3D" parent="."]
 
-[node name="CheckpointRing1" parent="unused chackpoints1" instance=ExtResource("11_or5iy")]
-transform = Transform3D(1, 1.06581e-14, 3.48783e-16, 3.48787e-16, -4.37114e-08, -1, -1.06581e-14, 1, -4.37114e-08, -116.911, 73.1238, -456.004)
-
-[node name="CheckpointRing2" parent="unused chackpoints1" instance=ExtResource("11_or5iy")]
-transform = Transform3D(0.938338, -0.345595, 0.00921092, 0.00737651, -0.00662279, -0.999951, 0.345639, 0.93836, -0.00366513, -81.6128, 72.2887, -370.429)
-
-[node name="CheckpointRing3" parent="unused chackpoints1" instance=ExtResource("11_or5iy")]
-transform = Transform3D(0.907836, 0.419307, 0.00391988, 0.00737651, -0.00662279, -0.999951, -0.41926, 0.90782, -0.00910543, -93.8571, 72.2887, -226.883)
-
 [node name="CheckpointManager" type="Node3D" parent="."]
 transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 script = ExtResource("12_s2vcl")
+
+[node name="CheckpointRing1" parent="CheckpointManager" instance=ExtResource("11_or5iy")]
+transform = Transform3D(1, 1.03093e-14, -3.98169e-21, -3.71741e-30, -4.37114e-08, -1, -1.03093e-14, 1, -4.37114e-08, -116.911, 73.1238, -456.004)
+
+[node name="CheckpointRing2" parent="CheckpointManager" instance=ExtResource("11_or5iy")]
+transform = Transform3D(0.938338, -0.345595, 0.00921092, 0.00737651, -0.00662279, -0.999951, 0.345639, 0.93836, -0.00366513, -81.6128, 72.2887, -370.429)
+
+[node name="CheckpointRing3" parent="CheckpointManager" instance=ExtResource("11_or5iy")]
+transform = Transform3D(0.907836, 0.419307, 0.00391988, 0.00737651, -0.00662279, -0.999951, -0.41926, 0.90782, -0.00910543, -93.8571, 72.2887, -226.883)
 
 [node name="CheckpointRing4" parent="CheckpointManager" instance=ExtResource("11_or5iy")]
 transform = Transform3D(1, 1.03093e-14, -3.98169e-21, -3.7174e-30, -4.37114e-08, -1, -1.03093e-14, 1, -4.37114e-08, -92.5894, 72.5237, -123.007)
