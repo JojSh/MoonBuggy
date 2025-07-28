@@ -30,6 +30,7 @@ var spawn_rotation : Vector3
 var playing_obstacle_course_mode := false
 var current_boost_level: float
 var current_reload_level: int
+var current_camera_index: int = 0
 
 # Variables for gradual reorientation
 const REORIENTATION_COOLDOWN_DURATION := 3.0  # 3.0 second cooldown
@@ -366,17 +367,28 @@ func handle_return_to_start_position_input ():
 
 func handle_cycle_through_cameras_input ():
 	if Input.is_action_just_pressed(str("p", player_number, "_toggle_camera")):
-		if $ChaseCamPivot/ChaseCam.current:
-			$SideCam.current = true
-			emit_signal("hide_crosshair")
-		elif $SideCam.current:
-			$FirstPersonCam.current = true
-			emit_signal("show_crosshair")
-		elif $FirstPersonCam.current:
-			$ThirdPersonCam.current = true
+		var camera_configs = [
+			{"camera": $ChaseCamPivot/ChaseCam, "show_crosshair": false},
+			{"camera": $ChaseCamLocked, "show_crosshair": true},
+			{"camera": $SideCam, "show_crosshair": false},
+			{"camera": $FirstPersonCam, "show_crosshair": true},
+			{"camera": $ThirdPersonCam, "show_crosshair": true}
+		]
+		
+		if not GameSettings.debug_mode_on:
+			camera_configs = camera_configs.slice(0, 2)
+			# Clamp camera index to valid range for non-debug mode
+			current_camera_index = current_camera_index % camera_configs.size()
+		
+		# Cycle to next camera
+		current_camera_index = (current_camera_index + 1) % camera_configs.size()
+		var next_config = camera_configs[current_camera_index]
+		
+		next_config.camera.current = true
+		
+		if next_config.show_crosshair:
 			emit_signal("show_crosshair")
 		else:
-			$ChaseCamPivot/ChaseCam.current = true
 			emit_signal("hide_crosshair")
 
 func handle_boost_input (delta):
