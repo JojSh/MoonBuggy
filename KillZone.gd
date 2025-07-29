@@ -1,7 +1,6 @@
 @tool
 extends Area3D
 
-
 @export var size: Vector3 = Vector3(10, 10, 10): set = set_size
 
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
@@ -9,9 +8,10 @@ var debug_mesh: MeshInstance3D
 
 func _ready():
 	if not Engine.is_editor_hint():
+		add_to_group("killzones")
 		body_entered.connect(_on_body_entered)
 		if debug_mesh:
-			debug_mesh.visible = false
+			debug_mesh.visible = GameSettings.debug_mode_on
 	update_visual()
 
 func set_size(new_size: Vector3):
@@ -45,11 +45,15 @@ func update_visual():
 		var box_mesh = BoxMesh.new()
 		box_mesh.size = size
 		debug_mesh.mesh = box_mesh
-		debug_mesh.visible = true
+		debug_mesh.visible = Engine.is_editor_hint() or (GameSettings and GameSettings.debug_mode_on)
 
 func _set_debug_mesh_owner():
 	if debug_mesh and debug_mesh.get_parent() == self:
 		debug_mesh.owner = self
+
+func update_debug_visibility():
+	if debug_mesh and not Engine.is_editor_hint():
+		debug_mesh.visible = GameSettings and GameSettings.debug_mode_on
 
 func _on_body_entered(body):
 	if body is VehicleBody3D:

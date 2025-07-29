@@ -249,6 +249,7 @@ func _on_return_to_main_menu_button_pressed():
 
 func turn_on_debug_mode():
 	GameSettings.debug_mode_on = true
+	get_tree().call_group("killzones", "update_debug_visibility")
 	# Instantiate FPS Display
 	const FPSDisplay = preload("res://FPSDisplay.tscn")
 	var fps_display = FPSDisplay.instantiate()
@@ -256,6 +257,7 @@ func turn_on_debug_mode():
 
 func turn_off_debug_mode():
 	GameSettings.debug_mode_on = false
+	get_tree().call_group("killzones", "update_debug_visibility")
 	# Remove FPS Display if it exists
 	var fps_display = get_node_or_null("FPSDisplay")
 	if fps_display:
