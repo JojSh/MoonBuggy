@@ -1,8 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://g61ejgte8er3"]
+[gd_scene load_steps=11 format=3 uid="uid://g61ejgte8er3"]
 
 [ext_resource type="Script" path="res://KillZone.gd" id="1_r2k3v"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_gniqw"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_rqjqt"]
 size = Vector3(10, 10, 10)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rd0op"]
@@ -26,12 +26,19 @@ albedo_color = Color(1, 0, 0, 0.3)
 [sub_resource type="BoxMesh" id="BoxMesh_vqlaj"]
 size = Vector3(10, 10, 10)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qxe50"]
+transparency = 1
+albedo_color = Color(1, 0, 0, 0.3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_i34xd"]
+size = Vector3(10, 10, 10)
+
 [node name="KillZone" type="Area3D"]
 collision_mask = 5
 script = ExtResource("1_r2k3v")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("BoxShape3D_gniqw")
+shape = SubResource("BoxShape3D_rqjqt")
 
 [node name="@MeshInstance3D@23660" type="MeshInstance3D" parent="."]
 material_override = SubResource("StandardMaterial3D_rd0op")
@@ -44,3 +51,7 @@ mesh = SubResource("BoxMesh_vgl4o")
 [node name="@MeshInstance3D@23516" type="MeshInstance3D" parent="."]
 material_override = SubResource("StandardMaterial3D_dqkbq")
 mesh = SubResource("BoxMesh_vqlaj")
+
+[node name="@MeshInstance3D@23299" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_qxe50")
+mesh = SubResource("BoxMesh_i34xd")

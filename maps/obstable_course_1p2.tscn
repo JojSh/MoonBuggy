@@ -1187,12 +1187,6 @@ visible = false
 [node name="ReloadSpeedPickUp" parent="." instance=ExtResource("14_2uvjb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -98.7924, 68.9412, -420.879)
 
-[node name="ReloadSpeedPickUp2" parent="." instance=ExtResource("14_2uvjb")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -106.856, 68.9412, -526.636)
-
-[node name="ReloadSpeedPickUp3" parent="." instance=ExtResource("14_2uvjb")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -102.871, 68.9412, -531.663)
-
 [node name="BoostPickUp" parent="." instance=ExtResource("10_hq51m")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -113.501, 69.2476, -446.86)
 
