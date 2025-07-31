@@ -350,6 +350,12 @@ func die ():
 	current_lives -= 1
 	if (current_lives == 0):
 		is_eliminated = true
+		
+		# Register with SpectatorManager for rocket control
+		var spectator_manager = get_node_or_null("/root/RootNode/SpectatorManager")
+		if spectator_manager:
+			spectator_manager.register_eliminated_player(self)
+		
 		emit_signal("player_eliminated", player_number)
 		return
 	else:

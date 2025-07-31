@@ -14,6 +14,12 @@ func fire_rocket():
 	get_tree().get_root().add_child(rocket_projectile)
 	rocket_projectile.global_transform = $MeshInstance3D.global_transform
 	
+	# Register rocket with SpectatorManager for eliminated player control
+	var spectator_manager = get_node_or_null("/root/RootNode/SpectatorManager")
+	if spectator_manager:
+		var rocket_inner = rocket_projectile.get_node("RocketProjectileInner")
+		spectator_manager.register_rocket(rocket_inner)
+	
 	# Get references to the inner container and its children
 	var rocket_projectile_inner = rocket_projectile.get_node("RocketProjectileInner")
 	var projectile_mesh = rocket_projectile_inner.get_node("RocketProjectileMesh")
