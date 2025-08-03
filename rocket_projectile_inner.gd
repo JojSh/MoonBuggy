@@ -3,6 +3,15 @@ extends RigidBody3D
 signal rocket_exploded(position)
 signal rocket_out_of_bounds
 
+@onready var rocket_controller: Node = null
+
+func _ready():
+	# Find the RocketController child node
+	rocket_controller = get_node_or_null("RocketController")
+	if rocket_controller:
+		# Connect controller signals
+		rocket_controller.control_ended.connect(_on_rocket_control_ended)
+
 func _process(delta):
 	# Check bounds every 10 frames to improve performance
 	if Engine.get_process_frames() % 10 == 0:
@@ -21,6 +30,10 @@ func _on_body_entered(body):
 	explosion_particle_effect.get_node("Explosion/AnimationPlayer").play("PlayExplosion")
 
 	_apply_explosive_force(collision_position)
+	# Notify controller about destruction
+	if rocket_controller:
+		rocket_controller._on_rocket_destroyed()
+	
 	# Emit signal to parent before destroying the rocket
 	rocket_exploded.emit()
 	# Remove the rocket
@@ -86,16 +99,34 @@ func _create_debug_sphere (position: Vector3, radius: float, duration: float = 1
 
 func is_out_of_bounds():
 	# maybe this should be read from the map?
+	#const MIN_Z = -550
+	#const MAX_Z = 250
+	#const MIN_X = -200
+	#const MAX_X = 200
+	#const MIN_Y = -150
+	#const MAX_Y = 150
 	const MIN_Z = -550
-	const MAX_Z = 250
-	const MIN_X = -200
-	const MAX_X = 200
-	const MIN_Y = -150
-	const MAX_Y = 150
+	const MAX_Z = 500
+	const MIN_X = -500
+	const MAX_X = 500
+	const MIN_Y = -500
+	const MAX_Y = 500
 
 	return (
 		global_position.z < MIN_Z or global_position.z > MAX_Z or
 		global_position.x < MIN_X or global_position.x > MAX_X or
 		global_position.y < MIN_Y or global_position.y > MAX_Y
 	)
+
+func _on_rocket_control_ended(controller: Node):
+	print("Rocket: Player control ended")
+
+func assign_player_control(player: Node):
+	if rocket_controller:
+		rocket_controller.assign_player_control(player)
+	else:
+		print("Rocket: No RocketController found - cannot assign control")
+
+func is_under_player_control() -> bool:
+	return rocket_controller != null and rocket_controller.is_active
 

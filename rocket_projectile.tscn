@@ -3,6 +3,7 @@
 [ext_resource type="ArrayMesh" uid="uid://bu4kaojj6gik0" path="res://AngryRocket3.obj" id="1_bprth"]
 [ext_resource type="Script" path="res://rocket_projectile_outer.gd" id="1_nessc"]
 [ext_resource type="Script" path="res://rocket_projectile_inner.gd" id="2_fcnr1"]
+[ext_resource type="Script" path="res://RocketController.gd" id="3_0hjkl"]
 [ext_resource type="PackedScene" uid="uid://cav45f268cxd7" path="res://rocket_thruster.tscn" id="3_8jcr2"]
 [ext_resource type="AudioStream" uid="uid://v52n3844nsfh" path="res://sounds/rocket_hiss.ogg" id="4_8pbhq"]
 [ext_resource type="AudioStream" uid="uid://cbb13opsl0umt" path="res://sounds/ExplosionWIP2.ogg" id="5_val5s"]
@@ -27,6 +28,9 @@ shape = SubResource("ConvexPolygonShape3D_ncjk6")
 
 [node name="RocketThruster" parent="RocketProjectileInner" instance=ExtResource("3_8jcr2")]
 transform = Transform3D(-3.27835e-08, 0, 0.75, 0, 0.75, 0, -0.75, 0, -3.27835e-08, 0.200156, 0, 0)
+
+[node name="RocketController" type="Node" parent="RocketProjectileInner"]
+script = ExtResource("3_0hjkl")
 
 [node name="TravelingHiss" type="AudioStreamPlayer3D" parent="RocketProjectileInner"]
 stream = ExtResource("4_8pbhq")

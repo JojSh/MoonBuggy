@@ -45,8 +45,10 @@ func attempt_rocket_assignments():
 	if eliminated_players.is_empty() or available_rockets.is_empty():
 		return
 		
-	# Clean up invalid rockets (might have been destroyed)
-	available_rockets = available_rockets.filter(func(rocket): return is_instance_valid(rocket))
+	# Clean up invalid rockets and eliminate those already under control
+	available_rockets = available_rockets.filter(func(rocket): 
+		return is_instance_valid(rocket) and not rocket.is_under_player_control()
+	)
 	
 	if available_rockets.is_empty():
 		return
@@ -55,11 +57,14 @@ func attempt_rocket_assignments():
 	print("  - Eliminated players: ", eliminated_players.size())
 	print("  - Available rockets: ", available_rockets.size())
 	
-	# For Phase 1, just show that assignment would happen
-	var player = eliminated_players[0]  # Take first eliminated player
-	var rocket = available_rockets[0]   # Take first available rocket
+	# Assign first available rocket to first eliminated player
+	var player = eliminated_players[0]
+	var rocket = available_rockets[0]
 	
-	print("SpectatorManager: Would assign Player ", player.player_number, " to rocket at ", rocket.global_position)
+	print("SpectatorManager: Assigning Player ", player.player_number, " to rocket at ", rocket.global_position)
+	
+	# Actually assign control now
+	rocket.assign_player_control(player)
 	emit_signal("rocket_takeover_started", player, rocket)
 
 func get_eliminated_player_count() -> int:
