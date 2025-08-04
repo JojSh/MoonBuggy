@@ -15,16 +15,15 @@ const EXPLOSION_CAMERA_DELAY: float = 3.0  # Seconds to keep camera on explosion
 
 var explosion_position: Vector3
 var is_showing_explosion: bool = false
+@onready var rocket_mesh: MeshInstance3D = get_parent().get_node("RocketProjectileMesh")
+@onready var dark_shaft_material: Material = load("res://rocket_shaft_material_dark_3d.tres")
 
 signal control_ended(controller: Node)
 
 func _ready():
 	rocket_body = get_parent()
 	if not rocket_body is RigidBody3D:
-		print("RocketController: Warning - parent is not RigidBody3D")
 		return
-	
-	print("RocketController: Ready on rocket at ", rocket_body.global_position)
 
 func _process(delta):
 	# Handle camera updates even during explosion viewing
@@ -48,7 +47,6 @@ func _process(delta):
 
 func assign_player_control(player: Node):
 	if controlling_player:
-		print("RocketController: Warning - rocket already under control")
 		return
 	
 	controlling_player = player
@@ -57,8 +55,9 @@ func assign_player_control(player: Node):
 	# Create and setup third-person chase camera
 	setup_chase_camera()
 	
-	print("RocketController: Player ", player.player_number, " now controlling rocket")
-	print("RocketController: Control until rocket destruction")
+	# Apply visual feedback - swap only the shaft material (surface 0)
+	rocket_mesh.set_surface_override_material(0, dark_shaft_material)
+	
 
 func setup_chase_camera():
 	if not controlling_player:
@@ -93,9 +92,6 @@ func setup_chase_camera():
 		# Make this camera active
 		takeover_camera.current = true
 		
-		print("RocketController: Third-person chase camera created and activated")
-	else:
-		print("RocketController: Warning - could not find viewport for camera")
 
 func handle_steering_input():
 	if not controlling_player or not rocket_body:
@@ -170,7 +166,9 @@ func update_chase_camera():
 func end_control():
 	# This can be called during explosion viewing too, so don't check is_active
 	
-	print("RocketController: Control ended for player ", controlling_player.player_number if controlling_player else "unknown")
+	# Restore original rocket appearance - restore only surface 0 (shaft)
+	var normal_shaft_material = load("res://rocket_shaft_material_3d.tres")
+	rocket_mesh.set_surface_override_material(0, normal_shaft_material)
 	
 	# Reset all states
 	is_active = false
@@ -179,7 +177,6 @@ func end_control():
 	# Restore original camera
 	if original_player_camera:
 		original_player_camera.current = true
-		print("RocketController: Restored original camera")
 	
 	# Clean up takeover camera
 	if takeover_camera:
@@ -200,8 +197,6 @@ func _on_rocket_destroyed():
 		
 		# Stop control but keep camera active for explosion viewing
 		is_active = false
-		
-		print("RocketController: Rocket destroyed - showing explosion for ", EXPLOSION_CAMERA_DELAY, " seconds")
 		
 		# Delay the actual control end to keep camera on explosion
 		var explosion_timer = get_tree().create_timer(EXPLOSION_CAMERA_DELAY)

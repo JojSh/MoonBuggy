@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://tp634kdqbfd"]
+[gd_scene load_steps=28 format=3 uid="uid://tp634kdqbfd"]
 
 [ext_resource type="Script" path="res://PlayerBuggy.gd" id="1_1u0r3"]
 [ext_resource type="Material" uid="uid://sr36pdmgqpu5" path="res://wheel.tres" id="2_1s618"]
@@ -8,9 +8,11 @@
 [ext_resource type="PackedScene" uid="uid://ch7tofkogslsx" path="res://boost_display_light.tscn" id="4_c7m5x"]
 [ext_resource type="AudioStream" uid="uid://bfdtb5nal362t" path="res://sounds/rasp_engine.ogg" id="4_xtkfv"]
 [ext_resource type="AudioStream" uid="uid://g4pr0ivgik13" path="res://sounds/rasp_impact1.ogg" id="6_8n3vk"]
+[ext_resource type="Material" uid="uid://fdou23b8btto" path="res://rocket_shaft_material_3d.tres" id="7_d4iqg"]
 [ext_resource type="AudioStream" uid="uid://b5pn1vsmoxkjs" path="res://sounds/rasp_impact2.ogg" id="7_n1bsi"]
 [ext_resource type="AudioStream" uid="uid://ct4604hjdp60i" path="res://sounds/TssshhhhtLoopable.ogg" id="7_pk3u8"]
 [ext_resource type="AudioStream" uid="uid://cxx1vea75y2kb" path="res://sounds/rasp_impact3.ogg" id="8_465my"]
+[ext_resource type="Material" uid="uid://dsyy5hybne1sv" path="res://rocket_cone_material_3d.tres" id="8_dvc48"]
 [ext_resource type="AudioStream" uid="uid://2nm77xynp64v" path="res://sounds/rasp_impact4.ogg" id="9_7yhqf"]
 [ext_resource type="AudioStream" uid="uid://dyasqu703no36" path="res://sounds/pickup_pop.ogg" id="9_p1vwo"]
 [ext_resource type="PackedScene" uid="uid://bg6bppthjrr05" path="res://beam_container.tscn" id="10_ym3a5"]
@@ -153,6 +155,8 @@ script = ExtResource("3_rwhxb")
 transform = Transform3D(-4.37114e-09, -0.1, 4.37114e-09, 0, -4.37114e-09, -0.1, 0.1, -4.37114e-09, 1.91069e-16, 0, 0, 0)
 mesh = ExtResource("3_mseli")
 skeleton = NodePath("")
+surface_material_override/0 = ExtResource("7_d4iqg")
+surface_material_override/1 = ExtResource("8_dvc48")
 
 [node name="Wheel1" type="VehicleWheel3D" parent="."]
 transform = Transform3D(1, 6.97574e-16, 2.38419e-07, -6.97574e-16, 1, 6.97574e-16, -2.38419e-07, -6.97574e-16, 1, 0.599998, -0.25, 0.388889)
