@@ -3,7 +3,6 @@ extends Node
 var controlling_player: Node = null
 var rocket_body: RigidBody3D = null
 var takeover_camera: Camera3D = null
-var original_player_camera: Camera3D = null
 var is_active: bool = false
 
 const STEERING_TORQUE: float = 10.0  # Torque strength for steering (increased for responsiveness)
@@ -62,20 +61,6 @@ func assign_player_control(player: Node):
 func setup_chase_camera():
 	if not controlling_player:
 		return
-	
-	# Store the player's current active camera
-	var player_cameras = [
-		controlling_player.get_node("ChaseCamPivot/ChaseCam"),
-		controlling_player.get_node("SideCam"),
-		controlling_player.get_node("FirstPersonCam"),
-		controlling_player.get_node("ThirdPersonCam"),
-		controlling_player.get_node("ChaseCamLocked")
-	]
-	
-	for camera in player_cameras:
-		if camera.current:
-			original_player_camera = camera
-			break
 	
 	# Create rocket chase camera
 	takeover_camera = Camera3D.new()
@@ -174,10 +159,6 @@ func end_control():
 	is_active = false
 	is_showing_explosion = false
 	
-	# Restore original camera
-	if original_player_camera:
-		original_player_camera.current = true
-	
 	# Clean up takeover camera
 	if takeover_camera:
 		takeover_camera.queue_free()
@@ -186,7 +167,6 @@ func end_control():
 	# Emit signal and clear references
 	emit_signal("control_ended", self)
 	controlling_player = null
-	original_player_camera = null
 
 func _on_rocket_destroyed():
 	# Called when the rocket explodes or goes out of bounds
