@@ -5,11 +5,12 @@ var rocket_body: RigidBody3D = null
 var takeover_camera: Camera3D = null
 var is_active: bool = false
 
-const STEERING_TORQUE: float = 10.0  # Torque strength for steering (increased for responsiveness)
+const STEERING_TORQUE: float = 50.0  # Torque strength for steering (increased for responsiveness)
 const FORWARD_THRUST: float = 800.0  # Continuous forward thrust to make rocket travel in facing direction
 const VELOCITY_DAMPING: float = 0.85  # Reduces old momentum (0.0 = no damping, 1.0 = full stop)
-const CAMERA_DISTANCE: float = 8.0  # How far behind the rocket the camera follows
-const CAMERA_HEIGHT: float = 2.0   # How high above the rocket the camera is positioned
+const ANGULAR_DAMPING: float = 0.95  # Angular damping when no input (only applied when not steering)
+const CAMERA_DISTANCE: float = 5.0  # (8.0) How far behind the rocket the camera follows
+const CAMERA_HEIGHT: float = 0.0  # (2.0) How high above the rocket the camera is positioned
 const EXPLOSION_CAMERA_DELAY: float = 3.0  # Seconds to keep camera on explosion site
 
 var explosion_position: Vector3
@@ -102,6 +103,9 @@ func handle_steering_input():
 		
 		# Apply the torque to rotate the rocket
 		rocket_body.apply_torque(yaw_torque + pitch_torque)
+	else:
+		# No input - apply angular damping to gradually slow rotation
+		rocket_body.angular_velocity *= ANGULAR_DAMPING
 
 func apply_velocity_damping():
 	if not rocket_body:
