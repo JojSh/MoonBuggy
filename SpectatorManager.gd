@@ -8,9 +8,6 @@ const ASSIGNMENT_INTERVAL: float = 3.0  # Assign rockets every 3 seconds
 signal rocket_takeover_started(player: Node, rocket: RigidBody3D)
 signal rocket_takeover_ended(player: Node, rocket: RigidBody3D)
 
-func _ready():
-	print("SpectatorManager initialized")
-
 func _process(delta):
 	rocket_assignment_timer += delta
 	
@@ -21,15 +18,11 @@ func _process(delta):
 func register_eliminated_player(player: Node):
 	if not eliminated_players.has(player):
 		eliminated_players.append(player)
-		print("SpectatorManager: Registered eliminated player ", player.player_number)
-		print("SpectatorManager: Total eliminated players: ", eliminated_players.size())
 
 func register_rocket(rocket: RigidBody3D):
 	if not available_rockets.has(rocket):
 		available_rockets.append(rocket)
-		print("SpectatorManager: Registered rocket at ", rocket.global_position)
-		print("SpectatorManager: Total available rockets: ", available_rockets.size())
-		
+
 		# Connect to rocket destruction
 		if rocket.has_signal("rocket_exploded"):
 			rocket.rocket_exploded.connect(_on_rocket_destroyed.bind(rocket))
@@ -39,7 +32,6 @@ func register_rocket(rocket: RigidBody3D):
 func _on_rocket_destroyed(rocket: RigidBody3D):
 	if available_rockets.has(rocket):
 		available_rockets.erase(rocket)
-		print("SpectatorManager: Removed destroyed rocket. Remaining: ", available_rockets.size())
 
 func attempt_rocket_assignments():
 	if eliminated_players.is_empty() or available_rockets.is_empty():
@@ -53,18 +45,13 @@ func attempt_rocket_assignments():
 	if available_rockets.is_empty():
 		return
 		
-	print("SpectatorManager: Attempting rocket assignments...")
-	print("  - Eliminated players: ", eliminated_players.size())
-	print("  - Available rockets: ", available_rockets.size())
 	
 	# Assign first available rocket to first eliminated player
 	var player = eliminated_players[0]
 	var rocket = available_rockets[0]
-	
-	print("SpectatorManager: Assigning Player ", player.player_number, " to rocket at ", rocket.global_position)
-	
-	# Actually assign control now
-	rocket.assign_player_control(player)
+
+	# Always enable roll leveling
+	rocket.assign_player_control(player, true)
 	emit_signal("rocket_takeover_started", player, rocket)
 
 func get_eliminated_player_count() -> int:

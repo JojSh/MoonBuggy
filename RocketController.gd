@@ -4,11 +4,17 @@ var controlling_player: Node = null
 var rocket_body: RigidBody3D = null
 var takeover_camera: Camera3D = null
 var is_active: bool = false
+var roll_leveling_enabled: bool = false
+var boost_level: float = 1.0  # Current boost multiplier (1.0 = normal, 5.0 = max boost)
 
 const STEERING_TORQUE: float = 50.0  # Torque strength for steering (increased for responsiveness)
 const FORWARD_THRUST: float = 800.0  # Continuous forward thrust to make rocket travel in facing direction
 const VELOCITY_DAMPING: float = 0.85  # Reduces old momentum (0.0 = no damping, 1.0 = full stop)
 const ANGULAR_DAMPING: float = 0.95  # Angular damping when no input (only applied when not steering)
+const ROLL_LEVELING_STRENGTH: float = 10.0  # Strength of auto-leveling for roll axis
+const MANUAL_ALIGNMENT_STRENGTH: float = 50.0  # Strength of manual alignment when button pressed
+const MAX_BOOST_MULTIPLIER: float = 5.0  # Maximum boost speed multiplier
+const BOOST_RAMP_TIME: float = 1.0  # Time to reach max boost in seconds
 const CAMERA_DISTANCE: float = 5.0  # (8.0) How far behind the rocket the camera follows
 const CAMERA_HEIGHT: float = 0.0  # (2.0) How high above the rocket the camera is positioned
 const EXPLOSION_CAMERA_DELAY: float = 3.0  # Seconds to keep camera on explosion site
@@ -39,18 +45,26 @@ func _process(delta):
 	# Apply velocity damping to reduce momentum carryover for better steering
 	apply_velocity_damping()
 	
+	# Update boost level based on fire button input
+	update_boost_level()
+	
 	# Apply continuous forward thrust so rocket travels in facing direction
 	apply_forward_thrust()
+	
+	# Apply gentle roll leveling to keep rocket upright (if enabled for this rocket)
+	if roll_leveling_enabled:
+		apply_roll_leveling()
 	
 	# Process player input for rocket steering
 	handle_steering_input()
 
-func assign_player_control(player: Node):
+func assign_player_control(player: Node, enable_roll_leveling: bool = false):
 	if controlling_player:
 		return
 	
 	controlling_player = player
 	is_active = true
+	roll_leveling_enabled = enable_roll_leveling
 	
 	# Create and setup third-person chase camera
 	setup_chase_camera()
@@ -85,6 +99,11 @@ func handle_steering_input():
 	
 	var player_num = controlling_player.player_number
 	
+	# Check for manual alignment input
+	if Input.is_action_pressed(str("p", player_num, "_flip")):
+		apply_manual_alignment()
+		return  # Skip normal steering when aligning
+	
 	# Get steering input (using the same input actions as the player's car)
 	var steer_input = Input.get_axis(str("p", player_num, "_turn_right"), str("p", player_num, "_turn_left"))
 	var pitch_input = Input.get_axis(str("p", player_num, "_reverse"), str("p", player_num, "_accelerate"))
@@ -98,8 +117,10 @@ func handle_steering_input():
 		# Calculate torque vectors for steering:
 		# - Left/Right input rotates around the rocket's up axis (yaw) - this changes direction!
 		# - Up/Down input rotates around the rocket's right axis (pitch)
-		var yaw_torque = rocket_up * steer_input * STEERING_TORQUE      # Yaw left/right (changes direction)
-		var pitch_torque = rocket_right * pitch_input * STEERING_TORQUE # Pitch up/down
+		# Reduce steering power when boosting (harder to steer at high speed)
+		var steering_multiplier = 1.0 - (boost_level - 1.0) * 0.8 / (MAX_BOOST_MULTIPLIER - 1.0)
+		var yaw_torque = rocket_up * steer_input * STEERING_TORQUE * steering_multiplier      # Yaw left/right (changes direction)
+		var pitch_torque = rocket_right * pitch_input * STEERING_TORQUE * steering_multiplier # Pitch up/down
 		
 		# Apply the torque to rotate the rocket
 		rocket_body.apply_torque(yaw_torque + pitch_torque)
@@ -121,8 +142,72 @@ func apply_forward_thrust():
 	
 	# Apply continuous thrust in the direction the rocket is facing
 	var rocket_forward = -rocket_body.global_transform.basis.x  # Rocket's forward direction
-	var thrust_force = rocket_forward * FORWARD_THRUST
+	var thrust_force = rocket_forward * FORWARD_THRUST * boost_level
 	rocket_body.apply_central_force(thrust_force)
+
+func update_boost_level():
+	if not controlling_player:
+		return
+	
+	var player_num = controlling_player.player_number
+	var is_boosting = Input.is_action_pressed(str("p", player_num, "_fire"))
+	
+	if is_boosting:
+		# Gradually increase boost level over BOOST_RAMP_TIME seconds
+		var boost_increase = (MAX_BOOST_MULTIPLIER - 1.0) / BOOST_RAMP_TIME * get_process_delta_time()
+		boost_level = min(boost_level + boost_increase, MAX_BOOST_MULTIPLIER)
+	else:
+		# Gradually decrease boost level back to normal over same time period
+		var boost_decrease = (MAX_BOOST_MULTIPLIER - 1.0) / BOOST_RAMP_TIME * get_process_delta_time()
+		boost_level = max(boost_level - boost_decrease, 1.0)
+
+func apply_roll_leveling():
+	if not rocket_body:
+		return
+	
+	# Get the rocket's current orientation
+	var rocket_forward = -rocket_body.global_transform.basis.x  # Rocket's forward direction
+	var rocket_up = -rocket_body.global_transform.basis.z       # Rocket's current up direction
+	
+	# Calculate desired up direction (world up projected onto rocket's right plane)
+	var world_up = Vector3.UP
+	var rocket_right = rocket_body.global_transform.basis.y
+	var desired_up = world_up - world_up.dot(rocket_forward) * rocket_forward
+	desired_up = desired_up.normalized()
+	
+	# Calculate roll correction needed
+	var roll_error = rocket_up.cross(desired_up)
+	var roll_correction_strength = roll_error.dot(rocket_forward) * ROLL_LEVELING_STRENGTH
+	
+	# Apply gentle roll correction torque
+	if abs(roll_correction_strength) > 0.01:  # Only apply if there's significant roll
+		var roll_torque = rocket_forward * roll_correction_strength
+		rocket_body.apply_torque(roll_torque)
+
+func apply_manual_alignment():
+	if not rocket_body:
+		return
+	
+	# Get the rocket's current orientation
+	var rocket_forward = -rocket_body.global_transform.basis.x  # Rocket's forward direction
+	var rocket_up = -rocket_body.global_transform.basis.z       # Rocket's current up direction
+	
+	# Calculate desired up direction (world up projected onto rocket's right plane) 
+	var world_up = Vector3.UP
+	var desired_up = world_up - world_up.dot(rocket_forward) * rocket_forward
+	desired_up = desired_up.normalized()
+	
+	# Calculate the angle between current up and desired up
+	var angle = rocket_up.angle_to(desired_up)
+	
+	# If there's significant misalignment, set angular velocity to achieve alignment in 0.5 seconds
+	if angle > 0.01:  # Only align if there's meaningful roll
+		# Cross product gives us the rotation axis
+		var rotation_axis = rocket_up.cross(desired_up).normalized()
+		
+		# Set angular velocity to complete the rotation in 0.5 seconds (faster than target)
+		# This compensates for damping and other forces fighting the alignment
+		rocket_body.angular_velocity = rotation_axis * (angle / 0.5)
 
 func update_chase_camera():
 	if not takeover_camera:
@@ -162,6 +247,7 @@ func end_control():
 	# Reset all states
 	is_active = false
 	is_showing_explosion = false
+	boost_level = 1.0  # Reset boost level
 	
 	# Clean up takeover camera
 	if takeover_camera:
