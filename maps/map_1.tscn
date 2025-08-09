@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://dmkg7nx4l4p0s"]
+[gd_scene load_steps=29 format=3 uid="uid://dmkg7nx4l4p0s"]
 
 [ext_resource type="Environment" uid="uid://c5eh8m3f8t03j" path="res://bright_sky.tres" id="1_shnqi"]
 [ext_resource type="Script" path="res://GravityAreaParentLevel.gd" id="2_bkuti"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://d1wcxewl0xytx" path="res://portal_entrance_area_3d.tscn" id="10_usvrd"]
 [ext_resource type="PackedScene" uid="uid://dieogt36ljkks" path="res://portal_exit_area_3d.tscn" id="11_61541"]
 [ext_resource type="Script" path="res://PickUpSpawner.gd" id="12_hgjkq"]
+[ext_resource type="PackedScene" uid="uid://g61ejgte8er3" path="res://KillZone.tscn" id="14_2alyn"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_sj3sa"]
 size = Vector3(80, 0.2, 400)
@@ -612,7 +613,7 @@ transform = Transform3D(1.16, 0, 0, 0, 1.16, 0, 0, 0, 1.16, 0, 0, 0)
 shape = SubResource("SphereShape3D_uaobl")
 
 [node name="LevelSphereBig2(old) - StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(-0.800218, 0.166115, 0.576244, 0.134801, 0.986106, -0.0970713, -0.584363, 0, -0.811493, 533.74, -16.5551, 39.4826)
+transform = Transform3D(-0.800218, 0.166115, 0.576244, 0.134801, 0.986106, -0.0970713, -0.584363, 0, -0.811493, 461.459, -16.5551, 39.4826)
 collision_mask = 7
 script = ExtResource("2_bkuti")
 
@@ -789,6 +790,12 @@ transform = Transform3D(1, -8.74228e-08, -8.74228e-08, -8.74228e-08, -1, -3.4878
 
 [node name="Position7" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
 transform = Transform3D(-1, -8.74228e-08, 3.48787e-16, 8.74228e-08, -1, -3.48787e-16, 3.48787e-16, -3.48787e-16, 1, -17.7098, -32.253, -37.1688)
+
+[node name="Killzones" type="Node3D" parent="."]
+
+[node name="KillZone" parent="Killzones" instance=ExtResource("14_2alyn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -175.723, 0)
+size = Vector3(1000, 30, 1000)
 
 [connection signal="body_entered" from="LevelFlat/GravityArea3D" to="LevelFlat" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="LevelSphere1 - StaticBody3D2/GravityArea3D" to="LevelSphere1 - StaticBody3D2" method="_on_area_3d_body_entered"]

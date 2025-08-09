@@ -105,12 +105,12 @@ func is_out_of_bounds():
 	#const MAX_X = 200
 	#const MIN_Y = -150
 	#const MAX_Y = 150
-	const MIN_Z = -550
-	const MAX_Z = 500
-	const MIN_X = -500
+	const MIN_Z = -350
+	const MAX_Z = 350
+	const MIN_X = -300
 	const MAX_X = 500
-	const MIN_Y = -500
-	const MAX_Y = 500
+	const MIN_Y = -300
+	const MAX_Y = 200
 
 	return (
 		global_position.z < MIN_Z or global_position.z > MAX_Z or

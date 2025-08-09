@@ -6,6 +6,7 @@ const STARTING_COOLDOWN_TIME = 5.0
 @onready var current_cooldown_time := STARTING_COOLDOWN_TIME
 @onready var diarrhea_active := false
 @onready var cooldown_time_before_diarrhea := STARTING_COOLDOWN_TIME
+var rocket_count: int = 0  # Track rockets fired by this launcher
 
 func fire_rocket():
 	if !can_fire: return
@@ -15,10 +16,15 @@ func fire_rocket():
 	rocket_projectile.global_transform = $MeshInstance3D.global_transform
 	
 	# Register rocket with SpectatorManager for eliminated player control
+	# In debug mode: register all rockets
+	# In normal mode: only register every 3rd rocket
+	rocket_count += 1
 	var spectator_manager = get_node_or_null("/root/RootNode/SpectatorManager")
 	if spectator_manager:
 		var rocket_inner = rocket_projectile.get_node("RocketProjectileInner")
-		spectator_manager.register_rocket(rocket_inner)
+		var should_register = GameSettings.debug_mode_on or (rocket_count % 3 == 0)
+		if should_register:
+			spectator_manager.register_rocket(rocket_inner)
 	
 	# Get references to the inner container and its children
 	var rocket_projectile_inner = rocket_projectile.get_node("RocketProjectileInner")

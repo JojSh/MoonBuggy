@@ -3,6 +3,7 @@ extends Node
 var eliminated_players: Array[Node] = []
 var available_rockets: Array[RigidBody3D] = []
 var rocket_assignment_timer: float = 0.0
+var next_player_index: int = 0  # Index for round-robin player assignment
 const ASSIGNMENT_INTERVAL: float = 3.0  # Assign rockets every 3 seconds
 
 signal rocket_takeover_started(player: Node, rocket: RigidBody3D)
@@ -18,6 +19,8 @@ func _process(delta):
 func register_eliminated_player(player: Node):
 	if not eliminated_players.has(player):
 		eliminated_players.append(player)
+		# Reset index when player list changes to ensure fair rotation
+		next_player_index = 0
 
 func register_rocket(rocket: RigidBody3D):
 	if not available_rockets.has(rocket):
@@ -46,9 +49,15 @@ func attempt_rocket_assignments():
 		return
 		
 	
-	# Assign first available rocket to first eliminated player
-	var player = eliminated_players[0]
+	# Round-robin assignment: cycle through eliminated players
+	if next_player_index >= eliminated_players.size():
+		next_player_index = 0  # Wrap around to start
+	
+	var player = eliminated_players[next_player_index]
 	var rocket = available_rockets[0]
+	
+	# Move to next player for next assignment
+	next_player_index = (next_player_index + 1) % eliminated_players.size()
 
 	# Always enable roll leveling
 	rocket.assign_player_control(player, true)
