@@ -82,6 +82,9 @@ signal show_crosshair()
 func _ready ():
 	_start_position = global_transform.origin
 	global_position = spawn_point
+	
+	current_boost_level = STARTING_BOOST_LEVEL
+	current_reload_level = STARTING_RELOAD_LEVEL
 
 	# Reset camera pivot position to its intended relative position after moving to spawn
 	# This prevents rubber banding from position mismatches in the scene file
@@ -458,6 +461,7 @@ func handle_reverse_input ():
 			engine_force *= Input.get_action_strength(str("p", player_number, "_reverse"))
 
 func handle_fire_input ():
+	print("player_num: ", player_number, ". current_reload_level: ", current_reload_level)
 	if current_reload_level > 0 && Input.is_action_just_pressed(str("p", player_number, "_fire")):
 		rocket_launcher.fire_rocket()
 
