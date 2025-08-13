@@ -33,6 +33,41 @@ roughness = 0.41
 [node name="RootNode" type="Node3D"]
 script = ExtResource("1_06hsa")
 
+[node name="SinglePlayerUI" type="CanvasLayer" parent="."]
+
+[node name="RealignmentPrompt" type="Control" parent="SinglePlayerUI"]
+visible = false
+layout_mode = 3
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -400.0
+offset_top = 155.0
+offset_right = 400.0
+offset_bottom = 275.0
+grow_horizontal = 2
+
+[node name="Background" type="ColorRect" parent="SinglePlayerUI/RealignmentPrompt"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.15)
+
+[node name="Label" type="Label" parent="SinglePlayerUI/RealignmentPrompt"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 60
+text = "Press [LB] to realign"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="MenuContainer" type="CanvasLayer" parent="."]
 process_mode = 3
 
@@ -162,7 +197,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.120117, -0.252323, -0.0459
 [node name="PlayerBuggy1" parent="PlayerScreenManager/PlayerContainer" instance=ExtResource("8_jsgp5")]
 transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 0, -49, 165)
 player_number = 1
-current_lives = 9
+current_lives = 1
 player_colour = ExtResource("10_luqu7")
 
 [node name="PlayerBuggy2" parent="PlayerScreenManager/PlayerContainer" instance=ExtResource("8_jsgp5")]
@@ -173,11 +208,13 @@ player_colour = ExtResource("10_stv4k")
 [node name="PlayerBuggy3" parent="PlayerScreenManager/PlayerContainer" instance=ExtResource("8_jsgp5")]
 transform = Transform3D(0.0165276, 3.42975e-16, 0.999863, 3.48787e-16, 1, -3.48787e-16, -0.999863, 3.54504e-16, 0.0165276, 82.8025, 35.4922, 35.0649)
 player_number = 3
+current_lives = 1
 player_colour = SubResource("StandardMaterial3D_wrm68")
 
 [node name="PlayerBuggy4" parent="PlayerScreenManager/PlayerContainer" instance=ExtResource("8_jsgp5")]
 transform = Transform3D(-1, 3.48787e-16, 8.74228e-08, 3.48787e-16, 1, -3.48787e-16, -8.74228e-08, -3.48787e-16, -1, 2.08165e-12, -49, -165)
 player_number = 4
+current_lives = 0
 player_colour = SubResource("StandardMaterial3D_k5dcc")
 
 [node name="SplitScreens" type="Node3D" parent="PlayerScreenManager"]
@@ -199,7 +236,6 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer2P/SubViewportContainer1" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
 
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer2P"]
 layout_mode = 2
@@ -208,7 +244,6 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer2P/SubViewportContainer2" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
 
 [node name="GridContainer3P" type="GridContainer" parent="PlayerScreenManager/SplitScreens"]
 anchors_preset = 15
@@ -227,7 +262,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer1" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
+size = Vector2i(1920, 1078)
 
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer3P"]
 layout_mode = 2
@@ -236,7 +271,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer2" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
+size = Vector2i(1920, 1078)
 
 [node name="SubViewportContainer3" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer3P"]
 layout_mode = 2
@@ -245,7 +280,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer3" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
+size = Vector2i(1920, 1078)
 
 [node name="GridContainer4P" type="GridContainer" parent="PlayerScreenManager/SplitScreens"]
 anchors_preset = 15
@@ -264,7 +299,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer1" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
+size = Vector2i(1920, 1078)
 
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
 layout_mode = 2
@@ -273,7 +308,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer2" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
+size = Vector2i(1920, 1078)
 
 [node name="SubViewportContainer3" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
 layout_mode = 2
@@ -282,7 +317,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer3" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
+size = Vector2i(1920, 1078)
 
 [node name="SubViewportContainer4" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
 layout_mode = 2
@@ -291,7 +326,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer4" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
+size = Vector2i(1920, 1078)
 
 [node name="SinglePlayerCamera" type="Camera3D" parent="."]
 script = ExtResource("7_0tkgs")

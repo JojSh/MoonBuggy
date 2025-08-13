@@ -73,6 +73,10 @@ func start_game ():
 		player.player_lost_a_life.connect(_on_player_lost_a_life)
 		player.get_node("ChaseCamPivot/ChaseCam").current = true
 		player.notify_chase_cam_of_teleportation()
+
+		if GameSettings.desired_number_players == 1:
+			player.needs_realignment.connect(_show_single_player_realignment_prompt)
+			player.realignment_resolved.connect(_hide_single_player_realignment_prompt)
 	
 	# Connect to checkpoint manager signals
 	connect_checkpoint_signals()
@@ -345,3 +349,9 @@ func remove_obstacle_course_timer():
 	if obstacle_course_timer:
 		obstacle_course_timer.queue_free()
 		obstacle_course_timer = null
+
+func _show_single_player_realignment_prompt():
+	$SinglePlayerUI/RealignmentPrompt.visible = true
+
+func _hide_single_player_realignment_prompt():
+	$SinglePlayerUI/RealignmentPrompt.visible = false

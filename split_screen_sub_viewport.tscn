@@ -12,3 +12,38 @@ script = ExtResource("1_djbh3")
 
 [node name="AimingReticle" parent="." instance=ExtResource("2_bkany")]
 visible = false
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="RealignmentPrompt" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -400.0
+offset_top = 155.0
+offset_right = 400.0
+offset_bottom = 275.0
+grow_horizontal = 2
+
+[node name="Background" type="ColorRect" parent="UI/RealignmentPrompt"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.15)
+
+[node name="Label" type="Label" parent="UI/RealignmentPrompt"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 60
+text = "Press [LB] to realign"
+horizontal_alignment = 1
+vertical_alignment = 1

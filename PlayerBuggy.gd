@@ -3,7 +3,7 @@ extends VehicleBody3D
 const STEER_SPEED = 2.5
 const STEER_LIMIT = 0.4
 const BRAKE_STRENGTH = 2.0
-const STARTING_BOOST_LEVEL : float = 0.0 # 1.5  # each boost level = +0.5s extra boost duration
+const STARTING_BOOST_LEVEL : float = 1.0  # each boost level = +0.5s extra boost duration
 const STARTING_RELOAD_LEVEL := 1
 const MAX_UPSIDE_DOWN_TIME := 3.0
 const RESPAWN_TIME := 3.0
@@ -78,6 +78,8 @@ signal player_eliminated(player_number)
 signal player_lost_a_life(player_number)
 signal hide_crosshair()
 signal show_crosshair()
+signal needs_realignment()
+signal realignment_resolved()
 
 func _ready ():
 	_start_position = global_transform.origin
@@ -225,8 +227,10 @@ func calculate_orientation_data() -> Dictionary:
 func perform_reorientation(orientation_data: Dictionary, gradual: bool = false, duration: float = 0.5):
 	if reorientation_cooldown > 0:
 		return
-		
+
 	reorientation_cooldown = REORIENTATION_COOLDOWN_DURATION
+	
+	emit_signal("realignment_resolved")
 	
 	if gradual:
 		start_reorientation(duration, orientation_data)
@@ -461,7 +465,7 @@ func handle_reverse_input ():
 			engine_force *= Input.get_action_strength(str("p", player_number, "_reverse"))
 
 func handle_fire_input ():
-	print("player_num: ", player_number, ". current_reload_level: ", current_reload_level)
+	print("player_num: ", player_number, ". current_boost_level : ", current_boost_level)
 	if current_reload_level > 0 && Input.is_action_just_pressed(str("p", player_number, "_fire")):
 		rocket_launcher.fire_rocket()
 
@@ -490,12 +494,18 @@ func auto_reorient_vehicle_if_stuck_too_long(delta):
 		
 		if is_stuck:
 			time_upside_down += ORIENTATION_CHECK_INTERVAL  # Add the full interval since we checked
+			# Show realignment prompt after 0.5 seconds of being stuck
+			if time_upside_down > 1.0:
+				emit_signal("needs_realignment")
+			
 			if time_upside_down > MAX_UPSIDE_DOWN_TIME:
 				# For safety feature, reset cooldown and call regular reorient
 				reorientation_cooldown = 0.0  # Ensure we can reorient
 				perform_reorientation(orientation_data, false)
 				time_upside_down = 0.0
 		else:
+			if time_upside_down > 0.0:  # Only emit if we were previously stuck
+				emit_signal("realignment_resolved")
 			time_upside_down = 0.0
 
 func generate_and_separate_clone_of_part (og_part, death_velocity, death_position):
