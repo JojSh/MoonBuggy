@@ -80,6 +80,8 @@ signal hide_crosshair()
 signal show_crosshair()
 signal needs_realignment()
 signal realignment_resolved()
+signal show_controls_help()
+signal hide_controls_help()
 
 func _ready ():
 	_start_position = global_transform.origin
@@ -146,6 +148,7 @@ func _physics_process(delta: float):
 
 	handle_cycle_through_cameras_input()
 	handle_return_to_start_position_input()
+	handle_start_button_input()
 
 	handle_boost_input(delta)
 	handle_steering_input(delta)
@@ -378,6 +381,12 @@ func handle_return_to_start_position_input ():
 		linear_velocity = Vector3(0, 0, 0)
 		update_new_center_of_gravity_point(_initial_gravity_point)
 
+func handle_start_button_input():
+	if Input.is_action_just_pressed(str("p", player_number, "_start_button")):
+		emit_signal("show_controls_help")
+	elif Input.is_action_just_released(str("p", player_number, "_start_button")):
+		emit_signal("hide_controls_help")
+
 func handle_cycle_through_cameras_input ():
 	if Input.is_action_just_pressed(str("p", player_number, "_toggle_camera")):
 		var camera_configs = [
@@ -465,7 +474,6 @@ func handle_reverse_input ():
 			engine_force *= Input.get_action_strength(str("p", player_number, "_reverse"))
 
 func handle_fire_input ():
-	print("player_num: ", player_number, ". current_boost_level : ", current_boost_level)
 	if current_reload_level > 0 && Input.is_action_just_pressed(str("p", player_number, "_fire")):
 		rocket_launcher.fire_rocket()
 

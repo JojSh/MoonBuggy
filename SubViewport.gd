@@ -11,6 +11,8 @@ func connect_crosshair_control_signals ():
 		vehicle.connect("show_crosshair", show_crosshair)
 		vehicle.connect("needs_realignment", show_realignment_prompt)
 		vehicle.connect("realignment_resolved", hide_realignment_prompt)
+		vehicle.connect("show_controls_help", show_controls_help)
+		vehicle.connect("hide_controls_help", hide_controls_help)
 
 func hide_crosshair ():
 	$AimingReticle.visible = false
@@ -25,3 +27,9 @@ func show_realignment_prompt():
 
 func hide_realignment_prompt():
 	$UI/RealignmentPrompt.visible = false
+
+func show_controls_help():
+	$UI/ControlsHelp.visible = true
+
+func hide_controls_help():
+	$UI/ControlsHelp.visible = false

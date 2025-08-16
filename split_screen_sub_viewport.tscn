@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bya5s6afh24y2"]
+[gd_scene load_steps=4 format=3 uid="uid://bya5s6afh24y2"]
 
 [ext_resource type="Script" path="res://SubViewport.gd" id="1_djbh3"]
 [ext_resource type="PackedScene" uid="uid://02pucoy7xppp" path="res://subviewport_aiming_reticle.tscn" id="2_bkany"]
+[ext_resource type="PackedScene" uid="uid://cw0t325yducrj" path="res://controls_help_ui.tscn" id="3_controls"]
 
 [node name="SubViewport" type="SubViewport"]
 handle_input_locally = false
@@ -47,3 +48,5 @@ theme_override_font_sizes/font_size = 60
 text = "Press [LB] to realign"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="ControlsHelp" parent="UI" instance=ExtResource("3_controls")]

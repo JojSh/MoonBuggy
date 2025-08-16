@@ -1,0 +1,204 @@
+[gd_scene format=3 uid="uid://cw0t325yducrj"]
+
+[node name="ControlsHelp" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -300.0
+offset_right = 400.0
+offset_bottom = 359.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.15)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 100.0
+offset_top = 40.0
+offset_right = -100.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "CONTROLS"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="ControlsContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Row1" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
+
+[node name="Move" type="Label" parent="VBoxContainer/ControlsContainer/Row1"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Move"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LeftStick" type="Label" parent="VBoxContainer/ControlsContainer/Row1"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Left Stick"
+
+[node name="Row2" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
+
+[node name="Accelerate" type="Label" parent="VBoxContainer/ControlsContainer/Row2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Accelerate"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="A" type="Label" parent="VBoxContainer/ControlsContainer/Row2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "A"
+
+[node name="Row3" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
+
+[node name="Reverse" type="Label" parent="VBoxContainer/ControlsContainer/Row3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Reverse"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="B" type="Label" parent="VBoxContainer/ControlsContainer/Row3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "B"
+
+[node name="Row4" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
+
+[node name="JumpBoost" type="Label" parent="VBoxContainer/ControlsContainer/Row4"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Boost Jump"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="X" type="Label" parent="VBoxContainer/ControlsContainer/Row4"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "X"
+
+[node name="Row5" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
+
+[node name="ToggleCamera" type="Label" parent="VBoxContainer/ControlsContainer/Row5"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Toggle Camera"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Y" type="Label" parent="VBoxContainer/ControlsContainer/Row5"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Y"
+
+[node name="Row6" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
+
+[node name="RealignVehicle" type="Label" parent="VBoxContainer/ControlsContainer/Row6"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Realign Vehicle"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LB" type="Label" parent="VBoxContainer/ControlsContainer/Row6"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "LB"
+
+[node name="Row7" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
+
+[node name="FireRocket" type="Label" parent="VBoxContainer/ControlsContainer/Row7"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Fire Rocket"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RT" type="Label" parent="VBoxContainer/ControlsContainer/Row7"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "RT"
+
+[node name="Row8" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
+
+[node name="AimRocket" type="Label" parent="VBoxContainer/ControlsContainer/Row8"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Aim Rocket"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RT" type="Label" parent="VBoxContainer/ControlsContainer/Row8"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "LT"
+
+[node name="Row9" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
+
+[node name="ShowControls" type="Label" parent="VBoxContainer/ControlsContainer/Row9"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Show Controls"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Start" type="Label" parent="VBoxContainer/ControlsContainer/Row9"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Start"

@@ -77,6 +77,8 @@ func start_game ():
 		if GameSettings.desired_number_players == 1:
 			player.needs_realignment.connect(_show_single_player_realignment_prompt)
 			player.realignment_resolved.connect(_hide_single_player_realignment_prompt)
+			player.show_controls_help.connect(_show_single_player_controls_help)
+			player.hide_controls_help.connect(_hide_single_player_controls_help)
 	
 	# Connect to checkpoint manager signals
 	connect_checkpoint_signals()
@@ -355,3 +357,9 @@ func _show_single_player_realignment_prompt():
 
 func _hide_single_player_realignment_prompt():
 	$SinglePlayerUI/RealignmentPrompt.visible = false
+
+func _show_single_player_controls_help():
+	$SinglePlayerUI/ControlsHelp.visible = true
+
+func _hide_single_player_controls_help():
+	$SinglePlayerUI/ControlsHelp.visible = false
