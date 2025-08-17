@@ -1,7 +1,8 @@
-[gd_scene load_steps=17 format=3 uid="uid://cfp77dx8lxb0i"]
+[gd_scene load_steps=18 format=3 uid="uid://cfp77dx8lxb0i"]
 
 [ext_resource type="Script" path="res://RootNode.gd" id="1_06hsa"]
 [ext_resource type="Script" path="res://GameOverScreen.gd" id="2_p4gfa"]
+[ext_resource type="Script" path="res://MenuInputHandler.gd" id="3_ey7y8"]
 [ext_resource type="PackedScene" uid="uid://bya5s6afh24y2" path="res://split_screen_sub_viewport.tscn" id="6_eup8v"]
 [ext_resource type="PackedScene" uid="uid://02pucoy7xppp" path="res://subviewport_aiming_reticle.tscn" id="6_vtpqb"]
 [ext_resource type="Script" path="res://SinglePlayerCamera.gd" id="7_0tkgs"]
@@ -73,6 +74,7 @@ vertical_alignment = 1
 
 [node name="MenuContainer" type="CanvasLayer" parent="."]
 process_mode = 3
+script = ExtResource("3_ey7y8")
 
 [node name="Control" type="Control" parent="MenuContainer"]
 process_mode = 3
@@ -238,7 +240,6 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer2P/SubViewportContainer1" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
 
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer2P"]
 layout_mode = 2
@@ -247,7 +248,6 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer2P/SubViewportContainer2" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
 
 [node name="GridContainer3P" type="GridContainer" parent="PlayerScreenManager/SplitScreens"]
 anchors_preset = 15
@@ -266,7 +266,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer1" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
+size = Vector2i(1920, 1078)
 
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer3P"]
 layout_mode = 2
@@ -275,7 +275,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer2" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
+size = Vector2i(1920, 1078)
 
 [node name="SubViewportContainer3" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer3P"]
 layout_mode = 2
@@ -284,7 +284,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer3" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
+size = Vector2i(1920, 1078)
 
 [node name="GridContainer4P" type="GridContainer" parent="PlayerScreenManager/SplitScreens"]
 anchors_preset = 15
@@ -303,7 +303,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer1" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
+size = Vector2i(1920, 1078)
 
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
 layout_mode = 2
@@ -312,7 +312,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer2" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
+size = Vector2i(1920, 1078)
 
 [node name="SubViewportContainer3" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
 layout_mode = 2
@@ -321,7 +321,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer3" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
+size = Vector2i(1920, 1078)
 
 [node name="SubViewportContainer4" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
 layout_mode = 2
@@ -330,7 +330,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer4" instance=ExtResource("6_eup8v")]
-size = Vector2i(2, 2)
+size = Vector2i(1920, 1078)
 
 [node name="SinglePlayerCamera" type="Camera3D" parent="."]
 script = ExtResource("7_0tkgs")

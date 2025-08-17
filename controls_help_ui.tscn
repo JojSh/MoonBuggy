@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cw0t325yducrj"]
 
 [node name="ControlsHelp" type="Control"]
+visible = false
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
