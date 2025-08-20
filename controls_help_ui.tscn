@@ -11,7 +11,7 @@ anchor_bottom = 0.5
 offset_left = -400.0
 offset_top = -300.0
 offset_right = 400.0
-offset_bottom = 359.0
+offset_bottom = 410.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -22,7 +22,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.15)
+color = Color(0, 0, 0, 0.32549)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -193,13 +193,30 @@ layout_mode = 2
 [node name="ShowControls" type="Label" parent="VBoxContainer/ControlsContainer/Row9"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
-text = "Show Controls"
+text = "Angle Up/Down"
 
 [node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row9"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Start" type="Label" parent="VBoxContainer/ControlsContainer/Row9"]
+[node name="Right Stick" type="Label" parent="VBoxContainer/ControlsContainer/Row9"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Right Stick"
+
+[node name="Row10" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
+
+[node name="ShowControls" type="Label" parent="VBoxContainer/ControlsContainer/Row10"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Show Controls"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Start" type="Label" parent="VBoxContainer/ControlsContainer/Row10"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "Start"

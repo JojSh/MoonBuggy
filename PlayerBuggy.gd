@@ -3,6 +3,8 @@ extends VehicleBody3D
 const STEER_SPEED = 2.5
 const STEER_LIMIT = 0.4
 const BRAKE_STRENGTH = 2.0
+const PITCH_TORQUE_UP = 300.0
+const PITCH_TORQUE_DOWN = 300.0
 const STARTING_BOOST_LEVEL : float = 1.0  # each boost level = +0.5s extra boost duration
 const STARTING_RELOAD_LEVEL := 1
 const MAX_UPSIDE_DOWN_TIME := 3.0
@@ -154,6 +156,7 @@ func _physics_process(delta: float):
 	handle_steering_input(delta)
 	handle_acceleration_input()
 	handle_reverse_input()
+	handle_pitch_input()
 	handle_fire_input()
 	
 	if (player_number == 1 && Input.is_action_just_pressed("p1_debug_test_functionality_trigger")):
@@ -472,6 +475,26 @@ func handle_reverse_input ():
 			engine_force = -engine_force_value * BRAKE_STRENGTH
 			# Apply analog brake factor for more subtle braking if not fully holding down the trigger.
 			engine_force *= Input.get_action_strength(str("p", player_number, "_reverse"))
+
+func are_all_wheels_grounded() -> bool:
+	return $Wheel1.is_in_contact() and $Wheel2.is_in_contact() and $Wheel3.is_in_contact() and $Wheel4.is_in_contact()
+
+func handle_pitch_input():
+	# Only allow pitching when all wheels are grounded
+	if not are_all_wheels_grounded():
+		return
+	
+	var pitch_torque_vector = Vector3.ZERO
+	
+	if Input.is_action_pressed(str("p", player_number, "_angle_up")):
+		# Stronger torque for angling up
+		pitch_torque_vector = global_transform.basis.x * -1.0 * PITCH_TORQUE_UP
+	elif Input.is_action_pressed(str("p", player_number, "_angle_down")):
+		# Weaker torque for angling down
+		pitch_torque_vector = global_transform.basis.x * 1.0 * PITCH_TORQUE_DOWN
+	
+	if pitch_torque_vector != Vector3.ZERO:
+		apply_torque(pitch_torque_vector)
 
 func handle_fire_input ():
 	if current_reload_level > 0 && Input.is_action_just_pressed(str("p", player_number, "_fire")):
