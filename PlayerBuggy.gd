@@ -897,9 +897,11 @@ func switch_on_obstacle_course_mode ():
 	current_boost_level = 0.0
 	current_reload_level = 0
 	$RocketLauncher.hide_rocket()
+	_update_boost_display()
 
 func switch_off_obstacle_course_mode ():
 	playing_obstacle_course_mode = false
 	current_boost_level = STARTING_BOOST_LEVEL
 	current_reload_level = STARTING_RELOAD_LEVEL
 	$RocketLauncher.show_rocket()
+	_update_boost_display()
