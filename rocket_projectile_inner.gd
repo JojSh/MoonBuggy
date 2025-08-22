@@ -35,7 +35,7 @@ func _on_body_entered(body):
 		rocket_controller._on_rocket_destroyed()
 	
 	# Emit signal to parent before destroying the rocket
-	rocket_exploded.emit()
+	rocket_exploded.emit(global_position)
 	# Remove the rocket
 	queue_free()
 
@@ -105,7 +105,7 @@ func is_out_of_bounds():
 	#const MAX_X = 200
 	#const MIN_Y = -150
 	#const MAX_Y = 150
-	const MIN_Z = -350
+	const MIN_Z = -550
 	const MAX_Z = 350
 	const MIN_X = -300
 	const MAX_X = 500
