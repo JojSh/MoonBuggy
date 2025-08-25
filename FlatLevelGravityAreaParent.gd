@@ -14,8 +14,6 @@ func _on_area_3d_body_entered(body):
 	if body is VehicleBody3D:
 		# Set the vehicle's surface type to match this gravity area
 		body.set_surface_type($GravityArea3D.surface_type)
-
-		print('CURRENT SURFACE NAME:', name) #not being set to LevelCube2 !?
 		body.update_side_surface_gravity_direction(-$GravityArea3D.gravity_direction)
 
 		$GravityArea3D.priority = 2

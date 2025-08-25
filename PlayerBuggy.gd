@@ -133,7 +133,7 @@ func _physics_process(delta: float):
 
 	if Input.is_action_just_pressed(str("p", player_number, "_flip")):
 		# Player explicitly requested a flip
-		reorient_vehicle()
+		reorient_vehicle_over_time(0.25)
 
 	if (player_number == 1): #temporary until assigned for players 2-4
 		if Input.is_action_pressed(str("p", player_number, "_hold_to_aim")):
@@ -256,7 +256,7 @@ func perform_reorientation(orientation_data: Dictionary, gradual: bool = false, 
 		angular_velocity = Vector3.ZERO
 		global_transform.origin += orientation_data.desired_up * 0.5
 
-func reorient_vehicle(on_delay: bool = false):
+func reorient_vehicle(on_delay: bool = false): # Instant reorientation - NOT currently used, only using gradual reorientation for now
 	# Cancel any in-progress gradual reorientation
 	is_reorienting = false
 	
@@ -530,9 +530,9 @@ func auto_reorient_vehicle_if_stuck_too_long(delta):
 				emit_signal("needs_realignment")
 			
 			if time_upside_down > MAX_UPSIDE_DOWN_TIME:
-				# For safety feature, reset cooldown and call regular reorient
+				# For safety feature, reset cooldown and call gradual reorient
 				reorientation_cooldown = 0.0  # Ensure we can reorient
-				perform_reorientation(orientation_data, false)
+				reorient_vehicle_over_time(0.25)
 				time_upside_down = 0.0
 		else:
 			if time_upside_down > 0.0:  # Only emit if we were previously stuck
