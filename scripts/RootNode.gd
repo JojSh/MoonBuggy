@@ -59,12 +59,13 @@ func start_game ():
 	if (current_map.name.begins_with("ObstacleCourse")):
 		list_of_players[0].switch_on_obstacle_course_mode()
 		setup_obstacle_course_timer()
+		MusicManager.start_music(2)
 	else:
 		list_of_players[0].switch_off_obstacle_course_mode()
 		remove_obstacle_course_timer()
+		MusicManager.start_music(1)
 	assign_spawn_points()
 	setup_screens()
-	MusicManager.start_music()
 
 	# After split screen setup, configure each player's cameras and signals
 	# This ensures cameras are in their final viewport context
