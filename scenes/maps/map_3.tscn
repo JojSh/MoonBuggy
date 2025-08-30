@@ -1,0 +1,170 @@
+[gd_scene load_steps=13 format=3 uid="uid://rqw6hes31fdk"]
+
+[ext_resource type="PackedScene" uid="uid://d1wcxewl0xytx" path="res://scenes/portal_entrance_area_3d.tscn" id="1_m7ga2"]
+[ext_resource type="PackedScene" uid="uid://dieogt36ljkks" path="res://scenes/portal_exit_area_3d.tscn" id="2_jvqj8"]
+[ext_resource type="Script" path="res://scripts/PickUpSpawner.gd" id="3_cvnn8"]
+[ext_resource type="Script" path="res://scripts/GravityAreaParentLevel.gd" id="4_o04fr"]
+[ext_resource type="Material" uid="uid://cse68vhm0xbdf" path="res://resources/glowy_purple.tres" id="5_v22fs"]
+[ext_resource type="Script" path="res://scripts/GravityArea3D.gd" id="6_cfj1o"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_umtnq"]
+
+[sub_resource type="Sky" id="Sky_kibm0"]
+sky_material = SubResource("ProceduralSkyMaterial_umtnq")
+
+[sub_resource type="Environment" id="Environment_tuk6j"]
+background_mode = 2
+sky = SubResource("Sky_kibm0")
+
+[sub_resource type="SphereMesh" id="SphereMesh_gjgx4"]
+radius = 50.0
+height = 100.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_miucy"]
+radius = 50.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ut3oc"]
+radius = 50.0
+
+[node name="Map2" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_tuk6j")
+
+[node name="PortalEntranceArea3D1" parent="." instance=ExtResource("1_m7ga2")]
+transform = Transform3D(-0.141421, -2.62347e-23, -0.141421, 6.97574e-17, 0.2, -6.97574e-17, 0.141421, -9.86519e-17, -0.141421, -45, -44.9366, -42)
+
+[node name="PortalExitArea3D1" parent="." instance=ExtResource("2_jvqj8")]
+transform = Transform3D(0.114715, -1.00287e-08, -0.16383, -1.74845e-08, -0.2, -6.97572e-17, -0.16383, 1.43225e-08, -0.114715, 36.6106, 48.1375, 37.0567)
+collision_mask = 7
+
+[node name="PortalEntranceArea3D2" parent="." instance=ExtResource("1_m7ga2")]
+transform = Transform3D(0.0415571, 0.153565, -0.121206, -0.0498058, 0.128132, 0.145264, 0.189189, 0, 0.0648661, -46.6169, 45.2815, 46.0068)
+
+[node name="PortalExitArea3D2" parent="." instance=ExtResource("2_jvqj8")]
+transform = Transform3D(0.153209, -9.82764e-17, -0.128557, 6.97573e-17, 0.2, -6.97573e-17, 0.128557, 8.59808e-18, 0.153209, 36.5103, -49.0725, -38.4606)
+collision_mask = 7
+
+[node name="PickUpSpawner" type="Node3D" parent="."]
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("3_cvnn8")
+
+[node name="SpawnPoint1-1" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(0.999999, 0.00113446, 0, -0.00113446, 0.999999, -1.713e-10, -1.56319e-13, 1.71299e-10, 1, -14, -49, -14)
+
+[node name="SpawnPoint1-2" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, -49, 14)
+
+[node name="SpawnPoint2-1" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(4.37114e-08, 1, 1.50996e-07, 1, -4.37114e-08, -3.48787e-16, 6.25146e-15, 1.50996e-07, -1, 49, -14, 14)
+
+[node name="SpawnPoint2-2" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(4.37114e-08, 1, 1.50996e-07, 1, -4.37114e-08, -3.48787e-16, 6.25146e-15, 1.50996e-07, -1, 49, 2.08165e-12, 2.08165e-12)
+
+[node name="SpawnPoint2-3" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(4.37114e-08, 1, 1.50996e-07, 1, -4.37114e-08, -3.48787e-16, 6.25146e-15, 1.50996e-07, -1, 49, 14, -14)
+
+[node name="SpawnPoint3-1" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(-1, 1.50996e-07, -6.60024e-15, -1.5246e-23, -4.37114e-08, -1, -1.50996e-07, -1, 4.37114e-08, 14, 14, 49)
+
+[node name="SpawnPoint3-2" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(-1, 1.50996e-07, -6.60024e-15, -1.5246e-23, -4.37114e-08, -1, -1.50996e-07, -1, 4.37114e-08, -14, -14, 49)
+
+[node name="SpawnPoint4-1" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(-1, 1.50996e-07, -6.60024e-15, -1.5246e-23, -4.37114e-08, -1, -1.50996e-07, -1, 4.37114e-08, 7.3988e-06, -14, -49)
+
+[node name="SpawnPoint4-2" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(-1, 1.50996e-07, -6.60024e-15, -1.5246e-23, -4.37114e-08, -1, -1.50996e-07, -1, 4.37114e-08, 7.3988e-06, 14, -49)
+
+[node name="SpawnPoint4-3" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(-1, 1.50996e-07, -6.60024e-15, -1.5246e-23, -4.37114e-08, -1, -1.50996e-07, -1, 4.37114e-08, -14, 0, -49)
+
+[node name="SpawnPoint4-4" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(-1, 1.50996e-07, -6.60024e-15, -1.5246e-23, -4.37114e-08, -1, -1.50996e-07, -1, 4.37114e-08, 14, 0, -49)
+
+[node name="SpawnPoint5-1" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(-1.07285e-07, -1, 4.37114e-08, -1.5246e-23, -4.37114e-08, -1, 1, -1.07285e-07, 4.68956e-15, -49, -14, -7.3988e-06)
+
+[node name="SpawnPoint5-2" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(-1.07285e-07, -1, 4.37114e-08, -1.5246e-23, -4.37114e-08, -1, 1, -1.07285e-07, 4.68956e-15, -49, 14, 2.08165e-12)
+
+[node name="SpawnPoint5-3" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(-1.07285e-07, -1, 4.37114e-08, -1.5246e-23, -4.37114e-08, -1, 1, -1.07285e-07, 4.68956e-15, -49, 2.08165e-12, -14)
+
+[node name="SpawnPoint5-4" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(-1.07285e-07, -1, 4.37114e-08, -1.5246e-23, -4.37114e-08, -1, 1, -1.07285e-07, 4.68956e-15, -49, 2.08165e-12, 14)
+
+[node name="SpawnPoint6-1" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(0.999999, 0.00113446, 0, -0.00113446, 0.999999, -1.713e-10, -1.56319e-13, 1.71299e-10, 1, 2.08165e-12, 49, 14)
+
+[node name="SpawnPoint6-2" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(0.999999, 0.00113446, 0, -0.00113446, 0.999999, -1.713e-10, -1.56319e-13, 1.71299e-10, 1, 2.08165e-12, 49, 2.08165e-12)
+
+[node name="SpawnPoint6-3" type="Node3D" parent="PickUpSpawner"]
+transform = Transform3D(0.999999, 0.00113446, 0, -0.00113446, 0.999999, -1.713e-10, -1.56319e-13, 1.71299e-10, 1, 2.08165e-12, 49, -14)
+
+[node name="UnusedPickUpSpawnPositionsHolder" type="Node3D" parent="."]
+
+[node name="PlayerSpawnPositions" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+
+[node name="Position1" type="Node3D" parent="PlayerSpawnPositions"]
+transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+
+[node name="UnusedPlayerSpawnPositionsHolder" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -218.433, 0)
+
+[node name="Position2b" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
+transform = Transform3D(1.31134e-07, 1, 8.74228e-08, 4.37114e-08, -8.74228e-08, 1, 1, -1.31134e-07, -4.37114e-08, -47.9816, 206.951, -0.26075)
+
+[node name="Position2c" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
+transform = Transform3D(1.31134e-07, 1, 8.74228e-08, 4.37114e-08, -8.74228e-08, 1, 1, -1.31134e-07, -4.37114e-08, -47.9816, 201.253, -0.26075)
+
+[node name="Position2d" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
+transform = Transform3D(1.31134e-07, 1, 8.74228e-08, 4.37114e-08, -8.74228e-08, 1, 1, -1.31134e-07, -4.37114e-08, -47.9816, 231.03, -0.26075)
+
+[node name="Position2" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
+transform = Transform3D(1.31134e-07, 1, 8.74228e-08, 4.37114e-08, -8.74228e-08, 1, 1, -1.31134e-07, -4.37114e-08, -47.9816, 215.616, -0.26075)
+
+[node name="Position3" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
+transform = Transform3D(-1, 3.48787e-16, -8.74228e-08, -8.74228e-08, -4.37114e-08, 1, -3.47258e-15, 1, 4.37114e-08, 2.08165e-12, 209.576, -50.2108)
+
+[node name="Position4" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 2.08165e-12, 222.602, 47.9408)
+
+[node name="Position5" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
+transform = Transform3D(-4.37114e-08, -1, -4.37114e-08, -1.5246e-23, -4.37114e-08, 1, -1, 4.37114e-08, 1.91069e-15, 46.3055, 222.753, -0.131897)
+
+[node name="Position6" type="Node3D" parent="UnusedPlayerSpawnPositionsHolder"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 2.08165e-12, 264.897, 1.17976)
+
+[node name="InnerCubeContainer" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 2.08165e-12)
+
+[node name="LevelSphereBig1 - StaticBody3D2" type="StaticBody3D" parent="InnerCubeContainer"]
+transform = Transform3D(-2, 0, -3.01992e-07, 0, 2, 0, 3.01992e-07, 0, -2, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+collision_mask = 7
+script = ExtResource("4_o04fr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="InnerCubeContainer/LevelSphereBig1 - StaticBody3D2"]
+material_override = ExtResource("5_v22fs")
+mesh = SubResource("SphereMesh_gjgx4")
+skeleton = NodePath("../../../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InnerCubeContainer/LevelSphereBig1 - StaticBody3D2"]
+shape = SubResource("SphereShape3D_miucy")
+
+[node name="GravityArea3D" type="Area3D" parent="InnerCubeContainer/LevelSphereBig1 - StaticBody3D2"]
+collision_mask = 7
+gravity_space_override = 3
+gravity_point = true
+gravity_point_center = Vector3(0, 0, 0)
+gravity_direction = Vector3(0, 0, 0)
+gravity = -9.8
+script = ExtResource("6_cfj1o")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InnerCubeContainer/LevelSphereBig1 - StaticBody3D2/GravityArea3D"]
+transform = Transform3D(1.16, 0, 0, 0, 1.16, 0, 0, 0, 1.16, 0, 0, 0)
+shape = SubResource("SphereShape3D_ut3oc")
+
+[connection signal="body_entered" from="InnerCubeContainer/LevelSphereBig1 - StaticBody3D2/GravityArea3D" to="InnerCubeContainer/LevelSphereBig1 - StaticBody3D2" method="_on_area_3d_body_entered"]

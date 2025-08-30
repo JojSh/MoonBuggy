@@ -1,0 +1,363 @@
+[gd_scene load_steps=18 format=3 uid="uid://cfp77dx8lxb0i"]
+
+[ext_resource type="Script" path="res://scripts/RootNode.gd" id="1_06hsa"]
+[ext_resource type="Script" path="res://scripts/GameOverScreen.gd" id="2_p4gfa"]
+[ext_resource type="Script" path="res://scripts/MenuInputHandler.gd" id="3_ey7y8"]
+[ext_resource type="PackedScene" uid="uid://bya5s6afh24y2" path="res://scenes/split_screen_sub_viewport.tscn" id="6_eup8v"]
+[ext_resource type="PackedScene" uid="uid://02pucoy7xppp" path="res://scenes/subviewport_aiming_reticle.tscn" id="6_vtpqb"]
+[ext_resource type="Script" path="res://scripts/SinglePlayerCamera.gd" id="7_0tkgs"]
+[ext_resource type="Script" path="res://scripts/WorldMapManager.gd" id="7_682lk"]
+[ext_resource type="Script" path="res://scripts/SpectatorManager.gd" id="8_0hjkl"]
+[ext_resource type="PackedScene" uid="uid://tp634kdqbfd" path="res://scenes/PlayerBuggy.tscn" id="8_jsgp5"]
+[ext_resource type="Material" uid="uid://cf4w258oi4pca" path="res://resources/car-green.tres" id="10_luqu7"]
+[ext_resource type="Material" uid="uid://c53pgeng2ewby" path="res://resources/car-gold.tres" id="10_stv4k"]
+[ext_resource type="PackedScene" uid="uid://cw0t325yducrj" path="res://scenes/controls_help_ui.tscn" id="11_controls"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_mq556"]
+font_size = 320
+
+[sub_resource type="SphereMesh" id="SphereMesh_v6i6q"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7cpvd"]
+albedo_color = Color(0.978747, 0.458872, 0.747274, 1)
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wrm68"]
+albedo_color = Color(0.89793, 0.659596, 1, 1)
+metallic = 0.89
+roughness = 0.41
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k5dcc"]
+albedo_color = Color(0.422322, 0.927869, 1, 1)
+metallic = 0.89
+roughness = 0.41
+
+[node name="RootNode" type="Node3D"]
+script = ExtResource("1_06hsa")
+
+[node name="SinglePlayerUI" type="CanvasLayer" parent="."]
+
+[node name="RealignmentPrompt" type="Control" parent="SinglePlayerUI"]
+visible = false
+layout_mode = 3
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -400.0
+offset_top = 155.0
+offset_right = 400.0
+offset_bottom = 275.0
+grow_horizontal = 2
+
+[node name="Background" type="ColorRect" parent="SinglePlayerUI/RealignmentPrompt"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.15)
+
+[node name="Label" type="Label" parent="SinglePlayerUI/RealignmentPrompt"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 60
+text = "Press [LB] to realign"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ControlsHelp" parent="SinglePlayerUI" instance=ExtResource("11_controls")]
+
+[node name="MenuContainer" type="CanvasLayer" parent="."]
+process_mode = 3
+script = ExtResource("3_ey7y8")
+
+[node name="Control" type="Control" parent="MenuContainer"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainMenuContainer" type="MarginContainer" parent="MenuContainer/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="MenuContainer/Control/MainMenuContainer"]
+layout_mode = 2
+color = Color(0.302973, 0.180791, 0.35748, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuContainer/Control/MainMenuContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="SinglePlayerLocalButton" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 100
+text = "Single player (local)"
+
+[node name="TwoPlayerSplitScreenButton" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 100
+text = "Two player split-screen"
+
+[node name="ThreePlayerSplitScreenButton" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 100
+text = "Three player split-screen"
+
+[node name="FourPlayerSplitScreenButton" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 100
+text = "Four player split-screen"
+
+[node name="DebugToggle" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 100
+text = "Toggle debug on/off"
+
+[node name="ChangeMap" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 100
+text = "Change map: "
+
+[node name="GameOverScreen" type="MarginContainer" parent="MenuContainer/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_p4gfa")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuContainer/Control/GameOverScreen"]
+layout_mode = 2
+
+[node name="EmptySpace" type="Label" parent="MenuContainer/Control/GameOverScreen/VBoxContainer"]
+layout_mode = 2
+text = "
+"
+label_settings = SubResource("LabelSettings_mq556")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PlayerWinNotification" type="Label" parent="MenuContainer/Control/GameOverScreen/VBoxContainer"]
+layout_mode = 2
+text = "Player X wins!"
+label_settings = SubResource("LabelSettings_mq556")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PlayAgainButton" type="Button" parent="MenuContainer/Control/GameOverScreen/VBoxContainer"]
+layout_mode = 2
+size_flags_stretch_ratio = 1.94
+theme_override_colors/font_focus_color = Color(0.988235, 0.67451, 0.384314, 1)
+theme_override_font_sizes/font_size = 150
+text = "Play again?"
+
+[node name="ReturnToMainMenuButton" type="Button" parent="MenuContainer/Control/GameOverScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_focus_color = Color(0.988235, 0.67451, 0.384314, 1)
+theme_override_font_sizes/font_size = 150
+text = "Return to main menu"
+
+[node name="AudioListener3DBetweenPlayers" type="AudioListener3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -47.9886, 0)
+
+[node name="DebugSphere" type="MeshInstance3D" parent="AudioListener3DBetweenPlayers"]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
+visible = false
+mesh = SubResource("SphereMesh_v6i6q")
+surface_material_override/0 = SubResource("StandardMaterial3D_7cpvd")
+
+[node name="PlayerScreenManager" type="Node3D" parent="."]
+
+[node name="PlayerContainer" type="Node3D" parent="PlayerScreenManager"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.120117, -0.252323, -0.0459061)
+
+[node name="PlayerBuggy1" parent="PlayerScreenManager/PlayerContainer" instance=ExtResource("8_jsgp5")]
+transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 0, -49, 165)
+player_number = 1
+player_colour = ExtResource("10_luqu7")
+jump_initial_impulse = 20.0
+is_eliminated = false
+
+[node name="PlayerBuggy2" parent="PlayerScreenManager/PlayerContainer" instance=ExtResource("8_jsgp5")]
+transform = Transform3D(-0.689898, -1.18621e-17, -0.723907, 3.48787e-16, 1, -3.48787e-16, 0.723907, -4.93117e-16, -0.689898, -92, 36.6898, -40)
+player_number = 2
+player_colour = ExtResource("10_stv4k")
+jump_initial_impulse = 20.0
+is_eliminated = false
+
+[node name="PlayerBuggy3" parent="PlayerScreenManager/PlayerContainer" instance=ExtResource("8_jsgp5")]
+transform = Transform3D(0.0165276, 3.42975e-16, 0.999863, 3.48787e-16, 1, -3.48787e-16, -0.999863, 3.54504e-16, 0.0165276, 82.8025, 35.4922, 35.0649)
+player_number = 3
+player_colour = SubResource("StandardMaterial3D_wrm68")
+jump_initial_impulse = 20.0
+is_eliminated = false
+
+[node name="PlayerBuggy4" parent="PlayerScreenManager/PlayerContainer" instance=ExtResource("8_jsgp5")]
+transform = Transform3D(-1, 3.48787e-16, 8.74228e-08, 3.48787e-16, 1, -3.48787e-16, -8.74228e-08, -3.48787e-16, -1, 2.08165e-12, -49, -165)
+player_number = 4
+player_colour = SubResource("StandardMaterial3D_k5dcc")
+jump_initial_impulse = 20.0
+is_eliminated = false
+
+[node name="SplitScreens" type="Node3D" parent="PlayerScreenManager"]
+
+[node name="GridContainer2P" type="GridContainer" parent="PlayerScreenManager/SplitScreens"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_stretch_ratio = 9.9
+theme_override_constants/h_separation = 0
+columns = 2
+
+[node name="SubViewportContainer1" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer2P"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer2P/SubViewportContainer1" instance=ExtResource("6_eup8v")]
+
+[node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer2P"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer2P/SubViewportContainer2" instance=ExtResource("6_eup8v")]
+
+[node name="GridContainer3P" type="GridContainer" parent="PlayerScreenManager/SplitScreens"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_stretch_ratio = 9.9
+theme_override_constants/h_separation = 0
+columns = 2
+
+[node name="SubViewportContainer1" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer3P"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer1" instance=ExtResource("6_eup8v")]
+size = Vector2i(1920, 1078)
+
+[node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer3P"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer2" instance=ExtResource("6_eup8v")]
+size = Vector2i(1920, 1078)
+
+[node name="SubViewportContainer3" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer3P"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer3" instance=ExtResource("6_eup8v")]
+size = Vector2i(1920, 1078)
+
+[node name="GridContainer4P" type="GridContainer" parent="PlayerScreenManager/SplitScreens"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_stretch_ratio = 9.9
+theme_override_constants/h_separation = 0
+columns = 2
+
+[node name="SubViewportContainer1" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer1" instance=ExtResource("6_eup8v")]
+size = Vector2i(1920, 1078)
+
+[node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer2" instance=ExtResource("6_eup8v")]
+size = Vector2i(1920, 1078)
+
+[node name="SubViewportContainer3" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer3" instance=ExtResource("6_eup8v")]
+size = Vector2i(1920, 1078)
+
+[node name="SubViewportContainer4" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer4" instance=ExtResource("6_eup8v")]
+size = Vector2i(1920, 1078)
+
+[node name="SinglePlayerCamera" type="Camera3D" parent="."]
+script = ExtResource("7_0tkgs")
+
+[node name="AimingReticle" parent="SinglePlayerCamera" instance=ExtResource("6_vtpqb")]
+visible = false
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.767322, 0.641262, 0, -0.641262, 0.767322, 0, 14.1741, 4.37678)
+light_color = Color(1, 0.952941, 0.901961, 1)
+
+[node name="SpectatorManager" type="Node" parent="."]
+script = ExtResource("8_0hjkl")
+
+[node name="World" type="Node3D" parent="."]
+script = ExtResource("7_682lk")
+
+[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/SinglePlayerLocalButton" to="." method="_on_choose_player_count_button_pressed" binds= [1]]
+[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/TwoPlayerSplitScreenButton" to="." method="_on_choose_player_count_button_pressed" binds= [2]]
+[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/ThreePlayerSplitScreenButton" to="." method="_on_choose_player_count_button_pressed" binds= [3]]
+[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/FourPlayerSplitScreenButton" to="." method="_on_choose_player_count_button_pressed" binds= [4]]
+[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/DebugToggle" to="." method="_on_debug_toggle_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/ChangeMap" to="." method="_on_change_map_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/GameOverScreen/VBoxContainer/PlayAgainButton" to="." method="_on_play_again_button_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/GameOverScreen/VBoxContainer/ReturnToMainMenuButton" to="." method="_on_return_to_main_menu_button_pressed"]

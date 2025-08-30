@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://1j3bgwhgpyoi"]
+
+[ext_resource type="Script" path="res://scripts/BasePickUp.gd" id="1_3w7yu"]
+[ext_resource type="Shader" uid="uid://d2ro03oh1y8g8" path="res://resources/invincibility_shader.tres" id="2_gfj2t"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qye62"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mhorq"]
+render_priority = 0
+shader = ExtResource("2_gfj2t")
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_dv0bj"]
+
+[node name="RocketDiarrheaPickUp" type="RigidBody3D"]
+collision_layer = 2
+collision_mask = 5
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+mass = 20.0
+max_contacts_reported = 4
+contact_monitor = true
+script = ExtResource("1_3w7yu")
+effect_method = "activate_rocket_diarrhea"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_qye62")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = SubResource("ShaderMaterial_mhorq")
+mesh = SubResource("CapsuleMesh_dv0bj")
+skeleton = NodePath("")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="sleeping_state_changed" from="." to="." method="_on_sleeping_state_changed"]

@@ -1,0 +1,50 @@
+[gd_scene load_steps=11 format=3 uid="uid://rqonbly2ymu8"]
+
+[ext_resource type="Script" path="res://scripts/rocket_projectile_outer.gd" id="1_yuh0u"]
+[ext_resource type="AudioStream" uid="uid://cbb13opsl0umt" path="res://sounds/ExplosionWIP2.ogg" id="2_ou5fa"]
+[ext_resource type="Script" path="res://scripts/rocket_projectile_inner.gd" id="3_4n4lg"]
+[ext_resource type="ArrayMesh" uid="uid://bu4kaojj6gik0" path="res://meshes/AngryRocket3.obj" id="4_pdqtl"]
+[ext_resource type="Material" uid="uid://fdou23b8btto" path="res://resources/rocket_shaft_material_3d.tres" id="5_1p3k7"]
+[ext_resource type="Material" uid="uid://dsyy5hybne1sv" path="res://resources/rocket_cone_material_3d.tres" id="6_t7v1n"]
+[ext_resource type="PackedScene" uid="uid://cav45f268cxd7" path="res://scenes/rocket_thruster.tscn" id="7_377wr"]
+[ext_resource type="Script" path="res://scripts/RocketController.gd" id="8_3458r"]
+[ext_resource type="AudioStream" uid="uid://v52n3844nsfh" path="res://sounds/rocket_hiss.ogg" id="9_w21f2"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ncjk6"]
+points = PackedVector3Array(-1.73195, -0.793289, -0.487797, 1.66042, 1.93202, 0.035443, 1.66042, 1.93202, -0.0472523, 1.66042, -1.96152, -0.0472523, -1.67191, -0.203972, 0.940719, -1.6022, 0.252454, -0.962241, 1.41351, -0.35277, 0.932978, 1.43957, -0.280273, -0.954967, -3.51719, 0.0241183, 0.0335054, -1.58794, 0.61999, 0.77857, -1.66401, -0.875497, 0.40569, -1.59761, 0.934594, -0.347441, 1.43441, 0.325859, 0.94114, -1.58576, -0.498484, -0.862023, 1.46095, 0.252754, -0.963313, 1.41183, -1.96152, 0.118138, -1.59967, 0.937824, 0.336794, -1.59203, -0.503579, 0.859231, -1.59428, 0.475558, -0.874275, -1.66705, -0.95481, -0.118514, -1.59625, 0.325859, 0.94114, 1.41183, 1.93202, -0.0472523, -3.46085, -0.0531081, -0.0444358, 1.66042, -1.96152, 0.118138, -1.59754, -0.280273, -0.954967, -1.58868, 0.695476, -0.716644, 1.42649, 0.475558, -0.874275, 1.49435, -1.96152, -0.0472523, 1.39239, -0.498484, -0.862023, -1.58862, 0.770448, 0.629889, -1.6599, -0.795956, 0.551917, -3.49766, 0.0238178, -0.0450101)
+
+[node name="RocketProjectile" type="Node3D"]
+script = ExtResource("1_yuh0u")
+
+[node name="ExplodeOnImpact" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_ou5fa")
+max_distance = 1000.0
+doppler_tracking = 2
+
+[node name="RocketProjectileInner" type="RigidBody3D" parent="." groups=["RocketProjectile"]]
+gravity_scale = 0.2
+script = ExtResource("3_4n4lg")
+
+[node name="RocketProjectileMesh" type="MeshInstance3D" parent="RocketProjectileInner"]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+mesh = ExtResource("4_pdqtl")
+surface_material_override/0 = ExtResource("5_1p3k7")
+surface_material_override/1 = ExtResource("6_t7v1n")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RocketProjectileInner"]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_ncjk6")
+
+[node name="RocketThruster" parent="RocketProjectileInner" instance=ExtResource("7_377wr")]
+transform = Transform3D(-3.27835e-08, 0, 0.75, 0, 0.75, 0, -0.75, 0, -3.27835e-08, 0.200156, 0, 0)
+
+[node name="RocketController" type="Node" parent="RocketProjectileInner"]
+script = ExtResource("8_3458r")
+
+[node name="TravelingHiss" type="AudioStreamPlayer3D" parent="RocketProjectileInner"]
+stream = ExtResource("9_w21f2")
+autoplay = true
+max_distance = 800.0
+
+[connection signal="rocket_exploded" from="RocketProjectileInner" to="." method="_on_rocket_projectile_inner_rocket_exploded"]
+[connection signal="rocket_out_of_bounds" from="RocketProjectileInner" to="." method="_on_rocket_projectile_inner_rocket_out_of_bounds"]

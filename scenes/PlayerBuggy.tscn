@@ -1,0 +1,294 @@
+[gd_scene load_steps=28 format=3 uid="uid://tp634kdqbfd"]
+
+[ext_resource type="Script" path="res://scripts/PlayerBuggy.gd" id="1_1u0r3"]
+[ext_resource type="Material" uid="uid://sr36pdmgqpu5" path="res://resources/wheel.tres" id="2_1s618"]
+[ext_resource type="Material" uid="uid://cf4w258oi4pca" path="res://resources/car-green.tres" id="3_4flkc"]
+[ext_resource type="ArrayMesh" uid="uid://bu4kaojj6gik0" path="res://meshes/AngryRocket3.obj" id="3_mseli"]
+[ext_resource type="Script" path="res://scripts/RocketLauncher.gd" id="3_rwhxb"]
+[ext_resource type="PackedScene" uid="uid://ch7tofkogslsx" path="res://scenes/boost_display_light.tscn" id="4_c7m5x"]
+[ext_resource type="AudioStream" uid="uid://bfdtb5nal362t" path="res://sounds/rasp_engine.ogg" id="4_xtkfv"]
+[ext_resource type="AudioStream" uid="uid://g4pr0ivgik13" path="res://sounds/rasp_impact1.ogg" id="6_8n3vk"]
+[ext_resource type="Material" uid="uid://fdou23b8btto" path="res://resources/rocket_shaft_material_3d.tres" id="7_1ng4v"]
+[ext_resource type="AudioStream" uid="uid://b5pn1vsmoxkjs" path="res://sounds/rasp_impact2.ogg" id="7_n1bsi"]
+[ext_resource type="AudioStream" uid="uid://ct4604hjdp60i" path="res://sounds/TssshhhhtLoopable.ogg" id="7_pk3u8"]
+[ext_resource type="AudioStream" uid="uid://cxx1vea75y2kb" path="res://sounds/rasp_impact3.ogg" id="8_465my"]
+[ext_resource type="Material" uid="uid://dsyy5hybne1sv" path="res://resources/rocket_cone_material_3d.tres" id="8_ac658"]
+[ext_resource type="AudioStream" uid="uid://2nm77xynp64v" path="res://sounds/rasp_impact4.ogg" id="9_7yhqf"]
+[ext_resource type="AudioStream" uid="uid://dyasqu703no36" path="res://sounds/pickup_pop.ogg" id="9_p1vwo"]
+[ext_resource type="PackedScene" uid="uid://bg6bppthjrr05" path="res://scenes/beam_container.tscn" id="10_ym3a5"]
+[ext_resource type="Script" path="res://scripts/CameraPivot.gd" id="14_46ga6"]
+[ext_resource type="PackedScene" uid="uid://b0kwytl5gjk58" path="res://scenes/targeting_laser.tscn" id="15_2k4m3"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_kudkn"]
+bounce = 0.2
+absorbent = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_dp7yc"]
+lightmap_size_hint = Vector2i(15, 19)
+material = ExtResource("3_4flkc")
+size = Vector3(1, 0.75, 1.25)
+
+[sub_resource type="PrismMesh" id="PrismMesh_f30wy"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ns8cr"]
+albedo_color = Color(0.788235, 0, 0, 1)
+roughness = 0.6
+
+[sub_resource type="BoxMesh" id="BoxMesh_nvqte"]
+size = Vector3(0.9, 0.5, 0.01)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u6x6a"]
+albedo_color = Color(0.196078, 0.356863, 0.760784, 1)
+metallic_specular = 1.0
+roughness = 0.1
+
+[sub_resource type="TorusMesh" id="TorusMesh_i1nhk"]
+inner_radius = 0.1
+outer_radius = 0.25
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_s5yfx"]
+size = Vector3(1, 0.75, 1.25)
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_7fnw1"]
+streams_count = 4
+stream_0/stream = ExtResource("6_8n3vk")
+stream_0/weight = 1.0
+stream_1/stream = ExtResource("7_n1bsi")
+stream_1/weight = 1.0
+stream_2/stream = ExtResource("8_465my")
+stream_2/weight = 1.0
+stream_3/stream = ExtResource("9_7yhqf")
+stream_3/weight = 1.0
+
+[node name="VehicleBody3D" type="VehicleBody3D"]
+transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 0, 0, 0)
+collision_layer = 4
+collision_mask = 5
+mass = 70.0
+physics_material_override = SubResource("PhysicsMaterial_kudkn")
+center_of_mass_mode = 1
+max_contacts_reported = 4
+contact_monitor = true
+engine_force = 1.0
+brake = 1.0
+steering = 0.0174533
+script = ExtResource("1_1u0r3")
+current_lives = 3
+engine_force_value = 80.0
+
+[node name="Body" type="Node3D" parent="."]
+transform = Transform3D(-1, 6.97574e-16, -8.74228e-08, 6.97574e-16, 1, -6.97574e-16, 8.74228e-08, -6.97574e-16, -1, -4.85682e-09, -3.87541e-17, -0.111111)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Body"]
+mesh = SubResource("BoxMesh_dp7yc")
+skeleton = NodePath("../..")
+
+[node name="RocketHolderPyramid" type="MeshInstance3D" parent="Body/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.424216, -0.520466)
+mesh = SubResource("PrismMesh_f30wy")
+surface_material_override/0 = SubResource("StandardMaterial3D_ns8cr")
+
+[node name="Windshield" type="MeshInstance3D" parent="Body/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0665755, -0.627381)
+mesh = SubResource("BoxMesh_nvqte")
+surface_material_override/0 = SubResource("StandardMaterial3D_u6x6a")
+
+[node name="Lives" type="Node3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.137052, 0)
+
+[node name="LifeWheel1" type="MeshInstance3D" parent="Body/Lives"]
+transform = Transform3D(1.14641e-15, 2.62268e-08, 0.6, 0.6, -2.62268e-08, 0, 2.62268e-08, 0.6, -2.62268e-08, -0.319479, 0.0791816, 0.7)
+mesh = SubResource("TorusMesh_i1nhk")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("2_1s618")
+
+[node name="LifeWheel2" type="MeshInstance3D" parent="Body/Lives"]
+transform = Transform3D(1.14641e-15, 2.62268e-08, 0.6, 0.6, -2.62268e-08, 0, 2.62268e-08, 0.6, -2.62268e-08, -0.00459409, 0.0791816, 0.7)
+mesh = SubResource("TorusMesh_i1nhk")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("2_1s618")
+
+[node name="LifeWheel3" type="MeshInstance3D" parent="Body/Lives"]
+transform = Transform3D(1.14641e-15, 2.62268e-08, 0.6, 0.6, -2.62268e-08, 0, 2.62268e-08, 0.6, -2.62268e-08, 0.317101, 0.0791816, 0.7)
+mesh = SubResource("TorusMesh_i1nhk")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("2_1s618")
+
+[node name="LifeWheel4" type="MeshInstance3D" parent="Body/Lives"]
+transform = Transform3D(1.14641e-15, 2.62268e-08, 0.6, 0.6, -2.62268e-08, 0, 2.62268e-08, 0.6, -2.62268e-08, 0.161442, 0.357795, 0.7)
+mesh = SubResource("TorusMesh_i1nhk")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("2_1s618")
+
+[node name="LifeWheel5" type="MeshInstance3D" parent="Body/Lives"]
+transform = Transform3D(1.14641e-15, 2.62268e-08, 0.6, 0.6, -2.62268e-08, 0, 2.62268e-08, 0.6, -2.62268e-08, -0.157336, 0.357795, 0.7)
+mesh = SubResource("TorusMesh_i1nhk")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("2_1s618")
+
+[node name="BoostDisplay" type="Node3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -0.3, 0.64)
+
+[node name="BoostDisplayLight1" parent="Body/BoostDisplay" instance=ExtResource("4_c7m5x")]
+
+[node name="BoostDisplayLight2" parent="Body/BoostDisplay" instance=ExtResource("4_c7m5x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.24, 0.017, -0.014)
+
+[node name="BoostDisplayLight3" parent="Body/BoostDisplay" instance=ExtResource("4_c7m5x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.08, 0.017, -0.014)
+
+[node name="BoostDisplayLight4" parent="Body/BoostDisplay" instance=ExtResource("4_c7m5x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08, 0.017, -0.014)
+
+[node name="BoostDisplayLight5" parent="Body/BoostDisplay" instance=ExtResource("4_c7m5x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24, 0.017, -0.014)
+
+[node name="BoostDisplayLight6" parent="Body/BoostDisplay" instance=ExtResource("4_c7m5x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.017, -0.014)
+
+[node name="RocketLauncher" type="Node3D" parent="."]
+transform = Transform3D(-1, 6.97574e-16, -8.74228e-08, 6.97574e-16, 1, -6.97574e-16, 8.74228e-08, -6.97574e-16, -1, 3.88546e-08, 0.5, 0.388889)
+script = ExtResource("3_rwhxb")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RocketLauncher"]
+transform = Transform3D(-4.37114e-09, -0.1, 4.37114e-09, 0, -4.37114e-09, -0.1, 0.1, -4.37114e-09, 1.91069e-16, 0, 0, 0)
+mesh = ExtResource("3_mseli")
+skeleton = NodePath("")
+surface_material_override/0 = ExtResource("7_1ng4v")
+surface_material_override/1 = ExtResource("8_ac658")
+
+[node name="Wheel1" type="VehicleWheel3D" parent="."]
+transform = Transform3D(1, 6.97574e-16, 2.38419e-07, -6.97574e-16, 1, 6.97574e-16, -2.38419e-07, -6.97574e-16, 1, 0.599998, -0.25, 0.388889)
+engine_force = 0.01
+brake = 0.01
+steering = 0.000174533
+use_as_traction = true
+use_as_steering = true
+wheel_roll_influence = 0.5
+wheel_radius = 0.25
+wheel_friction_slip = 1.0
+suspension_travel = 0.3
+suspension_stiffness = 75.0
+damping_compression = 0.9
+damping_relaxation = 1.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Wheel1"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("TorusMesh_i1nhk")
+surface_material_override/0 = ExtResource("2_1s618")
+
+[node name="Wheel2" type="VehicleWheel3D" parent="."]
+transform = Transform3D(1, 6.97574e-16, 2.38419e-07, -6.97574e-16, 1, 6.97574e-16, -2.38419e-07, -6.97574e-16, 1, 0.599998, -0.25, -0.611111)
+engine_force = 0.01
+brake = 0.01
+use_as_traction = true
+wheel_roll_influence = 0.5
+wheel_radius = 0.25
+wheel_friction_slip = 1.0
+suspension_travel = 0.3
+suspension_stiffness = 75.0
+damping_compression = 0.9
+damping_relaxation = 1.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Wheel2"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("TorusMesh_i1nhk")
+surface_material_override/0 = ExtResource("2_1s618")
+
+[node name="Wheel3" type="VehicleWheel3D" parent="."]
+transform = Transform3D(1, 6.97574e-16, 2.38419e-07, -6.97574e-16, 1, 6.97574e-16, -2.38419e-07, -6.97574e-16, 1, -0.599998, -0.25, 0.388889)
+engine_force = 0.01
+brake = 0.01
+steering = 0.000174533
+use_as_traction = true
+use_as_steering = true
+wheel_roll_influence = 0.5
+wheel_radius = 0.25
+wheel_friction_slip = 1.0
+suspension_travel = 0.3
+suspension_stiffness = 75.0
+damping_compression = 0.9
+damping_relaxation = 1.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Wheel3"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("TorusMesh_i1nhk")
+surface_material_override/0 = ExtResource("2_1s618")
+
+[node name="Wheel4" type="VehicleWheel3D" parent="."]
+transform = Transform3D(1, 6.97574e-16, 2.38419e-07, -6.97574e-16, 1, 6.97574e-16, -2.38419e-07, -6.97574e-16, 1, -0.599998, -0.25, -0.611111)
+engine_force = 0.01
+brake = 0.01
+use_as_traction = true
+wheel_roll_influence = 0.5
+wheel_radius = 0.25
+wheel_friction_slip = 1.0
+suspension_travel = 0.3
+suspension_stiffness = 75.0
+damping_compression = 0.9
+damping_relaxation = 1.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Wheel4"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("TorusMesh_i1nhk")
+surface_material_override/0 = ExtResource("2_1s618")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(-1, 6.97574e-16, -8.74228e-08, 6.97574e-16, 1, -6.97574e-16, 8.74228e-08, -6.97574e-16, -1, -4.85682e-09, -3.87541e-17, -0.111111)
+shape = SubResource("BoxShape3D_s5yfx")
+
+[node name="EngineSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_xtkfv")
+volume_db = -20.0
+autoplay = true
+
+[node name="BoostSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_pk3u8")
+
+[node name="PickupSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_p1vwo")
+
+[node name="ImpactSound" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_7fnw1")
+volume_db = -9.0
+
+[node name="ChaseCamPivot" type="Node3D" parent="."]
+transform = Transform3D(-1, 6.97574e-16, -8.61895e-08, 6.97574e-16, 1, -6.97574e-16, 8.59641e-08, -6.97574e-16, -1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+script = ExtResource("14_46ga6")
+
+[node name="ChaseCam" type="Camera3D" parent="ChaseCamPivot"]
+transform = Transform3D(1, -4.03349e-16, 3.44492e-16, 3.44493e-16, 0.987689, 0.156434, -4.03349e-16, -0.156435, 0.987688, 2.08165e-12, 1.5, 4)
+current = true
+
+[node name="SideCam" type="Camera3D" parent="."]
+transform = Transform3D(-4.37114e-08, -0.173648, -0.984808, 3.43488e-16, 0.984808, -0.173648, 1, -7.5904e-09, -4.30473e-08, -15, 2.08165e-12, 2.08165e-12)
+current = true
+fov = 53.6
+
+[node name="FirstPersonCam" type="Camera3D" parent="."]
+transform = Transform3D(-1, 3.48787e-16, 8.74228e-08, 3.48787e-16, 1, -3.48787e-16, -8.74228e-08, -3.48787e-16, -1, 2.08143e-12, 2.08187e-12, 0.635967)
+
+[node name="ThirdPersonCam" type="Camera3D" parent="."]
+transform = Transform3D(-1, 7.6194e-09, -8.70901e-08, 3.4746e-16, 0.996195, 0.0871557, 8.74228e-08, 0.0871557, -0.996195, 2.08165e-12, 1, -3)
+
+[node name="ChaseCamLocked" type="Camera3D" parent="."]
+transform = Transform3D(-0.999998, -0.00174534, 8.63464e-08, -0.00172384, 0.987687, 0.156434, -0.000273117, 0.156434, -0.987688, 2.08165e-12, 1.5, -4)
+
+[node name="Beams" type="Node3D" parent="."]
+transform = Transform3D(-1, 6.97574e-16, -8.74228e-08, 6.97574e-16, 1, -6.97574e-16, 8.74228e-08, -6.97574e-16, -1, -4.85682e-09, -3.87541e-17, -0.111111)
+
+[node name="Beam" parent="Beams" instance=ExtResource("10_ym3a5")]
+transform = Transform3D(0.5, 0, 0, 0, 0.136803, -0.480921, 0, 0.480921, 0.136803, 0.3, -0.427582, 0.486286)
+
+[node name="Beam2" parent="Beams" instance=ExtResource("10_ym3a5")]
+transform = Transform3D(0.5, 0, 0, 0, 0.136803, -0.480921, 0, 0.480921, 0.136803, -0.3, -0.427582, 0.486286)
+
+[node name="UnusedCameraAngle" type="Node" parent="."]
+
+[node name="Camera3" type="Camera3D" parent="UnusedCameraAngle"]
+transform = Transform3D(-1, 8.74228e-08, 3.47259e-15, -3.48787e-16, -4.37114e-08, 1, 8.74228e-08, 1, 4.37114e-08, -5.2318e-15, 15, 5.2318e-15)
+fov = 53.6
+
+[node name="TargetingLaser" parent="." instance=ExtResource("15_2k4m3")]
+transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, -1.369e-16, 0.5, 0.392504)

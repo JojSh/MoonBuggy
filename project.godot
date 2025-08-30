@@ -11,17 +11,17 @@ config_version=5
 [application]
 
 config/name="MoobuggyBattle"
-run/main_scene="res://main_world.tscn"
+run/main_scene="res://scenes/main_world.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
-config/icon="res://icon.svg"
+config/icon="res://textures/icon.svg"
 
 [autoload]
 
 PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
-DebugDraw="*res://debug_draw.tscn"
-DebrisManager="*res://DebrisManager.gd"
-GameSettings="*res://GameSettings.gd"
-MusicManager="*res://music_manager.tscn"
+DebugDraw="*res://scenes/debug_draw.tscn"
+DebrisManager="*res://scripts/DebrisManager.gd"
+GameSettings="*res://scripts/GameSettings.gd"
+MusicManager="*res://scenes/music_manager.tscn"
 
 [display]
 
