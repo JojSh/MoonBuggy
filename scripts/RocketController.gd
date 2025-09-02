@@ -22,7 +22,7 @@ const EXPLOSION_CAMERA_DELAY: float = 3.0  # Seconds to keep camera on explosion
 var explosion_position: Vector3
 var is_showing_explosion: bool = false
 @onready var rocket_mesh: MeshInstance3D = get_parent().get_node("RocketProjectileMesh")
-@onready var dark_shaft_material: Material = load("res://rocket_shaft_material_dark_3d.tres")
+@onready var dark_shaft_material: Material = load("res://resources/rocket_shaft_material_dark_3d.tres")
 
 signal control_ended(controller: Node)
 
