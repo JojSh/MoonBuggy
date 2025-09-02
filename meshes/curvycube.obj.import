@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://nvtl8ha1n0co"
+path="res://.godot/imported/curvycube.obj-a64724501412234b7d7c64be4d112ef8.mesh"
+
+[deps]
+
+files=["res://.godot/imported/curvycube.obj-a64724501412234b7d7c64be4d112ef8.mesh"]
+
+source_file="res://meshes/curvycube.obj"
+dest_files=["res://.godot/imported/curvycube.obj-a64724501412234b7d7c64be4d112ef8.mesh", "res://.godot/imported/curvycube.obj-a64724501412234b7d7c64be4d112ef8.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

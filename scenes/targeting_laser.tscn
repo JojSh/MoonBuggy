@@ -31,5 +31,6 @@ script = SubResource("GDScript_1")
 
 [node name="LaserBeam" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5000)
+visible = false
 material_override = SubResource("StandardMaterial3D_laser")
 mesh = SubResource("BoxMesh_laser")
