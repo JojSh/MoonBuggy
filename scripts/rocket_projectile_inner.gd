@@ -28,7 +28,7 @@ func _on_body_entered(body):
 	get_tree().root.add_child(explosion_particle_effect)
 	explosion_particle_effect.global_position = collision_position
 	explosion_particle_effect.get_node("Explosion/AnimationPlayer").play("PlayExplosion")
-
+	
 	_apply_explosive_force(collision_position)
 	# Notify controller about destruction
 	if rocket_controller:
@@ -36,6 +36,9 @@ func _on_body_entered(body):
 	
 	# Emit signal to parent before destroying the rocket
 	rocket_exploded.emit(global_position)
+	#apply secondary explosive force to affect debris
+	await get_tree().create_timer(0.01).timeout
+	_apply_explosive_force(collision_position)
 	# Remove the rocket
 	queue_free()
 
@@ -53,7 +56,7 @@ func _set_up_collision_detection ():
 func _apply_explosive_force (collision_position):
 	# Apply explosion force
 	var explosion_radius = 6.5  # Adjust radius as needed
-	var explosion_force = 1000.0  # Adjust force as needed
+	var explosion_force = 750.0  # Adjust force as needed
 	
 	if GameSettings.debug_mode_on:
 		_create_debug_sphere(collision_position, explosion_radius)

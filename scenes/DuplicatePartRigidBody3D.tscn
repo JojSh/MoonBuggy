@@ -2,8 +2,8 @@
 
 [node name="RigidBody3D" type="RigidBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00255199, -0.00245923, 0.00239375)
-collision_layer = 2
-mass = 5.0
+collision_layer = 32
+mass = 30.0
 can_sleep = false
 continuous_cd = true
 max_contacts_reported = 4
