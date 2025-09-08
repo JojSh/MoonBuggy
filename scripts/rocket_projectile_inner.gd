@@ -122,13 +122,11 @@ func is_out_of_bounds():
 	)
 
 func _on_rocket_control_ended(controller: Node):
-	print("Rocket: Player control ended")
+	pass
 
 func assign_player_control(player: Node, enable_roll_leveling: bool = false):
 	if rocket_controller:
 		rocket_controller.assign_player_control(player, enable_roll_leveling)
-	else:
-		print("Rocket: No RocketController found - cannot assign control")
 
 func is_under_player_control() -> bool:
 	return rocket_controller != null and rocket_controller.is_active
