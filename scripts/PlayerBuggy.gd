@@ -150,6 +150,7 @@ func _physics_process(delta: float):
 
 	handle_cycle_through_cameras_input()
 	handle_return_to_start_position_input()
+	handle_select_button_input()
 	handle_start_button_input()
 
 	handle_boost_input(delta)
@@ -384,11 +385,17 @@ func handle_return_to_start_position_input ():
 		linear_velocity = Vector3(0, 0, 0)
 		update_new_center_of_gravity_point(_initial_gravity_point)
 
-func handle_start_button_input():
-	if Input.is_action_just_pressed(str("p", player_number, "_start_button")):
+func handle_select_button_input():
+	if player_number == 1 and Input.is_action_just_pressed(str("p", player_number, "_select_button")):
 		emit_signal("show_controls_help")
-	elif Input.is_action_just_released(str("p", player_number, "_start_button")):
+	elif player_number == 1 and Input.is_action_just_released(str("p", player_number, "_select_button")):
 		emit_signal("hide_controls_help")
+
+func handle_start_button_input():
+	if player_number == 1 and Input.is_action_just_pressed(str("p", player_number, "_start_button")):
+		var root_node = get_node("/root/RootNode")
+		if root_node:
+			root_node.toggle_pause_menu()
 
 func handle_cycle_through_cameras_input ():
 	if Input.is_action_just_pressed(str("p", player_number, "_toggle_camera")):

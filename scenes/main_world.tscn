@@ -184,6 +184,46 @@ theme_override_colors/font_focus_color = Color(0.988235, 0.67451, 0.384314, 1)
 theme_override_font_sizes/font_size = 150
 text = "Return to main menu"
 
+[node name="PauseMenuScreen" type="MarginContainer" parent="MenuContainer/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="MenuContainer/Control/PauseMenuScreen"]
+layout_mode = 2
+color = Color(0.302973, 0.180791, 0.35748, 0.8)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuContainer/Control/PauseMenuScreen"]
+layout_mode = 2
+alignment = 1
+
+[node name="EmptySpace" type="Label" parent="MenuContainer/Control/PauseMenuScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 200
+text = "
+
+GAME PAUSED
+
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="MenuContainer/Control/PauseMenuScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_focus_color = Color(0.988235, 0.67451, 0.384314, 1)
+theme_override_font_sizes/font_size = 150
+text = "Resume Game"
+
+[node name="ReturnToMainMenuButton" type="Button" parent="MenuContainer/Control/PauseMenuScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_focus_color = Color(0.988235, 0.67451, 0.384314, 1)
+theme_override_font_sizes/font_size = 150
+text = "Return to Main Menu"
+
 [node name="AudioListener3DBetweenPlayers" type="AudioListener3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -47.9886, 0)
 
@@ -355,3 +395,5 @@ script = ExtResource("7_682lk")
 [connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/ChangeMap" to="." method="_on_change_map_pressed"]
 [connection signal="pressed" from="MenuContainer/Control/GameOverScreen/VBoxContainer/PlayAgainButton" to="." method="_on_play_again_button_pressed"]
 [connection signal="pressed" from="MenuContainer/Control/GameOverScreen/VBoxContainer/ReturnToMainMenuButton" to="." method="_on_return_to_main_menu_button_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/PauseMenuScreen/VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/PauseMenuScreen/VBoxContainer/ReturnToMainMenuButton" to="." method="_on_pause_menu_return_to_main_menu_button_pressed"]

@@ -254,6 +254,30 @@ func _on_return_to_main_menu_button_pressed():
 	GameSettings.should_skip_main_menu = false
 	restart_game()
 
+func toggle_pause_menu():
+	if $MenuContainer/Control/PauseMenuScreen.visible:
+		hide_pause_menu()
+	else:
+		show_pause_menu()
+
+func show_pause_menu():
+	get_tree().paused = true
+	$MenuContainer.visible = true
+	$MenuContainer/Control/PauseMenuScreen.visible = true
+	$MenuContainer/Control/PauseMenuScreen/VBoxContainer/ResumeButton.grab_focus()
+
+func hide_pause_menu():
+	get_tree().paused = false
+	$MenuContainer.visible = false
+	$MenuContainer/Control/PauseMenuScreen.visible = false
+
+func _on_resume_button_pressed():
+	hide_pause_menu()
+
+func _on_pause_menu_return_to_main_menu_button_pressed():
+	GameSettings.should_skip_main_menu = false
+	restart_game()
+
 func turn_on_debug_mode():
 	GameSettings.debug_mode_on = true
 	get_tree().call_group("killzones", "update_debug_visibility")
