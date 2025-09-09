@@ -264,9 +264,13 @@ func show_pause_menu():
 	get_tree().paused = true
 	$MenuContainer.visible = true
 	$MenuContainer/Control/PauseMenuScreen.visible = true
+	$MenuContainer/Control/PauseMenuScreen/PauseSound.play()
 	$MenuContainer/Control/PauseMenuScreen/VBoxContainer/ResumeButton.grab_focus()
 
 func hide_pause_menu():
+	var unpause_sound = $MenuContainer/Control/PauseMenuScreen/UnpauseSound
+	unpause_sound.play()
+	
 	get_tree().paused = false
 	$MenuContainer.visible = false
 	$MenuContainer/Control/PauseMenuScreen.visible = false
