@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cfp77dx8lxb0i"]
+[gd_scene load_steps=17 format=3 uid="uid://cfp77dx8lxb0i"]
 
 [ext_resource type="Script" path="res://scripts/RootNode.gd" id="1_06hsa"]
 [ext_resource type="Script" path="res://scripts/GameOverScreen.gd" id="2_p4gfa"]
@@ -16,12 +16,6 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_mq556"]
 font_size = 320
-
-[sub_resource type="SphereMesh" id="SphereMesh_v6i6q"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7cpvd"]
-albedo_color = Color(0.978747, 0.458872, 0.747274, 1)
-roughness = 0.2
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wrm68"]
 albedo_color = Color(0.89793, 0.659596, 1, 1)
@@ -233,15 +227,6 @@ volume_db = 6.0
 stream = ExtResource("12_checkpoint_sound")
 volume_db = 6.0
 pitch_scale = 0.7
-
-[node name="AudioListener3DBetweenPlayers" type="AudioListener3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -47.9886, 0)
-
-[node name="DebugSphere" type="MeshInstance3D" parent="AudioListener3DBetweenPlayers"]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-visible = false
-mesh = SubResource("SphereMesh_v6i6q")
-surface_material_override/0 = SubResource("StandardMaterial3D_7cpvd")
 
 [node name="PlayerScreenManager" type="Node3D" parent="."]
 

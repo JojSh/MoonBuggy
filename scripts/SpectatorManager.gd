@@ -28,11 +28,15 @@ func register_rocket(rocket: RigidBody3D):
 
 		# Connect to rocket destruction
 		if rocket.has_signal("rocket_exploded"):
-			rocket.rocket_exploded.connect(_on_rocket_destroyed.bind(rocket))
+			rocket.rocket_exploded.connect(_on_rocket_exploded.bind(rocket))
 		if rocket.has_signal("rocket_out_of_bounds"):
-			rocket.rocket_out_of_bounds.connect(_on_rocket_destroyed.bind(rocket))
+			rocket.rocket_out_of_bounds.connect(_on_rocket_out_of_bounds.bind(rocket))
 
-func _on_rocket_destroyed(rocket: RigidBody3D):
+func _on_rocket_exploded(position: Vector3, rocket: RigidBody3D):
+	if available_rockets.has(rocket):
+		available_rockets.erase(rocket)
+
+func _on_rocket_out_of_bounds(rocket: RigidBody3D):
 	if available_rockets.has(rocket):
 		available_rockets.erase(rocket)
 

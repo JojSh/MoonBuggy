@@ -8,6 +8,9 @@ var randomise_start_positions: bool = true
 var checkpointed_respawn_point
 var obstacle_course_timer
 
+var current_audio_listener_player: Node = null
+var all_active_rockets: Array[RigidBody3D] = []
+
 func _ready():
 	if GameSettings.should_skip_main_menu:
 		hide_main_menu()
@@ -15,35 +18,14 @@ func _ready():
 	else:
 		show_main_menu()
 
-# Update the audio listener position every frame in multiplayer mode
 func _process(delta):
 	if list_of_players.size() > 1:
-		update_audio_listener_position()
+		# Update rocket proximity audio listener every frame for now
+		update_rocket_proximity_audio_listener()
 
 	if (GameSettings.debug_mode_on) and Input.is_action_just_pressed(str("debug_restart_current_game")):
 		# [option + `]
 		restart_game()
-
-# Function to update the audio listener position to stay equidistant between all active players
-func update_audio_listener_position():
-	var active_players = get_active_players()
-	
-	if active_players.size() == 0:
-		return
-	
-	# Calculate the center position between all active players
-	var center_position = Vector3.ZERO
-	for player in active_players:
-		center_position += player.global_position
-	
-	center_position /= active_players.size()
-	
-	# Set the audio listener position to the calculated center
-	# Add a slight height offset to ensure better audio pickup
-	$AudioListener3DBetweenPlayers.global_position = center_position + Vector3(0, 2, 0)
-	
-	# Make sure the audio listener is active
-	$AudioListener3DBetweenPlayers.current = true
 
 func show_main_menu():
 	get_tree().paused = true
@@ -84,10 +66,9 @@ func start_game ():
 	# Connect to checkpoint manager signals
 	connect_checkpoint_signals()
 	
-	# Initialize audio listener position if we're in multiplayer mode
+	# Initialize audio listener system if we're in multiplayer mode
 	if GameSettings.desired_number_players > 1:
-		update_audio_listener_position()
-		$AudioListener3DBetweenPlayers.current = true
+		update_rocket_proximity_audio_listener()
 
 func assign_spawn_points ():
 	var all_player_spawn_points = current_map.get_node("PlayerSpawnPositions").get_children()
@@ -114,7 +95,6 @@ func setup_screens():
 		for split_screen in $PlayerScreenManager/SplitScreens.get_children():
 			split_screen.queue_free()
 
-		$AudioListener3DBetweenPlayers.queue_free()
 		var player1 = $PlayerScreenManager/PlayerContainer/PlayerBuggy1
 		$PlayerScreenManager/PlayerContainer.remove_child(player1)
 		$SinglePlayerCamera.add_child(player1)
@@ -150,9 +130,10 @@ func setup_screens():
 		viewport.add_child(player)
 		viewport.connect_crosshair_control_signals()
 
-	# If in multiplayer mode, make sure the central audio listener is active
+	# In multiplayer mode, start with the rocket proximity audio system
 	if GameSettings.desired_number_players > 1:
-		$AudioListener3DBetweenPlayers.current = true
+		# Initialize the rocket proximity audio listener system
+		update_rocket_proximity_audio_listener()
 
 func register_active_players():
 	# Get all players from PlayerContainer and manage them based on desired player count
@@ -187,9 +168,9 @@ func _on_player_eliminated(player_number):
 		var draw_text = str("DRAW! Everybody died.")
 		show_game_over_menu(draw_text)
 	
-	# Update audio listener position based on remaining players
+	# Update audio listener based on remaining players and rockets
 	if GameSettings.desired_number_players > 1 and alive_players.size() > 0:
-		update_audio_listener_position()
+		update_rocket_proximity_audio_listener()
 
 func _on_player_lost_a_life(player_number):
 	if checkpointed_respawn_point:
@@ -198,11 +179,11 @@ func _on_player_lost_a_life(player_number):
 		assign_new_spawn_point_to_player(player_number)
 		# next up: ^ this is causing the camera to go mental and fly away on death.
 		
-		# Update audio listener position when player respawns
+		# Update audio listener system when player respawns
 		if GameSettings.desired_number_players > 1:
 			# Add a short delay to ensure the player has fully respawned
 			var timer = get_tree().create_timer(0.1)
-			timer.timeout.connect(func(): update_audio_listener_position())
+			timer.timeout.connect(func(): update_rocket_proximity_audio_listener()) # TODO: not preferred syntax, change!
 
 func assign_checkpointed_spawn_point_to_player (player_number, checkpoint):
 	var current_player = get_current_player(player_number)
@@ -233,8 +214,7 @@ func show_game_over_menu (message):
 	$MenuContainer/Control/GameOverScreen.grab_button_focus()
 	# Pause all remaining players' inputs
 	for player in list_of_players:
-		if is_instance_valid(player):
-			player.pause_inputs()
+		if is_instance_valid(player): player.pause_inputs()
 
 func restart_game ():
 	get_node("/root/DebrisManager").clear_all_debris()
@@ -392,3 +372,85 @@ func _show_single_player_controls_help():
 
 func _hide_single_player_controls_help():
 	$SinglePlayerUI/ControlsHelp.visible = false
+
+func find_closest_player_to_rockets() -> Node:
+	var active_players = get_active_players()
+	if active_players.size() == 0:
+		return null
+
+	var active_rockets = all_active_rockets.filter(func(rocket):
+		return is_instance_valid(rocket)
+	)
+
+	if active_rockets.size() == 0:
+		return null
+
+	var closest_player = null
+	var shortest_distance = INF
+
+	# Check each player against each rocket to find the overall closest
+	for player in active_players:
+		if not is_instance_valid(player): continue # skip on past invalid instances 
+
+		for rocket in active_rockets:
+			var distance_to_rocket = player.global_position.distance_to(rocket.global_position)
+			if distance_to_rocket < shortest_distance:
+				shortest_distance = distance_to_rocket
+				closest_player = player
+
+	return closest_player
+
+func switch_audio_listener_to_player (player: Node):
+	if not player or current_audio_listener_player == player:
+		return
+
+	# Deactivate all audio listeners first
+	if current_audio_listener_player:
+		var current_viewport = get_player_subviewport(current_audio_listener_player)
+		if current_viewport:
+			current_viewport.audio_listener_enable_3d = false
+
+	# Activate the new player's listener
+	var new_viewport = get_player_subviewport(player)
+	if new_viewport:
+		new_viewport.audio_listener_enable_3d = true
+		current_audio_listener_player = player
+
+func get_player_subviewport(player: Node) -> SubViewport:
+	if not player:
+		return null
+
+	var parent = player.get_parent()
+	if parent is SubViewport:
+		return parent
+
+	# In single player mode, there is no SubViewport
+	return null
+
+func update_rocket_proximity_audio_listener():
+	var closest_player = find_closest_player_to_rockets()
+
+	if closest_player:
+		switch_audio_listener_to_player(closest_player)
+
+func register_rocket_for_audio(rocket: RigidBody3D):
+	if not all_active_rockets.has(rocket):
+		all_active_rockets.append(rocket)
+
+		if rocket.has_signal("rocket_exploded"):
+			rocket.rocket_exploded.connect(_on_rocket_destroyed_audio.bind(rocket))
+		if rocket.has_signal("rocket_out_of_bounds"):
+			rocket.rocket_out_of_bounds.connect(_on_rocket_out_of_bounds_audio.bind(rocket))
+
+func _on_rocket_destroyed_audio(position: Vector3, rocket: RigidBody3D):
+	var timer = get_tree().create_timer(2.0)  # Wait 2 seconds for explosion sound
+	await timer.timeout
+	if is_instance_valid(rocket):
+		remove_rocket_from_audio_tracking(rocket)
+
+func _on_rocket_out_of_bounds_audio(rocket: RigidBody3D):
+	remove_rocket_from_audio_tracking(rocket)
+
+func remove_rocket_from_audio_tracking(rocket: RigidBody3D):
+	if all_active_rockets.has(rocket):
+		all_active_rockets.erase(rocket)

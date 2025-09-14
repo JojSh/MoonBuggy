@@ -26,6 +26,11 @@ func fire_rocket():
 		if should_register:
 			spectator_manager.register_rocket(rocket_inner)
 	
+	var root_node = get_node_or_null("/root/RootNode")
+	if root_node:
+		var rocket_inner = rocket_projectile.get_node("RocketProjectileInner")
+		root_node.register_rocket_for_audio(rocket_inner)
+	
 	# Get references to the inner container and its children
 	var rocket_projectile_inner = rocket_projectile.get_node("RocketProjectileInner")
 	var projectile_mesh = rocket_projectile_inner.get_node("RocketProjectileMesh")
