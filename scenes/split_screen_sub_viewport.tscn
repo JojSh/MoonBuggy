@@ -6,7 +6,7 @@
 
 [node name="SubViewport" type="SubViewport"]
 handle_input_locally = false
-audio_listener_enable_3d = true
+audio_listener_enable_3d = false
 size = Vector2i(1920, 2160)
 render_target_update_mode = 4
 script = ExtResource("1_djbh3")
