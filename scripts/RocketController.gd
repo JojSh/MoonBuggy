@@ -11,6 +11,7 @@ const STEERING_TORQUE: float = 50.0  # Torque strength for steering (increased f
 const FORWARD_THRUST: float = 800.0  # Continuous forward thrust to make rocket travel in facing direction
 const VELOCITY_DAMPING: float = 0.85  # Reduces old momentum (0.0 = no damping, 1.0 = full stop)
 const ANGULAR_DAMPING: float = 0.95  # Angular damping when no input (only applied when not steering)
+const MAX_ANGULAR_VELOCITY: float = 5.0  # Maximum turning speed (radians per second)
 const ROLL_LEVELING_STRENGTH: float = 10.0  # Strength of auto-leveling for roll axis
 const MANUAL_ALIGNMENT_STRENGTH: float = 50.0  # Strength of manual alignment when button pressed
 const MAX_BOOST_MULTIPLIER: float = 5.0  # Maximum boost speed multiplier
@@ -124,6 +125,9 @@ func handle_steering_input():
 		
 		# Apply the torque to rotate the rocket
 		rocket_body.apply_torque(yaw_torque + pitch_torque)
+
+		if rocket_body.angular_velocity.length() > MAX_ANGULAR_VELOCITY:
+			rocket_body.angular_velocity = rocket_body.angular_velocity.normalized() * MAX_ANGULAR_VELOCITY
 	else:
 		# No input - apply angular damping to gradually slow rotation
 		rocket_body.angular_velocity *= ANGULAR_DAMPING
