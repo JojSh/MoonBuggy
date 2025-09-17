@@ -373,9 +373,8 @@ func die ():
 		emit_signal("player_eliminated", player_number)
 		return
 	else:
-		emit_signal("player_lost_a_life", player_number)
-	# Start respawn timer
-	get_tree().create_timer(RESPAWN_TIME).timeout.connect(_respawn)
+		# Start respawn timer
+		get_tree().create_timer(RESPAWN_TIME).timeout.connect(_respawn)
 
 func handle_return_to_start_position_input ():
 	if (Input.is_action_just_pressed(str("p", player_number, "_reset_to_start_pos")) and GameSettings.debug_mode_on):
@@ -582,6 +581,7 @@ func generate_and_separate_clone_of_part (og_part, death_velocity, death_positio
 	duplicate_part_rgdbdy.apply_impulse(direction * SEPARATION_FORCE)
 
 func _respawn ():
+	emit_signal("player_lost_a_life", player_number)
 	reorientation_cooldown = 1.0
 	# Reset position and rotation
 	global_position = spawn_point
