@@ -66,9 +66,3 @@ func attempt_rocket_assignments():
 	# Always enable roll leveling
 	rocket.assign_player_control(player, true)
 	emit_signal("rocket_takeover_started", player, rocket)
-
-func get_eliminated_player_count() -> int:
-	return eliminated_players.size()
-
-func get_available_rocket_count() -> int:
-	return available_rockets.filter(func(rocket): return is_instance_valid(rocket)).size()

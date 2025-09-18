@@ -274,7 +274,4 @@ func _on_rocket_destroyed():
 		
 		# Delay the actual control end to keep camera on explosion
 		var explosion_timer = get_tree().create_timer(EXPLOSION_CAMERA_DELAY)
-		explosion_timer.timeout.connect(end_control)
-
-func get_controlling_player_number() -> int:
-	return controlling_player.player_number if controlling_player else -1
+		explosion_timer.timeout.connect(

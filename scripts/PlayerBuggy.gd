@@ -67,7 +67,7 @@ var is_on_corner_ramp := false  # Add this to track corner ramp contact
 @export var player_colour : StandardMaterial3D
 @export var engine_force_value := 40.0
 @export var jump_initial_impulse := 20.0
-@export var is_eliminated := false  # Add this near other @export variables
+@export var is_eliminated := false
 
 var _start_position: Vector3
 @onready var rocket_launcher = $RocketLauncher
@@ -256,22 +256,6 @@ func perform_reorientation(orientation_data: Dictionary, gradual: bool = false, 
 		global_transform.basis = new_basis
 		angular_velocity = Vector3.ZERO
 		global_transform.origin += orientation_data.desired_up * 0.5
-
-func reorient_vehicle(on_delay: bool = false): # Instant reorientation - NOT currently used, only using gradual reorientation for now
-	# Cancel any in-progress gradual reorientation
-	is_reorienting = false
-	
-	# Don't start if we're in the cooldown period
-	if reorientation_cooldown > 0:
-		#print("Manual reorientation on cooldown: " + str(reorientation_cooldown) + "s remaining")
-		return
-	
-	if on_delay:
-		var reorient_timer = get_tree().create_timer(0.2)
-		await reorient_timer.timeout
-		
-	var orientation_data = calculate_orientation_data()
-	perform_reorientation(orientation_data, false)
 
 func _integrate_forces(state: PhysicsDirectBodyState3D):
 	if _should_reset:
