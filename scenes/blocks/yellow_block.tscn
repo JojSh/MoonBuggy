@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://bv3uetutld0jm"]
+
+[ext_resource type="PackedScene" uid="uid://c2uhh303wcmqq" path="res://scenes/blocks/block.tscn" id="1_81xat"]
+[ext_resource type="Material" uid="uid://b7hsrnt47yuno" path="res://resources/yellow_block.tres" id="2_psie4"]
+
+[node name="YellowBlock" instance=ExtResource("1_81xat")]
+
+[node name="MeshInstance3D" parent="." index="0"]
+material_override = ExtResource("2_psie4")

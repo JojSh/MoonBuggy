@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://cpa045r0vhcul"
+path="res://.godot/imported/curvyboxsmall.obj-99afd7e770179062187df4f107af688e.mesh"
+
+[deps]
+
+files=["res://.godot/imported/curvyboxsmall.obj-99afd7e770179062187df4f107af688e.mesh"]
+
+source_file="res://meshes/curvyboxsmall.obj"
+dest_files=["res://.godot/imported/curvyboxsmall.obj-99afd7e770179062187df4f107af688e.mesh", "res://.godot/imported/curvyboxsmall.obj-99afd7e770179062187df4f107af688e.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

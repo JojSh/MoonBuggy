@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://b36rb4yhfwgvb"]
+
+[ext_resource type="PackedScene" uid="uid://c2uhh303wcmqq" path="res://scenes/blocks/block.tscn" id="1_tfdlq"]
+[ext_resource type="Material" uid="uid://baqtnk0urlt5u" path="res://resources/purple_block.tres" id="2_uu4o0"]
+
+[node name="PurpleBlock" instance=ExtResource("1_tfdlq")]
+
+[node name="MeshInstance3D" parent="." index="0"]
+material_override = ExtResource("2_uu4o0")

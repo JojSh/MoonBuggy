@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://cgsi2a8vk58x"]
+
+[ext_resource type="PackedScene" uid="uid://c2uhh303wcmqq" path="res://scenes/blocks/block.tscn" id="1_stflh"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_liot6"]
+albedo_color = Color(128.498, 0.345098, 0.384314, 1)
+
+[node name="RedBlock" instance=ExtResource("1_stflh")]
+
+[node name="MeshInstance3D" parent="." index="0"]
+material_override = SubResource("StandardMaterial3D_liot6")
