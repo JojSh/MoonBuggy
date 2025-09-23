@@ -99,7 +99,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ns8cr")
 transform = Transform3D(0.95, 3.82105e-24, 0, -3.82105e-24, 0.95, 0, 0, 0, 0.95, 2.08165e-12, -0.1, 0.03)
 
 [node name="LifeWheel1" type="MeshInstance3D" parent="Body/Lives"]
-transform = Transform3D(1.14641e-15, 2.62268e-08, 0.6, 0.6, -2.62268e-08, 0, 2.62268e-08, 0.6, -2.62268e-08, -0.319479, 0.0791816, 0.7)
+transform = Transform3D(1.14641e-15, 2.62268e-08, 0.6, 0.6, -2.62268e-08, -1.60615e-21, 2.62268e-08, 0.6, -2.62268e-08, -0.319479, 0.0791816, 0.7)
 mesh = SubResource("TorusMesh_i1nhk")
 skeleton = NodePath("../..")
 surface_material_override/0 = ExtResource("2_1s618")

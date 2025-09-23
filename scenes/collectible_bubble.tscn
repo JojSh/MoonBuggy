@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://drx63qf0rgw51"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rt5xx"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+albedo_color = Color(1, 1, 1, 0.278431)
+metallic = 0.5
+
+[sub_resource type="SphereMesh" id="SphereMesh_fvl01"]
+material = SubResource("StandardMaterial3D_rt5xx")
+radius = 1.2
+height = 2.4
+
+[node name="Bubble" type="MeshInstance3D"]
+mesh = SubResource("SphereMesh_fvl01")

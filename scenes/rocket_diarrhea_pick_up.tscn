@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://1j3bgwhgpyoi"]
+[gd_scene load_steps=7 format=3 uid="uid://1j3bgwhgpyoi"]
 
 [ext_resource type="Script" path="res://scripts/BasePickUp.gd" id="1_3w7yu"]
 [ext_resource type="Shader" uid="uid://d2ro03oh1y8g8" path="res://resources/invincibility_shader.tres" id="2_gfj2t"]
+[ext_resource type="PackedScene" uid="uid://drx63qf0rgw51" path="res://scenes/collectible_bubble.tscn" id="3_71bt8"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qye62"]
 
@@ -30,6 +31,8 @@ shape = SubResource("CapsuleShape3D_qye62")
 material_override = SubResource("ShaderMaterial_mhorq")
 mesh = SubResource("CapsuleMesh_dv0bj")
 skeleton = NodePath("")
+
+[node name="Bubble" parent="." instance=ExtResource("3_71bt8")]
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="sleeping_state_changed" from="." to="." method="_on_sleeping_state_changed"]
