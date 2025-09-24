@@ -553,7 +553,10 @@ func generate_and_separate_clone_of_part (og_part, death_velocity, death_positio
 		# In case reparenting to the duplicate_part_rgdbdy changes its transform to something we don't want
 		collision_shape.transform = shape_transform
 
-	duplicate_part_rgdbdy.global_transform = original_global_transform
+	# Apply 180-degree Y rotation to correct for playerbuggy.tscn child nodes (e.g. body) being -180 rotated
+	var rotated_transform = original_global_transform
+	rotated_transform.basis = rotated_transform.basis * Basis.from_euler(Vector3(0, PI, 0))
+	duplicate_part_rgdbdy.global_transform = rotated_transform
 
 	# Set the initial velocity of the part to match the vehicle's velocity
 	duplicate_part_rgdbdy.linear_velocity = death_velocity
