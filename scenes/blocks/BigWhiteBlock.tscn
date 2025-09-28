@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://ddrajft8noxkq"]
+
+[ext_resource type="ArrayMesh" uid="uid://derk083g5xg0a" path="res://meshes/curvybox.obj" id="1_6ub0j"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7xcfu"]
+albedo_color = Color(1, 1, 1, 0)
+normal_scale = 16.0
+rim_tint = 1.0
+backlight_enabled = true
+backlight = Color(1, 1, 1, 1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_4bf4f"]
+points = PackedVector3Array(-0.829135, -0.921299, -0.952086, 0.830645, 0.861529, 0.984715, 0.890584, 0.890625, 0.952001, -0.890617, 0.95199, -0.890615, -0.95208, -0.829124, 0.921292, 0.951971, -0.890637, -0.890637, 0.890584, -0.952001, 0.890625, 0.890584, 0.890624, -0.952, -0.890617, 0.95199, 0.890615, -0.984672, 0.830811, -0.86166, 0.952066, 0.921321, 0.82915, -0.861579, -0.984768, -0.830729, 0.861525, 0.984756, -0.830719, -0.830695, -0.861536, 0.984723, -0.984672, -0.86166, -0.830811, -0.86155, -0.984735, 0.830701, 0.861507, -0.984735, -0.830702, -0.984693, 0.830828, 0.861678, -0.861579, 0.830729, -0.984768, 0.830666, -0.861551, -0.98474, 0.984666, -0.830842, 0.861692, 0.984633, 0.861663, -0.830814, -0.861539, 0.830691, 0.984722, 0.861496, -0.830691, 0.984723, 0.830673, 0.984748, 0.861558, -0.861539, 0.984722, -0.830691, -0.86155, -0.830701, -0.984735, -0.984705, -0.861689, 0.830839, 0.984633, 0.830814, 0.861663, 0.984678, -0.861703, -0.830852, 0.830683, 0.861569, -0.98476, 0.830655, -0.984727, 0.86154)
+
+[node name="Block" type="RigidBody3D"]
+transform = Transform3D(1, 0, 3.48787e-16, 0, 1, 0, -3.48787e-16, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+mass = 100.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+material_override = SubResource("StandardMaterial3D_7xcfu")
+mesh = ExtResource("1_6ub0j")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+shape = SubResource("ConvexPolygonShape3D_4bf4f")

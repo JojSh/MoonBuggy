@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://bvt3bixbvfx0k"]
+
+[ext_resource type="Material" uid="uid://c5gb1opvn8rdg" path="res://resources/blue_block.tres" id="1_uh5u4"]
+[ext_resource type="ArrayMesh" uid="uid://cpa045r0vhcul" path="res://meshes/curvyboxsmall.obj" id="2_lkcev"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_fplib"]
+points = PackedVector3Array(1, 1, 1, 1, 1, -1, -1, 1, 1, 1, -1, 1, 1, -1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1)
+
+[node name="BlueBlock2x" type="RigidBody3D"]
+transform = Transform3D(1, 0, 3.48787e-16, 0, 1, 0, -3.48787e-16, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+mass = 25.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+material_override = ExtResource("1_uh5u4")
+mesh = ExtResource("2_lkcev")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, -1.7185e-15, 1.13246e-08, 1.7185e-15, 1, -7.63223e-16, -1.13246e-08, 7.63223e-16, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+shape = SubResource("ConvexPolygonShape3D_fplib")

@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://bw0vj8wnrwnqo"]
+
+[ext_resource type="ArrayMesh" uid="uid://cpa045r0vhcul" path="res://meshes/curvyboxsmall.obj" id="1_wbg7c"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_liot6"]
+albedo_color = Color(128.498, 0.345098, 0.384314, 1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_4dogm"]
+points = PackedVector3Array(1, 1, 1, 1, 1, -1, -1, 1, 1, 1, -1, 1, 1, -1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1)
+
+[node name="RedBlock2x" type="RigidBody3D"]
+transform = Transform3D(1, 0, 3.48787e-16, 0, 1, 0, -3.48787e-16, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+mass = 25.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+material_override = SubResource("StandardMaterial3D_liot6")
+mesh = ExtResource("1_wbg7c")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, -1.7185e-15, 1.13246e-08, 1.7185e-15, 1, -7.63223e-16, -1.13246e-08, 7.63223e-16, 1, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_4dogm")

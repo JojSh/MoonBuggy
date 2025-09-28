@@ -696,6 +696,8 @@ func move_to_spawn_point ():
 
 	if (GameSettings.debug_mode_on):
 		current_boost_level = 5.5
+		current_reload_level = 5
+		$RocketLauncher.show_rocket()
 		_update_boost_display()
 
 func reorient_vehicle_over_time(duration: float = 0.5):
