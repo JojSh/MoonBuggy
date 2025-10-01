@@ -8,9 +8,9 @@ frequency = 0.1285
 fractal_octaves = 1
 
 [sub_resource type="NoiseTexture3D" id="NoiseTexture3D_kjy5a"]
+noise = SubResource("FastNoiseLite_at6nf")
 seamless = true
 seamless_blend_skirt = 0.279
-noise = SubResource("FastNoiseLite_at6nf")
 
 [resource]
 render_priority = 0
