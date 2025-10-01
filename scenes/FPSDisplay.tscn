@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cktcilqmb8mdx"]
 
-[ext_resource type="Script" path="res://scripts/FPSDisplay.gd" id="1_aj76c"]
+[ext_resource type="Script" uid="uid://b1cg4ff5rfl8k" path="res://scripts/FPSDisplay.gd" id="1_aj76c"]
 
 [node name="FPSDisplay" type="CanvasLayer"]
 follow_viewport_enabled = true

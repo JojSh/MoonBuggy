@@ -6,13 +6,13 @@
 [ext_resource type="Material" uid="uid://7ig6rty5eqvd" path="res://resources/InternalCloudMaterial.tres" id="4_8400x"]
 [ext_resource type="Material" uid="uid://ca4h3786y6aau" path="res://resources/ShockwaveMaterial.tres" id="5_5wau6"]
 [ext_resource type="Material" uid="uid://c82veycg0l5xj" path="res://resources/PrimaryCloudMaterial.tres" id="6_y6gpw"]
-[ext_resource type="Shader" path="res://shaders/SmokeShaderTranslucent.gdshader" id="7_n78qm"]
+[ext_resource type="Shader" uid="uid://dkcxcyhwg6by3" path="res://shaders/SmokeShaderTranslucent.gdshader" id="7_n78qm"]
 [ext_resource type="NoiseTexture3D" uid="uid://bwydqh15qmvxa" path="res://resources/NoiseResource.tres" id="8_ncem4"]
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1julr"]
 resource_local_to_scene = true
 _data = {
-"PlayExplosion": ExtResource("1_v1yq0")
+&"PlayExplosion": ExtResource("1_v1yq0")
 }
 
 [sub_resource type="Gradient" id="Gradient_aqrtb"]
@@ -26,7 +26,7 @@ gradient = SubResource("Gradient_aqrtb")
 use_hdr = true
 
 [sub_resource type="Curve" id="Curve_seydj"]
-max_value = 10.0
+_limits = [0.0, 10.0, 0.0, 1.0]
 _data = [Vector2(0.487562, 10), 0.0, 0.0, 0, 0]
 point_count = 1
 
@@ -34,8 +34,7 @@ point_count = 1
 curve = SubResource("Curve_seydj")
 
 [sub_resource type="Curve" id="Curve_vb5rx"]
-min_value = -200.0
-max_value = 200.0
+_limits = [-200.0, 200.0, 0.0, 1.0]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
@@ -80,8 +79,7 @@ turbulence_influence_max = 0.02
 [sub_resource type="SphereMesh" id="SphereMesh_dtx42"]
 
 [sub_resource type="Curve" id="Curve_yed7u"]
-min_value = -200.0
-max_value = 200.0
+_limits = [-200.0, 200.0, 0.0, 1.0]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
@@ -245,6 +243,7 @@ sub_emitter_frequency = 100.0
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fn2x5"]
 render_priority = 0
 shader = ExtResource("7_n78qm")
+shader_parameter/NoiseTexture = ExtResource("8_ncem4")
 shader_parameter/NoiseTexturePower = 0.111
 shader_parameter/NoiseTextureSoftness = 0.161
 shader_parameter/ColorTint = Color(0.0941176, 0.0941176, 0.0941176, 1)
@@ -255,7 +254,6 @@ shader_parameter/EmissionPower = 1.0
 shader_parameter/EmissionAlphaPower = 1.0
 shader_parameter/DisplacementScale = 0.47
 shader_parameter/AlphaMultiplier = 0.5
-shader_parameter/NoiseTexture = ExtResource("8_ncem4")
 
 [sub_resource type="Gradient" id="Gradient_an2cv"]
 offsets = PackedFloat32Array(0, 0.0309917, 0.110429, 1)
@@ -265,8 +263,7 @@ colors = PackedColorArray(0.686728, 0.316199, 0.102588, 1, 0.35089, 0.11332, 0.0
 gradient = SubResource("Gradient_an2cv")
 
 [sub_resource type="Curve" id="Curve_ghlq4"]
-min_value = -200.0
-max_value = 200.0
+_limits = [-200.0, 200.0, 0.0, 1.0]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 

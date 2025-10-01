@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://d1wcxewl0xytx"]
 
-[ext_resource type="Script" path="res://scripts/portal_entrance.gd" id="1_36ng6"]
+[ext_resource type="Script" uid="uid://di2b280xh4upl" path="res://scripts/portal_entrance.gd" id="1_36ng6"]
 [ext_resource type="Shader" uid="uid://dswjgvavykywq" path="res://resources/portal_entrance_vshader_inverted.tres" id="2_corl6"]
 [ext_resource type="Material" uid="uid://cpepguatyhnun" path="res://resources/portal_exit_area_3d.tres" id="3_2mqof"]
 

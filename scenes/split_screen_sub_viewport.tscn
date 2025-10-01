@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bya5s6afh24y2"]
 
-[ext_resource type="Script" path="res://scripts/SubViewport.gd" id="1_djbh3"]
+[ext_resource type="Script" uid="uid://hgx8mv5m4vg6" path="res://scripts/SubViewport.gd" id="1_djbh3"]
 [ext_resource type="PackedScene" uid="uid://02pucoy7xppp" path="res://scenes/subviewport_aiming_reticle.tscn" id="2_bkany"]
 [ext_resource type="PackedScene" uid="uid://cw0t325yducrj" path="res://scenes/controls_help_ui.tscn" id="3_controls"]
 

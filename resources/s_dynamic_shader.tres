@@ -80,7 +80,7 @@ uniform vec2 Vector2Parameter = vec2(2.000000, -1.000000);
 uniform sampler2D energy_texture;
 uniform float texture_power = 1.5;
 uniform sampler2D tex_frg_15;
-uniform float gradient_power = 1;
+uniform float gradient_power = 1.0;
 
 
 

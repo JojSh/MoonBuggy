@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://b7nbydaou5n6t"]
 
-[ext_resource type="Script" path="res://scripts/CheckpointRing.gd" id="1_xw5q0"]
+[ext_resource type="Script" uid="uid://c2plfwmt27e8m" path="res://scripts/CheckpointRing.gd" id="1_xw5q0"]
 [ext_resource type="Material" uid="uid://dsf3ecpk3dn5x" path="res://resources/inactive_checkpoint_ring.tres" id="2_8ivcl"]
 [ext_resource type="AudioStream" uid="uid://dwt3h0tsfcxgu" path="res://sounds/Checkpoint1.ogg" id="2_jxgur"]
 
@@ -60,8 +60,8 @@ tracks/1/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.5, 1, 0.02, 0, -0.015, 0.
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_uaa1f"]
 _data = {
-"RESET": SubResource("Animation_caojs"),
-"wobble": SubResource("Animation_fedlq")
+&"RESET": SubResource("Animation_caojs"),
+&"wobble": SubResource("Animation_fedlq")
 }
 
 [node name="CheckpointRing" type="Area3D"]

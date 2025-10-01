@@ -12,17 +12,16 @@
 render_priority = 0
 shader = ExtResource("1_ymph6")
 shader_parameter/Vector2Parameter = Vector2(2, -1)
+shader_parameter/energy_texture = ExtResource("2_mawa6")
 shader_parameter/texture_power = 1.3
 shader_parameter/gradient_power = 1.0
-shader_parameter/energy_texture = ExtResource("2_mawa6")
 
 [sub_resource type="Curve" id="Curve_7neli"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_4q7u4"]
-min_value = 1.0
-max_value = 4.0
+_limits = [0.99, 4.0, 0.0, 1.0]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.99998, 4), 0.0, 0.0, 0, 0, Vector2(0.99999, 8.82653), 0.0, 0.0, 0, 0, Vector2(1, 96.1059), 0.0, 0.0, 0, 0]
 point_count = 4
 
@@ -42,13 +41,12 @@ color = Color(1, 0.533333, 0, 1)
 render_priority = 0
 shader = ExtResource("1_ymph6")
 shader_parameter/Vector2Parameter = Vector2(2, -1)
+shader_parameter/energy_texture = ExtResource("4_30rk5")
 shader_parameter/texture_power = 2.0
 shader_parameter/gradient_power = 1.0
-shader_parameter/energy_texture = ExtResource("4_30rk5")
 
 [sub_resource type="Curve" id="Curve_4547k"]
-min_value = 1.0
-max_value = 16.0
+_limits = [0.99, 16.0, 0.0, 1.0]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.99999, 16), 0.0, 0.0, 0, 0, Vector2(1, 96.1059), 0.0, 0.0, 0, 0]
 point_count = 3
 
@@ -68,9 +66,9 @@ color = Color(1, 0.900333, 0.74, 1)
 render_priority = 0
 shader = ExtResource("1_ymph6")
 shader_parameter/Vector2Parameter = Vector2(1.5, 2)
+shader_parameter/energy_texture = ExtResource("5_n35ue")
 shader_parameter/texture_power = 1.5
 shader_parameter/gradient_power = 3.0
-shader_parameter/energy_texture = ExtResource("5_n35ue")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_w6hqa"]
 gravity = Vector3(0, 0, 0)
@@ -209,8 +207,8 @@ tracks/3/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2odme"]
 _data = {
-"Beam Start": SubResource("Animation_1116q"),
-"RESET": SubResource("Animation_xlgsf")
+&"Beam Start": SubResource("Animation_1116q"),
+&"RESET": SubResource("Animation_xlgsf")
 }
 
 [node name="BeamContainer" type="Node3D"]

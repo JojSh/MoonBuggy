@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cr6cwaremoght"]
 
-[ext_resource type="PackedScene" uid="uid://b37l6fgr4wr20" path="res://scenes/life_pick_up.tscn" id="1_base"]
+[ext_resource type="PackedScene" uid="uid://b37l6fgr4wr20" path="res://scenes/base_pick_up.tscn" id="1_base"]
 [ext_resource type="Material" uid="uid://cme2hqx1ya8pj" path="res://resources/glowy_yellow.tres" id="2_72tm3"]
 
 [node name="BoostPickUp" instance=ExtResource("1_base")]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://cs58csttl120j"]
 
-[ext_resource type="Script" path="res://scripts/curve_corner_ramp.gd" id="1_0go46"]
+[ext_resource type="Script" uid="uid://i3lylq676jlp" path="res://scripts/curve_corner_ramp.gd" id="1_0go46"]
 [ext_resource type="ArrayMesh" uid="uid://48yfmqe03n5" path="res://meshes/ramp1.obj" id="2_bovn5"]
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_64odv"]

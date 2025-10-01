@@ -130,4 +130,3 @@ func assign_player_control(player: Node, enable_roll_leveling: bool = false):
 
 func is_under_player_control() -> bool:
 	return rocket_controller != null and rocket_controller.is_active
-

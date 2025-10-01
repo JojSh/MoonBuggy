@@ -2,10 +2,10 @@
 
 [ext_resource type="PackedScene" uid="uid://d1wcxewl0xytx" path="res://scenes/portal_entrance_area_3d.tscn" id="1_m7ga2"]
 [ext_resource type="PackedScene" uid="uid://dieogt36ljkks" path="res://scenes/portal_exit_area_3d.tscn" id="2_jvqj8"]
-[ext_resource type="Script" path="res://scripts/PickUpSpawner.gd" id="3_cvnn8"]
-[ext_resource type="Script" path="res://scripts/GravityAreaParentLevel.gd" id="4_o04fr"]
+[ext_resource type="Script" uid="uid://dq1kaxd287f7q" path="res://scripts/PickUpSpawner.gd" id="3_cvnn8"]
+[ext_resource type="Script" uid="uid://cimstpw6ksrgj" path="res://scripts/GravityAreaParentLevel.gd" id="4_o04fr"]
 [ext_resource type="Material" uid="uid://cse68vhm0xbdf" path="res://resources/glowy_purple.tres" id="5_v22fs"]
-[ext_resource type="Script" path="res://scripts/GravityArea3D.gd" id="6_cfj1o"]
+[ext_resource type="Script" uid="uid://df40lhbi7awkh" path="res://scripts/GravityArea3D.gd" id="6_cfj1o"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_umtnq"]
 

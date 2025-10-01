@@ -56,4 +56,3 @@ func update_new_center_of_gravity_point(point):
 	if _closest_gravity_point == Vector3.ZERO:
 		_initial_gravity_point = point
 	_closest_gravity_point = point
-

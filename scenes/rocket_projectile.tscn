@@ -1,13 +1,13 @@
 [gd_scene load_steps=11 format=3 uid="uid://rqonbly2ymu8"]
 
-[ext_resource type="Script" path="res://scripts/rocket_projectile_outer.gd" id="1_yuh0u"]
+[ext_resource type="Script" uid="uid://c7cdw8ju45xrr" path="res://scripts/rocket_projectile_outer.gd" id="1_yuh0u"]
 [ext_resource type="AudioStream" uid="uid://cbb13opsl0umt" path="res://sounds/ExplosionWIP2.ogg" id="2_ou5fa"]
-[ext_resource type="Script" path="res://scripts/rocket_projectile_inner.gd" id="3_4n4lg"]
+[ext_resource type="Script" uid="uid://b18i7o6uh8g1g" path="res://scripts/rocket_projectile_inner.gd" id="3_4n4lg"]
 [ext_resource type="ArrayMesh" uid="uid://bu4kaojj6gik0" path="res://meshes/AngryRocket3.obj" id="4_pdqtl"]
 [ext_resource type="Material" uid="uid://fdou23b8btto" path="res://resources/rocket_shaft_material_3d.tres" id="5_1p3k7"]
 [ext_resource type="Material" uid="uid://dsyy5hybne1sv" path="res://resources/rocket_cone_material_3d.tres" id="6_t7v1n"]
 [ext_resource type="PackedScene" uid="uid://cav45f268cxd7" path="res://scenes/rocket_thruster.tscn" id="7_377wr"]
-[ext_resource type="Script" path="res://scripts/RocketController.gd" id="8_3458r"]
+[ext_resource type="Script" uid="uid://dw8fr3mxriuk1" path="res://scripts/RocketController.gd" id="8_3458r"]
 [ext_resource type="AudioStream" uid="uid://v52n3844nsfh" path="res://sounds/rocket_hiss.ogg" id="9_w21f2"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ncjk6"]

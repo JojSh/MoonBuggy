@@ -1,10 +1,10 @@
 [gd_scene load_steps=35 format=3 uid="uid://c32lxdnvhqluw"]
 
 [ext_resource type="Environment" uid="uid://c5eh8m3f8t03j" path="res://resources/bright_sky.tres" id="1_if5af"]
-[ext_resource type="Script" path="res://scripts/GravityAreaParentLevel.gd" id="2_ok2xk"]
+[ext_resource type="Script" uid="uid://cimstpw6ksrgj" path="res://scripts/GravityAreaParentLevel.gd" id="2_ok2xk"]
 [ext_resource type="PackedScene" uid="uid://cr6cwaremoght" path="res://scenes/boost_pick_up.tscn" id="3_dxijr"]
 [ext_resource type="Texture2D" uid="uid://0snyqnypvtk6" path="res://textures/icon.svg" id="3_t0bu3"]
-[ext_resource type="Script" path="res://scripts/GravityArea3D.gd" id="4_ebcso"]
+[ext_resource type="Script" uid="uid://df40lhbi7awkh" path="res://scripts/GravityArea3D.gd" id="4_ebcso"]
 [ext_resource type="Material" uid="uid://coug284mb8bhx" path="res://resources/glowy_red.tres" id="5_1frbt"]
 [ext_resource type="Material" uid="uid://cme2hqx1ya8pj" path="res://resources/glowy_yellow.tres" id="6_68md0"]
 [ext_resource type="PackedScene" uid="uid://cgsi2a8vk58x" path="res://scenes/blocks/red_block.tscn" id="6_ribfs"]
@@ -16,7 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://3vso2st4sodp" path="res://scenes/blocks/blue_block.tscn" id="9_kcn1v"]
 [ext_resource type="PackedScene" uid="uid://beshxv0l8c7l8" path="res://scenes/blocks/green_block.tscn" id="10_02uyq"]
 [ext_resource type="PackedScene" uid="uid://b7nbydaou5n6t" path="res://scenes/checkpoint_ring.tscn" id="11_1be78"]
-[ext_resource type="Script" path="res://scripts/CheckpointManager.gd" id="11_ovy1g"]
+[ext_resource type="Script" uid="uid://dmf8wswdr4kqw" path="res://scripts/CheckpointManager.gd" id="11_ovy1g"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_55m80"]
 size = Vector3(80, 0.2, 30)

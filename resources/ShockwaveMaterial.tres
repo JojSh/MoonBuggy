@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://ca4h3786y6aau"]
 
-[ext_resource type="Shader" path="res://shaders/Shockwave.gdshader" id="1_futb5"]
+[ext_resource type="Shader" uid="uid://dciv7qrpkut21" path="res://shaders/Shockwave.gdshader" id="1_futb5"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_at6nf"]
 noise_type = 4

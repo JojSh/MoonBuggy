@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bar5il1mhmk4m"]
 
-[ext_resource type="Script" path="res://scripts/MusicManager.gd" id="1_f3oqh"]
+[ext_resource type="Script" uid="uid://c1xa18aaf7epc" path="res://scripts/MusicManager.gd" id="1_f3oqh"]
 [ext_resource type="AudioStream" uid="uid://kuae7lo44gf6" path="res://music/MoonbuggyOST1.ogg" id="2_f7spn"]
 [ext_resource type="AudioStream" uid="uid://7uwl0h243rec" path="res://music/MoonbuggyOST2.ogg" id="3_8r7au"]
 

@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://cqqh4molf0nfl"]
 
-[ext_resource type="Script" path="res://scripts/FlatLevelGravityAreaParent.gd" id="1_m4aho"]
+[ext_resource type="Script" uid="uid://sh4yjjan4k30" path="res://scripts/FlatLevelGravityAreaParent.gd" id="1_m4aho"]
 [ext_resource type="Texture2D" uid="uid://cyirissu4e8hw" path="res://textures/icon-mono-2.svg" id="2_nonm8"]
-[ext_resource type="Script" path="res://scripts/GravityArea3D.gd" id="3_17vvy"]
+[ext_resource type="Script" uid="uid://df40lhbi7awkh" path="res://scripts/GravityArea3D.gd" id="3_17vvy"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_tdmfc"]
 size = Vector3(100, 2, 100)

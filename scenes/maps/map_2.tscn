@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cqqh4molf0nfl" path="res://scenes/level_flat_surface.tscn" id="7_ugiqs"]
 [ext_resource type="PackedScene" uid="uid://d1wcxewl0xytx" path="res://scenes/portal_entrance_area_3d.tscn" id="9_wv04m"]
 [ext_resource type="PackedScene" uid="uid://dieogt36ljkks" path="res://scenes/portal_exit_area_3d.tscn" id="10_pckbl"]
-[ext_resource type="Script" path="res://scripts/PickUpSpawner.gd" id="11_0v7n6"]
+[ext_resource type="Script" uid="uid://dq1kaxd287f7q" path="res://scripts/PickUpSpawner.gd" id="11_0v7n6"]
 [ext_resource type="PackedScene" uid="uid://cs58csttl120j" path="res://scenes/curve_corner_ramp.tscn" id="12_w0b3n"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_umtnq"]

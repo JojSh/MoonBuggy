@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://b37l6fgr4wr20"]
 
-[ext_resource type="Script" path="res://scripts/BasePickUp.gd" id="1_ytsnn"]
+[ext_resource type="Script" uid="uid://38cq6otv5xq7" path="res://scripts/BasePickUp.gd" id="1_ytsnn"]
 [ext_resource type="Material" uid="uid://sgneeu34bvsi" path="res://resources/glowy_green_life_pickup.tres" id="2_8l3ju"]
 [ext_resource type="PackedScene" uid="uid://drx63qf0rgw51" path="res://scenes/collectible_bubble.tscn" id="3_2arri"]
 

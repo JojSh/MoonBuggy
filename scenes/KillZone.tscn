@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://g61ejgte8er3"]
 
-[ext_resource type="Script" path="res://scripts/KillZone.gd" id="1_qypna"]
+[ext_resource type="Script" uid="uid://dm33u1e3eesje" path="res://scripts/KillZone.gd" id="1_qypna"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5pt31"]
 size = Vector3(10, 10, 10)

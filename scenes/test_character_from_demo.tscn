@@ -1,6 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dtal7crwnewxv"]
 
-[ext_resource type="Script" path="res://RigidBody3D-test.gd" id="1_ljvf0"]
+[sub_resource type="Resource" id="Resource_4lpty"]
+metadata/__load_path__ = "res://RigidBody3D-test.gd"
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_7oc1n"]
 
@@ -10,7 +11,7 @@ points = PackedVector3Array(-0.5, -0.5, 0, -0.497651, -0.5, -0.0490407, -0.49246
 [node name="TestCharacterFromDemo" type="RigidBody3D"]
 max_contacts_reported = 1
 contact_monitor = true
-script = ExtResource("1_ljvf0")
+script = SubResource("Resource_4lpty")
 
 [node name="MeshModel" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.774457, 2.00038)
