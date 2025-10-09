@@ -22,6 +22,7 @@ DebugDraw="*res://scenes/debug_draw.tscn"
 DebrisManager="*res://scripts/DebrisManager.gd"
 GameSettings="*res://scripts/GameSettings.gd"
 MusicManager="*res://scenes/music_manager.tscn"
+NetworkManager="*res://scripts/NetworkManager.gd"
 
 [display]
 

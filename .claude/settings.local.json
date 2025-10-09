@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/jojmartin/Code/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

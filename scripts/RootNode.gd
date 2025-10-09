@@ -10,6 +10,8 @@ var obstacle_course_timer
 
 var current_audio_listener_player: Node = null
 var all_active_rockets: Array[RigidBody3D] = []
+var network_lobby_scene = preload("res://scenes/NetworkLobby.tscn")
+var network_lobby_instance = null
 
 func _ready():
 	if GameSettings.should_skip_main_menu:
@@ -229,6 +231,9 @@ func _on_choose_player_count_button_pressed(player_count):
 	hide_main_menu()
 	start_game()
 	get_tree().paused = false
+
+func _on_network_multiplayer_button_pressed():
+	show_network_lobby()
 
 func _on_return_to_main_menu_button_pressed():
 	GameSettings.should_skip_main_menu = false
@@ -454,3 +459,72 @@ func _on_rocket_out_of_bounds_audio(rocket: RigidBody3D):
 func remove_rocket_from_audio_tracking(rocket: RigidBody3D):
 	if all_active_rockets.has(rocket):
 		all_active_rockets.erase(rocket)
+
+# Network lobby functions
+func show_network_lobby():
+	network_lobby_instance = network_lobby_scene.instantiate()
+	add_child(network_lobby_instance)
+	
+	# Connect signals
+	network_lobby_instance.lobby_closed.connect(_on_network_lobby_closed)
+	network_lobby_instance.start_local_game.connect(_on_start_local_game)
+	network_lobby_instance.start_network_game.connect(_on_start_network_game)
+	
+	hide_main_menu()
+
+func _on_network_lobby_closed():
+	if network_lobby_instance:
+		network_lobby_instance.queue_free()
+		network_lobby_instance = null
+	show_main_menu()
+
+func _on_start_local_game():
+	# Start local multiplayer without networking
+	if network_lobby_instance:
+		network_lobby_instance.queue_free()
+		network_lobby_instance = null
+	GameSettings.desired_number_players = 2  # Default to 2 players for local
+	start_game()
+
+func _on_start_network_game():
+	# Start network multiplayer game
+	if network_lobby_instance:
+		network_lobby_instance.queue_free()
+		network_lobby_instance = null
+	
+	# Set player count based on connected players
+	GameSettings.desired_number_players = NetworkManager.get_player_count()
+	start_network_game_session()
+
+func start_network_game_session():
+	# Network-aware version of start_game
+	register_active_players()
+	
+	# Skip obstacle course for network games
+	for player in list_of_players:
+		player.switch_off_obstacle_course_mode()
+	remove_obstacle_course_timer()
+	MusicManager.start_music(1)
+	
+	assign_spawn_points()
+	setup_network_screens()  # Use network-specific screen setup
+	
+	# Configure players for networking
+	for i in range(list_of_players.size()):
+		var player = list_of_players[i]
+		player.player_eliminated.connect(_on_player_eliminated)
+		player.player_lost_a_life.connect(_on_player_lost_a_life)
+		player.get_node("ChaseCamPivot/ChaseCam").current = true
+		player.notify_chase_cam_of_teleportation()
+	
+	# Connect to checkpoint manager signals
+	connect_checkpoint_signals()
+	
+	# Unpause the game for network play
+	get_tree().paused = false
+	
+	print("Network game started with ", GameSettings.desired_number_players, " players")
+
+
+func _on_network_multiplayer_pressed():
+	show_network_lobby()

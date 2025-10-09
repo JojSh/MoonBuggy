@@ -124,6 +124,13 @@ theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
 theme_override_font_sizes/font_size = 100
 text = "Four player split-screen"
 
+[node name="NetworkMultiplayer" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 100
+text = "Network multiplayer"
+
 [node name="DebugToggle" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"FlatButton"
@@ -384,6 +391,7 @@ script = ExtResource("7_682lk")
 [connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/TwoPlayerSplitScreenButton" to="." method="_on_choose_player_count_button_pressed" binds= [2]]
 [connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/ThreePlayerSplitScreenButton" to="." method="_on_choose_player_count_button_pressed" binds= [3]]
 [connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/FourPlayerSplitScreenButton" to="." method="_on_choose_player_count_button_pressed" binds= [4]]
+[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/NetworkMultiplayer" to="." method="_on_network_multiplayer_pressed"]
 [connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/DebugToggle" to="." method="_on_debug_toggle_pressed"]
 [connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/ChangeMap" to="." method="_on_change_map_pressed"]
 [connection signal="pressed" from="MenuContainer/Control/GameOverScreen/VBoxContainer/PlayAgainButton" to="." method="_on_play_again_button_pressed"]
