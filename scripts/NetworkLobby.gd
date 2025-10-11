@@ -28,11 +28,15 @@ func _ready():
 	NetworkManager.connection_failed.connect(_on_connection_failed)
 	NetworkManager.server_disconnected.connect(_on_server_disconnected)
 	
-	# Connect button signals
-	host_button.pressed.connect(_on_host_button_pressed)
-	join_button.pressed.connect(_on_join_button_pressed)
-	local_mode_button.pressed.connect(_on_local_mode_button_pressed)
-	back_button.pressed.connect(_on_back_button_pressed)
+	# Connect button signals (only if not already connected)
+	if not host_button.pressed.is_connected(_on_host_button_pressed):
+		host_button.pressed.connect(_on_host_button_pressed)
+	if not join_button.pressed.is_connected(_on_join_button_pressed):
+		join_button.pressed.connect(_on_join_button_pressed)
+	if not local_mode_button.pressed.is_connected(_on_local_mode_button_pressed):
+		local_mode_button.pressed.connect(_on_local_mode_button_pressed)
+	if not back_button.pressed.is_connected(_on_back_button_pressed):
+		back_button.pressed.connect(_on_back_button_pressed)
 	
 	# Setup UI
 	host_button.grab_focus()
@@ -56,6 +60,7 @@ func _on_host_button_pressed():
 
 func _on_join_button_pressed():
 	var ip = ip_input.text.strip_edges()
+	
 	if ip.is_empty():
 		status_label.text = "Please enter server IP address"
 		return
@@ -67,6 +72,7 @@ func _on_join_button_pressed():
 		join_button.disabled = true
 		local_mode_button.disabled = true
 	else:
+		print("join_game returned false - connection failed")  # Debug
 		status_label.text = "Failed to connect!"
 
 func _on_local_mode_button_pressed():
@@ -76,9 +82,16 @@ func _on_local_mode_button_pressed():
 func _on_start_game_button_pressed():
 	if NetworkManager.is_server():
 		# Host starts the game for everyone
-		emit_signal("start_network_game")
+		print("Host starting network game for all players")
+		start_network_game_for_all.rpc()  # This will call the RPC on all clients INCLUDING host
 	else:
 		status_label.text = "Only the host can start the game"
+
+@rpc("authority", "call_local", "reliable")
+func start_network_game_for_all():
+	# This is called on all clients (including host) to start the game
+	print("Received start game signal from host")
+	emit_signal("start_network_game")
 
 func _on_back_button_pressed():
 	# Disconnect if connected

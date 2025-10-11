@@ -514,17 +514,87 @@ func start_network_game_session():
 		var player = list_of_players[i]
 		player.player_eliminated.connect(_on_player_eliminated)
 		player.player_lost_a_life.connect(_on_player_lost_a_life)
-		player.get_node("ChaseCamPivot/ChaseCam").current = true
-		player.notify_chase_cam_of_teleportation()
+		# Only set camera current for local player
+		if player.is_local_player:
+			player.get_node("ChaseCamPivot/ChaseCam").current = true
+			player.notify_chase_cam_of_teleportation()
 	
 	# Connect to checkpoint manager signals
 	connect_checkpoint_signals()
+	
+	# Setup network puppet spawning for players that join later
+	NetworkManager.player_connected.connect(_on_network_player_joined)
+	NetworkManager.player_disconnected.connect(_on_network_player_left)
 	
 	# Unpause the game for network play
 	get_tree().paused = false
 	
 	print("Network game started with ", GameSettings.desired_number_players, " players")
 
+func setup_network_screens():
+	# In network mode, each client gets full screen with only their local player
+	print("Setting up network screens...")
+	
+	# Clean up split screen containers (not needed for network)
+	for split_screen in $PlayerScreenManager/SplitScreens.get_children():
+		split_screen.queue_free()
+	
+	# Get the local player data to determine which player number this client controls
+	var local_player_data = NetworkManager.get_local_player_data()
+	var local_player_number = local_player_data.player_number if local_player_data else 1
+	
+	# Find and setup the local player
+	var local_player
+	for player in list_of_players:
+		if player.player_number == local_player_number:
+			local_player = player
+			break
+	
+	if local_player:
+		# Setup local player with full screen
+		$PlayerScreenManager/PlayerContainer.remove_child(local_player)
+		$SinglePlayerCamera.add_child(local_player)
+		$SinglePlayerCamera.connect_crosshair_control_signals()
+		
+		print("Local player ", local_player.player_number, " set to full screen")
+	
+		# Setup puppet players (keep them alive but move to world)
+		var puppet_players = list_of_players.filter(func(p): return p != local_player)
+		for puppet_player in puppet_players:
+			# Remove from PlayerContainer and add to world as puppet
+			$PlayerScreenManager/PlayerContainer.remove_child(puppet_player)
+			$SinglePlayerCamera.add_child(puppet_player)  # Add puppets to same scene as local player
+			
+			print("Player ", puppet_player.player_number, " set as network puppet")
+		
+		# NOW setup network players - after network is established
+		print("Setting up network player identities...")
+		for player in list_of_players:
+			player.setup_network_player()
+		
+		# Keep all players in list (local + puppets)
+		# list_of_players stays the same - don't remove puppets
+	else:
+		print("ERROR: Could not find local player with number ", local_player_number)
+		
+	print("Network screen setup complete")
+
+func _on_network_player_joined(peer_id: int):
+	# A new player joined during gameplay - spawn a puppet for them
+	if not NetworkManager.is_multiplayer_active():
+		return
+	
+	var player_data = NetworkManager.connected_players.get(peer_id, {})
+	var player_number = player_data.get("player_number", -1)
+	
+	if player_number > 0:
+		print("Spawning puppet for new player ", player_number, " (peer: ", peer_id, ")")
+		# TODO: Spawn puppet player here when needed
+
+func _on_network_player_left(peer_id: int):
+	# A player left during gameplay - remove their puppet
+	print("Player ", peer_id, " left the game")
+	# TODO: Remove puppet player here when needed
 
 func _on_network_multiplayer_pressed():
 	show_network_lobby()

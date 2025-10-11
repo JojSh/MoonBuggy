@@ -69,6 +69,10 @@ var is_on_corner_ramp := false  # Add this to track corner ramp contact
 @export var jump_initial_impulse := 20.0
 @export var is_eliminated := false
 
+# Network variables
+@export var is_local_player: bool = false
+@export var network_player_id: int = -1
+
 var _start_position: Vector3
 @onready var rocket_launcher = $RocketLauncher
 @onready var original_parts: Array[Node3D] = [$Body, $Wheel1, $Wheel2, $Wheel3, $Wheel4, $RocketLauncher]
@@ -101,9 +105,15 @@ func _ready ():
 	
 	_update_lives_display()
 	_update_boost_display()
+	
+	# Network setup will be called manually after network is ready
 
 func _physics_process(delta: float):
 	if is_dead: return
+	
+	# Only process physics for local player
+	if not is_local_player:
+		return
 
 	if inputs_paused:
 		stop_boost()
@@ -901,3 +911,50 @@ func switch_off_obstacle_course_mode ():
 	current_reload_level = STARTING_RELOAD_LEVEL
 	$RocketLauncher.show_rocket()
 	_update_boost_display()
+
+func setup_network_player():
+	if not NetworkManager.is_multiplayer_active():
+		# Not in multiplayer mode, set as local player
+		is_local_player = true
+		print("Player ", player_number, " setup as LOCAL player (offline mode)")
+		return
+	
+	# In multiplayer mode - determine if this is the local player
+	var local_player_data = NetworkManager.get_local_player_data()
+	
+	if local_player_data and local_player_data.has("player_number") and local_player_data.player_number == player_number:
+		# This is the local player
+		is_local_player = true
+		network_player_id = local_player_data.peer_id
+		
+	# Set multiplayer authority for synchronization
+	$NetworkSync.set_multiplayer_authority(network_player_id)
+	print("Player ", player_number, " setup as LOCAL player (ID: ", network_player_id, ")")
+	else:
+		# This is a remote player - make it a puppet
+		is_local_player = false
+		
+		# Find the correct peer ID for this player number
+		var correct_peer_id = -1
+		for peer_data in NetworkManager.connected_players.values():
+			if peer_data.player_number == player_number:
+				correct_peer_id = peer_data.peer_id
+				break
+		
+		if correct_peer_id != -1:
+			# Set the correct multiplayer authority for this puppet
+			$NetworkSync.set_multiplayer_authority(correct_peer_id)
+			print("Player ", player_number, " setup as REMOTE player (authority: ", correct_peer_id, ")")
+		else:
+			print("ERROR: Could not find peer ID for player ", player_number)
+		
+		# Disable input processing for remote players
+		set_physics_process(false)
+		set_process_input(false)
+		
+		# Disable cameras for remote players
+		$ChaseCamPivot/ChaseCam.current = false
+		$SideCam.current = false
+		$FirstPersonCam.current = false
+		$ThirdPersonCam.current = false
+		$ChaseCamLocked.current = false
