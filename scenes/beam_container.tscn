@@ -253,5 +253,5 @@ draw_pass_1 = SubResource("QuadMesh_iyiw4")
 
 [node name="BeamTrigger" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_2odme")
+&"": SubResource("AnimationLibrary_2odme")
 }

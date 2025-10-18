@@ -132,7 +132,9 @@ func _sync_players_to_new_client(players_data: Dictionary):
 	print("Received player list: ", connected_players)
 
 func is_multiplayer_active() -> bool:
-	return multiplayer.multiplayer_peer != null
+	# Only consider ENetMultiplayerPeer as actual multiplayer
+	# OfflineMultiplayerPeer is the default and indicates offline mode
+	return multiplayer.multiplayer_peer != null and multiplayer.multiplayer_peer is ENetMultiplayerPeer
 
 func is_server() -> bool:
 	return multiplayer.is_server()

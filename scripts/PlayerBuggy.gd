@@ -111,8 +111,9 @@ func _ready ():
 func _physics_process(delta: float):
 	if is_dead: return
 	
-	# Only process physics for local player
-	if not is_local_player:
+	# In multiplayer mode, only process physics for local player
+	# In offline mode, process physics for all players
+	if NetworkManager.is_multiplayer_active() and not is_local_player:
 		return
 
 	if inputs_paused:
@@ -171,7 +172,8 @@ func _physics_process(delta: float):
 	handle_fire_input()
 	
 	if (player_number == 1 && Input.is_action_just_pressed("p1_debug_test_functionality_trigger")):
-		print("testing debug input")
+		pass
+		# Debug input handler - can be used for testing
 
 	handle_engine_sound()
 	handle_sudden_impact_feedback()
@@ -332,25 +334,43 @@ func die ():
 	set_process_input(false)
 	$EngineSound.stop()
 
-	# Find the current camera
-	var current_camera = [$ChaseCamPivot/ChaseCam, $SideCam, $FirstPersonCam, $ThirdPersonCam, $ChaseCamLocked].filter(func(camera): 
-		return camera.current == true
-	)[0]
+	# Only handle camera logic for the local player
+	# Remote players shouldn't create death cameras on other clients
+	if is_local_player:
+		# Find the current camera
+		var active_cameras = [$ChaseCamPivot/ChaseCam, $SideCam, $FirstPersonCam, $ThirdPersonCam, $ChaseCamLocked].filter(func(camera): 
+			return camera.current == true
+		)
+		var current_camera = active_cameras[0] if active_cameras.size() > 0 else $ChaseCamPivot/ChaseCam
 
-	# Create death camera
-	death_camera = Camera3D.new()
-	
-	# Find the SubViewport that contains this player
-	var viewport = get_viewport()
-	if viewport is SubViewport:
-		# In split-screen mode, add to the SubViewport
-		viewport.add_child(death_camera)
+		# Disable all cameras to prevent multiple active cameras
+		$ChaseCamPivot/ChaseCam.current = false
+		$SideCam.current = false
+		$FirstPersonCam.current = false
+		$ThirdPersonCam.current = false
+		$ChaseCamLocked.current = false
+
+		# Create death camera
+		death_camera = Camera3D.new()
+		
+		# Find the SubViewport that contains this player
+		var viewport = get_viewport()
+		if viewport is SubViewport:
+			# In split-screen mode, add to the SubViewport
+			viewport.add_child(death_camera)
+		else:
+			# In single-player mode, add to root
+			get_tree().root.add_child(death_camera)
+
+		death_camera.global_transform = current_camera.global_transform
+		death_camera.current = true
 	else:
-		# In single-player mode, add to root
-		get_tree().root.add_child(death_camera)
-
-	death_camera.global_transform = current_camera.global_transform
-	death_camera.current = true
+		# For remote players, just disable their cameras so they don't interfere
+		$ChaseCamPivot/ChaseCam.current = false
+		$SideCam.current = false
+		$FirstPersonCam.current = false
+		$ThirdPersonCam.current = false
+		$ChaseCamLocked.current = false
 
 	for original_part in original_parts:
 		generate_and_separate_clone_of_part(original_part, death_velocity, death_position)
@@ -604,10 +624,30 @@ func _respawn ():
 	
 	$EngineSound.play()
 	
-	# Switch camera back
-	death_camera.queue_free()
-	$ChaseCamPivot/ChaseCam.current = true
-	notify_chase_cam_of_teleportation()
+	# Only handle camera restoration for the local player
+	if is_local_player:
+		# Switch camera back - ensure only the chase cam is active
+		if death_camera:
+			death_camera.queue_free()
+			death_camera = null
+		
+		# Disable all cameras first to prevent multiple active cameras
+		$ChaseCamPivot/ChaseCam.current = false
+		$SideCam.current = false
+		$FirstPersonCam.current = false
+		$ThirdPersonCam.current = false
+		$ChaseCamLocked.current = false
+		
+		# Now enable only the chase cam for this player
+		$ChaseCamPivot/ChaseCam.current = true
+		notify_chase_cam_of_teleportation()
+	else:
+		# For remote players, ensure all their cameras remain disabled
+		$ChaseCamPivot/ChaseCam.current = false
+		$SideCam.current = false
+		$FirstPersonCam.current = false
+		$ThirdPersonCam.current = false
+		$ChaseCamLocked.current = false
 
 	is_dead = false
 	
@@ -927,9 +967,9 @@ func setup_network_player():
 		is_local_player = true
 		network_player_id = local_player_data.peer_id
 		
-	# Set multiplayer authority for synchronization
-	$NetworkSync.set_multiplayer_authority(network_player_id)
-	print("Player ", player_number, " setup as LOCAL player (ID: ", network_player_id, ")")
+		# Set multiplayer authority for synchronization
+		$NetworkSync.set_multiplayer_authority(network_player_id)
+		print("Player ", player_number, " setup as LOCAL player (ID: ", network_player_id, ")")
 	else:
 		# This is a remote player - make it a puppet
 		is_local_player = false

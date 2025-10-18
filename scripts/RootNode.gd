@@ -54,6 +54,9 @@ func start_game ():
 	# After split screen setup, configure each player's cameras and signals
 	# This ensures cameras are in their final viewport context
 	for player in list_of_players:
+		# Setup player networking status (will set as local player in offline mode)
+		player.setup_network_player()
+		
 		player.player_eliminated.connect(_on_player_eliminated)
 		player.player_lost_a_life.connect(_on_player_lost_a_life)
 		player.get_node("ChaseCamPivot/ChaseCam").current = true
@@ -185,7 +188,7 @@ func _on_player_lost_a_life(player_number):
 		if GameSettings.desired_number_players > 1:
 			# Add a short delay to ensure the player has fully respawned
 			var timer = get_tree().create_timer(0.1)
-			timer.timeout.connect(func(): update_rocket_proximity_audio_listener()) # TODO: not preferred syntax, change!
+			timer.timeout.connect(update_rocket_proximity_audio_listener)
 
 func assign_checkpointed_spawn_point_to_player (player_number, checkpoint):
 	var current_player = get_current_player(player_number)
@@ -483,8 +486,14 @@ func _on_start_local_game():
 	if network_lobby_instance:
 		network_lobby_instance.queue_free()
 		network_lobby_instance = null
+	
+	# Ensure network is reset for offline play
+	NetworkManager.reset_network_state()
+	
 	GameSettings.desired_number_players = 2  # Default to 2 players for local
 	start_game()
+	# Unpause the game (matching behavior from main branch)
+	get_tree().paused = false
 
 func _on_start_network_game():
 	# Start network multiplayer game

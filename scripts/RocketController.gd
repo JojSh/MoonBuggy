@@ -7,6 +7,10 @@ var is_active: bool = false
 var roll_leveling_enabled: bool = false
 var boost_level: float = 1.0  # Current boost multiplier (1.0 = normal, 5.0 = max boost)
 
+# Network synchronization variables
+var is_network_authority: bool = false
+var can_process_input: bool = true
+
 const STEERING_TORQUE: float = 50.0  # Torque strength for steering (increased for responsiveness)
 const FORWARD_THRUST: float = 800.0  # Continuous forward thrust to make rocket travel in facing direction
 const VELOCITY_DAMPING: float = 0.85  # Reduces old momentum (0.0 = no damping, 1.0 = full stop)
@@ -31,6 +35,9 @@ func _ready():
 	rocket_body = get_parent()
 	if not rocket_body is RigidBody3D:
 		return
+	
+	# Setup network authority
+	setup_network_authority()
 
 func _process(delta):
 	# Handle camera updates even during explosion viewing
@@ -39,6 +46,10 @@ func _process(delta):
 	
 	# Only process control logic if actively controlling
 	if not is_active or not controlling_player:
+		return
+	
+	# Only process input on the client that owns the controlling player
+	if not can_process_input:
 		return
 	
 	# Control continues until rocket is destroyed (no time limit)
@@ -67,8 +78,13 @@ func assign_player_control(player: Node, enable_roll_leveling: bool = false):
 	is_active = true
 	roll_leveling_enabled = enable_roll_leveling
 	
-	# Create and setup third-person chase camera
-	setup_chase_camera()
+	# Check if this player is local to this client
+	update_input_authority()
+	
+	# Only create camera for local player control
+	if can_process_input:
+		# Create and setup third-person chase camera
+		setup_chase_camera()
 	
 	# Apply visual feedback - swap only the shaft material (surface 0)
 	rocket_mesh.set_surface_override_material(0, dark_shaft_material)
@@ -275,3 +291,25 @@ func _on_rocket_destroyed():
 		# Delay the actual control end to keep camera on explosion
 		var explosion_timer = get_tree().create_timer(EXPLOSION_CAMERA_DELAY)
 		explosion_timer.timeout.connect(end_control)
+
+func setup_network_authority():
+	# Determine if this rocket controller is on the authority client
+	if NetworkManager.is_multiplayer_active():
+		is_network_authority = rocket_body.is_multiplayer_authority()
+	else:
+		# Single player mode
+		is_network_authority = true
+		can_process_input = true
+
+func update_input_authority():
+	# Determine if this client can process input for the controlling player
+	if not controlling_player:
+		can_process_input = false
+		return
+	
+	if NetworkManager.is_multiplayer_active():
+		# Check if controlling player is local to this client
+		can_process_input = controlling_player.is_local_player
+	else:
+		# Single player mode
+		can_process_input = true

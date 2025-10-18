@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://ck4smidxkds07" path="res://scripts/WorldMapManager.gd" id="7_682lk"]
 [ext_resource type="Script" uid="uid://dux3qhltupl0x" path="res://scripts/SpectatorManager.gd" id="8_0hjkl"]
 [ext_resource type="PackedScene" uid="uid://tp634kdqbfd" path="res://scenes/PlayerBuggy.tscn" id="8_jsgp5"]
+[ext_resource type="Script" path="res://scripts/MultiplayerRocketManager.gd" id="9_rocket_mgr"]
 [ext_resource type="Material" uid="uid://cf4w258oi4pca" path="res://resources/car-green.tres" id="10_luqu7"]
 [ext_resource type="Material" uid="uid://c53pgeng2ewby" path="res://resources/car-gold.tres" id="10_stv4k"]
 [ext_resource type="PackedScene" uid="uid://cw0t325yducrj" path="res://scenes/controls_help_ui.tscn" id="11_controls"]
@@ -383,6 +384,9 @@ light_color = Color(1, 0.952941, 0.901961, 1)
 
 [node name="SpectatorManager" type="Node" parent="."]
 script = ExtResource("8_0hjkl")
+
+[node name="MultiplayerRocketManager" type="Node" parent="."]
+script = ExtResource("9_rocket_mgr")
 
 [node name="World" type="Node3D" parent="."]
 script = ExtResource("7_682lk")

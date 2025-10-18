@@ -5,42 +5,50 @@ signal rocket_out_of_bounds
 
 @onready var rocket_controller: Node = null
 
+# Network synchronization variables
+var is_network_authority: bool = false
+var last_sync_position: Vector3 = Vector3.ZERO
+var last_sync_rotation: Vector3 = Vector3.ZERO
+var sync_interpolation_speed: float = 10.0
+
 func _ready():
 	# Find the RocketController child node
 	rocket_controller = get_node_or_null("RocketController")
 	if rocket_controller:
 		# Connect controller signals
 		rocket_controller.control_ended.connect(_on_rocket_control_ended)
+	
+	# Setup network authority
+	setup_network_authority()
 
 func _process(delta):
-	# Check bounds every 10 frames to improve performance
-	if Engine.get_process_frames() % 10 == 0:
-		if is_out_of_bounds():
-			rocket_out_of_bounds.emit()
+	# Handle network physics synchronization for non-authority clients
+	if not is_network_authority and NetworkManager.is_multiplayer_active():
+		handle_network_interpolation(delta)
+	
+	# Only authority client checks bounds to avoid duplicate signals
+	if is_network_authority or not NetworkManager.is_multiplayer_active():
+		# Check bounds every 10 frames to improve performance
+		if Engine.get_process_frames() % 10 == 0:
+			if is_out_of_bounds():
+				rocket_out_of_bounds.emit()
 
 func _on_body_entered(body):
+	# Only process collisions on the authority client to prevent duplicate explosions
+	if not is_network_authority and NetworkManager.is_multiplayer_active():
+		return
+	
 	# Get the current position before we queue_free
 	var collision_position = global_position
 	
-	# Instance the explosion particle effect prefab
-	var explosion_scene = preload("res://scenes/ExplosionPrefab.tscn")
-	var explosion_particle_effect = explosion_scene.instantiate()
-	get_tree().root.add_child(explosion_particle_effect)
-	explosion_particle_effect.global_position = collision_position
-	explosion_particle_effect.get_node("Explosion/AnimationPlayer").play("PlayExplosion")
-	
-	_apply_explosive_force(collision_position)
-	# Notify controller about destruction
-	if rocket_controller:
-		rocket_controller._on_rocket_destroyed()
-	
-	# Emit signal to parent before destroying the rocket
-	rocket_exploded.emit(global_position)
-	#apply secondary explosive force to affect debris
-	await get_tree().create_timer(0.01).timeout
-	_apply_explosive_force(collision_position)
-	# Remove the rocket
-	queue_free()
+	# Sync explosion across all clients
+	if NetworkManager.is_multiplayer_active():
+		# Authority client triggers explosion on all clients
+		# Use call_deferred to avoid timing issues
+		call_deferred("_trigger_explosion_safely", collision_position)
+	else:
+		# Single player - trigger directly
+		process_explosion(collision_position)
 
 func fire_thruster ():
 	$RocketThruster/RocketTrigger.play("Rocket Thrust")
@@ -130,3 +138,82 @@ func assign_player_control(player: Node, enable_roll_leveling: bool = false):
 
 func is_under_player_control() -> bool:
 	return rocket_controller != null and rocket_controller.is_active
+
+func setup_network_authority():
+	# Determine if this client has authority over this rocket
+	if NetworkManager.is_multiplayer_active():
+		is_network_authority = is_multiplayer_authority()
+		if not is_network_authority:
+			# Non-authority clients don't simulate physics
+			freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
+			freeze = true
+			gravity_scale = 0.0
+	else:
+		# Single player mode - this client has authority
+		is_network_authority = true
+
+func handle_network_interpolation(delta: float):
+	# Smoothly interpolate to the synchronized position and rotation from authority client
+	if last_sync_position != Vector3.ZERO:
+		global_position = global_position.lerp(last_sync_position, sync_interpolation_speed * delta)
+	
+	if last_sync_rotation != Vector3.ZERO:
+		rotation = rotation.lerp(last_sync_rotation, sync_interpolation_speed * delta)
+
+# Called by MultiplayerSynchronizer when position is updated from authority
+func _on_position_changed(new_position: Vector3):
+	if not is_network_authority:
+		last_sync_position = new_position
+
+# Called by MultiplayerSynchronizer when rotation is updated from authority  
+func _on_rotation_changed(new_rotation: Vector3):
+	if not is_network_authority:
+		last_sync_rotation = new_rotation
+
+# Called by MultiplayerSynchronizer when synchronized
+func _on_network_synchronized():
+	print("Rocket network synchronized, authority: ", is_network_authority)
+
+# Safe explosion triggering with error handling
+func _trigger_explosion_safely(explosion_position: Vector3):
+	if is_inside_tree() and not is_queued_for_deletion():
+		trigger_networked_explosion.rpc(explosion_position)
+
+func _trigger_explosion_locally(explosion_position: Vector3):
+	if is_inside_tree() and not is_queued_for_deletion():
+		process_explosion(explosion_position)
+
+# RPC function to synchronize explosions across all clients
+@rpc("any_peer", "call_local", "reliable")
+func trigger_networked_explosion(explosion_position: Vector3):
+	# Safety check to prevent crashes
+	if is_inside_tree() and not is_queued_for_deletion():
+		process_explosion(explosion_position)
+
+
+func process_explosion(collision_position: Vector3):
+	# Instance the explosion particle effect prefab
+	var explosion_scene = preload("res://scenes/ExplosionPrefab.tscn")
+	var explosion_particle_effect = explosion_scene.instantiate()
+	get_tree().root.add_child(explosion_particle_effect)
+	explosion_particle_effect.global_position = collision_position
+	explosion_particle_effect.get_node("Explosion/AnimationPlayer").play("PlayExplosion")
+	
+	# Apply explosive force on ALL clients
+	# Both player deaths and physics forces should happen everywhere for consistent gameplay
+	_apply_explosive_force(collision_position)
+	
+	# Notify controller about destruction
+	if rocket_controller:
+		rocket_controller._on_rocket_destroyed()
+	
+	# Emit signal to parent before destroying the rocket
+	rocket_exploded.emit(collision_position)
+	
+	# Apply secondary explosive force to affect debris (only on authority)
+	if is_network_authority or not NetworkManager.is_multiplayer_active():
+		await get_tree().create_timer(0.01).timeout
+		_apply_explosive_force(collision_position)
+	
+	# Remove the rocket
+	queue_free()
