@@ -38,7 +38,7 @@ func host_game(port: int = DEFAULT_PORT) -> bool:
 		print("Server started on port ", port)
 		return true
 	else:
-		print("Failed to start server: ", error)
+		printerr("Failed to start server: ", error)
 		return false
 
 func join_game(ip: String, port: int = DEFAULT_PORT) -> bool:
@@ -48,10 +48,8 @@ func join_game(ip: String, port: int = DEFAULT_PORT) -> bool:
 	if error == OK:
 		multiplayer.multiplayer_peer = peer
 		is_hosting = false
-		print("Attempting to connect to ", ip, ":", port)
 		return true
 	else:
-		print("Failed to create client: ", error)
 		return false
 
 func disconnect_from_game():
@@ -61,7 +59,6 @@ func disconnect_from_game():
 	
 	connected_players.clear()
 	is_hosting = false
-	print("Disconnected from game")
 
 func reset_network_state():
 	# Clean reset of all network state
@@ -84,13 +81,10 @@ func get_next_player_number() -> int:
 			return i
 	return -1  # No slots available
 
-func _on_player_connected(peer_id: int):
-	print("Player connected: ", peer_id)
-	
+func _on_player_connected(peer_id: int):	
 	# Assign player number
 	var player_number = get_next_player_number()
 	if player_number == -1:
-		print("Server full! Disconnecting player ", peer_id)
 		multiplayer.multiplayer_peer.disconnect_peer(peer_id)
 		return
 	
@@ -109,27 +103,22 @@ func _on_player_connected(peer_id: int):
 		_sync_players_to_new_client.rpc_id(peer_id, connected_players)
 
 func _on_player_disconnected(peer_id: int):
-	print("Player disconnected: ", peer_id)
 	connected_players.erase(peer_id)
 	player_disconnected.emit(peer_id)
 
 func _on_connected_to_server():
-	print("Successfully connected to server")
 	connection_succeeded.emit()
 
 func _on_connection_failed():
-	print("Failed to connect to server")
 	connection_failed.emit()
 
 func _on_server_disconnected():
-	print("Disconnected from server")
 	connected_players.clear()
 	server_disconnected.emit()
 
 @rpc("authority", "call_local", "reliable")
 func _sync_players_to_new_client(players_data: Dictionary):
 	connected_players = players_data
-	print("Received player list: ", connected_players)
 
 func is_multiplayer_active() -> bool:
 	# Only consider ENetMultiplayerPeer as actual multiplayer

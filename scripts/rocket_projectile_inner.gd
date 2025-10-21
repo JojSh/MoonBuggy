@@ -172,7 +172,8 @@ func _on_rotation_changed(new_rotation: Vector3):
 
 # Called by MultiplayerSynchronizer when synchronized
 func _on_network_synchronized():
-	print("Rocket network synchronized, authority: ", is_network_authority)
+	pass
+	#print("Rocket network synchronized, authority: ", is_network_authority)
 
 # Safe explosion triggering with error handling
 func _trigger_explosion_safely(explosion_position: Vector3):

@@ -82,7 +82,6 @@ func _on_local_mode_button_pressed():
 func _on_start_game_button_pressed():
 	if NetworkManager.is_server():
 		# Host starts the game for everyone
-		print("Host starting network game for all players")
 		start_network_game_for_all.rpc()  # This will call the RPC on all clients INCLUDING host
 	else:
 		status_label.text = "Only the host can start the game"
@@ -90,14 +89,12 @@ func _on_start_game_button_pressed():
 @rpc("authority", "call_local", "reliable")
 func start_network_game_for_all():
 	# This is called on all clients (including host) to start the game
-	print("Received start game signal from host")
 	emit_signal("start_network_game")
 
 func _on_back_button_pressed():
 	# Disconnect if connected
 	if NetworkManager.is_multiplayer_active():
 		NetworkManager.disconnect_from_game()
-	
 	emit_signal("lobby_closed")
 
 func _on_player_connected(peer_id: int):

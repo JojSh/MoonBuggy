@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://rqonbly2ymu8"]
+[gd_scene load_steps=12 format=3 uid="uid://rqonbly2ymu8"]
 
 [ext_resource type="Script" uid="uid://c7cdw8ju45xrr" path="res://scripts/rocket_projectile_outer.gd" id="1_yuh0u"]
 [ext_resource type="AudioStream" uid="uid://cbb13opsl0umt" path="res://sounds/ExplosionWIP2.ogg" id="2_ou5fa"]
@@ -9,6 +9,9 @@
 [ext_resource type="PackedScene" uid="uid://cav45f268cxd7" path="res://scenes/rocket_thruster.tscn" id="7_377wr"]
 [ext_resource type="Script" uid="uid://dw8fr3mxriuk1" path="res://scripts/RocketController.gd" id="8_3458r"]
 [ext_resource type="AudioStream" uid="uid://v52n3844nsfh" path="res://sounds/rocket_hiss.ogg" id="9_w21f2"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ncjk6"]
+points = PackedVector3Array(-1.73195, -0.793289, -0.487797, 1.66042, 1.93202, 0.035443, 1.66042, 1.93202, -0.0472523, 1.66042, -1.96152, -0.0472523, -1.67191, -0.203972, 0.940719, -1.6022, 0.252454, -0.962241, 1.41351, -0.35277, 0.932978, 1.43957, -0.280273, -0.954967, -3.51719, 0.0241183, 0.0335054, -1.58794, 0.61999, 0.77857, -1.66401, -0.875497, 0.40569, -1.59761, 0.934594, -0.347441, 1.43441, 0.325859, 0.94114, -1.58576, -0.498484, -0.862023, 1.46095, 0.252754, -0.963313, 1.41183, -1.96152, 0.118138, -1.59967, 0.937824, 0.336794, -1.59203, -0.503579, 0.859231, -1.59428, 0.475558, -0.874275, -1.66705, -0.95481, -0.118514, -1.59625, 0.325859, 0.94114, 1.41183, 1.93202, -0.0472523, -3.46085, -0.0531081, -0.0444358, 1.66042, -1.96152, 0.118138, -1.59754, -0.280273, -0.954967, -1.58868, 0.695476, -0.716644, 1.42649, 0.475558, -0.874275, 1.49435, -1.96152, -0.0472523, 1.39239, -0.498484, -0.862023, -1.58862, 0.770448, 0.629889, -1.6599, -0.795956, 0.551917, -3.49766, 0.0238178, -0.0450101)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_rocket"]
 properties/0/path = NodePath("RocketProjectileInner:global_position")
@@ -29,9 +32,6 @@ properties/4/replication_mode = 1
 properties/5/path = NodePath("RocketProjectileInner/RocketController:boost_level")
 properties/5/spawn = false
 properties/5/replication_mode = 1
-
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ncjk6"]
-points = PackedVector3Array(-1.73195, -0.793289, -0.487797, 1.66042, 1.93202, 0.035443, 1.66042, 1.93202, -0.0472523, 1.66042, -1.96152, -0.0472523, -1.67191, -0.203972, 0.940719, -1.6022, 0.252454, -0.962241, 1.41351, -0.35277, 0.932978, 1.43957, -0.280273, -0.954967, -3.51719, 0.0241183, 0.0335054, -1.58794, 0.61999, 0.77857, -1.66401, -0.875497, 0.40569, -1.59761, 0.934594, -0.347441, 1.43441, 0.325859, 0.94114, -1.58576, -0.498484, -0.862023, 1.46095, 0.252754, -0.963313, 1.41183, -1.96152, 0.118138, -1.59967, 0.937824, 0.336794, -1.59203, -0.503579, 0.859231, -1.59428, 0.475558, -0.874275, -1.66705, -0.95481, -0.118514, -1.59625, 0.325859, 0.94114, 1.41183, 1.93202, -0.0472523, -3.46085, -0.0531081, -0.0444358, 1.66042, -1.96152, 0.118138, -1.59754, -0.280273, -0.954967, -1.58868, 0.695476, -0.716644, 1.42649, 0.475558, -0.874275, 1.49435, -1.96152, -0.0472523, 1.39239, -0.498484, -0.862023, -1.58862, 0.770448, 0.629889, -1.6599, -0.795956, 0.551917, -3.49766, 0.0238178, -0.0450101)
 
 [node name="RocketProjectile" type="Node3D"]
 script = ExtResource("1_yuh0u")
@@ -66,10 +66,9 @@ stream = ExtResource("9_w21f2")
 autoplay = true
 max_distance = 800.0
 
-[connection signal="rocket_exploded" from="RocketProjectileInner" to="." method="_on_rocket_projectile_inner_rocket_exploded"]
-[connection signal="rocket_out_of_bounds" from="RocketProjectileInner" to="." method="_on_rocket_projectile_inner_rocket_out_of_bounds"]
-
 [node name="NetworkSync" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_rocket")
 
+[connection signal="rocket_exploded" from="RocketProjectileInner" to="." method="_on_rocket_projectile_inner_rocket_exploded"]
+[connection signal="rocket_out_of_bounds" from="RocketProjectileInner" to="." method="_on_rocket_projectile_inner_rocket_out_of_bounds"]
 [connection signal="synchronized" from="NetworkSync" to="RocketProjectileInner" method="_on_network_synchronized"]

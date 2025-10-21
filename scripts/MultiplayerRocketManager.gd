@@ -8,8 +8,6 @@ const RocketProjectile = preload("res://scenes/rocket_projectile.tscn")
 # Called by RocketLauncher when a player fires a rocket
 @rpc("any_peer", "call_local", "reliable")
 func spawn_multiplayer_rocket(launcher_transform: Transform3D, firing_peer_id: int, player_number: int, rocket_count: int, launch_power: float):
-	print("Spawning multiplayer rocket for player ", player_number, " (peer ", firing_peer_id, ")")
-	
 	# Instantiate the rocket
 	var rocket_projectile = RocketProjectile.instantiate()
 	
@@ -49,11 +47,15 @@ func spawn_multiplayer_rocket(launcher_transform: Transform3D, firing_peer_id: i
 	var mesh_initial_scale = projectile_mesh.scale
 	var collision_initial_scale = collision_shape.scale
 	var tween = create_tween()
-	# Scale the mesh to 3x its current scale
-	tween.tween_property(projectile_mesh, "scale", mesh_initial_scale * 3, 0.2)
-	# Scale the collision shape to 3x its current scale
+	if rocket_inner.is_multiplayer_authority():
+		# Scale the mesh to 3x its current scale
+		tween.tween_property(projectile_mesh, "scale", mesh_initial_scale * 3, 0.2)
+	else:
+		# Scale the mesh to 15x its current scale (seems to be necessary for the puppet's mesh)
+		tween.tween_property(projectile_mesh, "scale", mesh_initial_scale * 15, 0.05)
+	# Scale the collision shape to 2.5x  its current scale
 	tween.parallel().tween_property(collision_shape, "scale", collision_initial_scale * 2.5, 0.2)
-	
+
 	# Only the authority (firing player) should apply physics forces
 	if rocket_inner.is_multiplayer_authority():
 		# Apply launch force

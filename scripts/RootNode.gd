@@ -537,13 +537,9 @@ func start_network_game_session():
 	
 	# Unpause the game for network play
 	get_tree().paused = false
-	
-	print("Network game started with ", GameSettings.desired_number_players, " players")
 
 func setup_network_screens():
 	# In network mode, each client gets full screen with only their local player
-	print("Setting up network screens...")
-	
 	# Clean up split screen containers (not needed for network)
 	for split_screen in $PlayerScreenManager/SplitScreens.get_children():
 		split_screen.queue_free()
@@ -564,20 +560,15 @@ func setup_network_screens():
 		$PlayerScreenManager/PlayerContainer.remove_child(local_player)
 		$SinglePlayerCamera.add_child(local_player)
 		$SinglePlayerCamera.connect_crosshair_control_signals()
-		
-		print("Local player ", local_player.player_number, " set to full screen")
-	
+
 		# Setup puppet players (keep them alive but move to world)
 		var puppet_players = list_of_players.filter(func(p): return p != local_player)
 		for puppet_player in puppet_players:
 			# Remove from PlayerContainer and add to world as puppet
 			$PlayerScreenManager/PlayerContainer.remove_child(puppet_player)
 			$SinglePlayerCamera.add_child(puppet_player)  # Add puppets to same scene as local player
-			
-			print("Player ", puppet_player.player_number, " set as network puppet")
 		
 		# NOW setup network players - after network is established
-		print("Setting up network player identities...")
 		for player in list_of_players:
 			player.setup_network_player()
 		

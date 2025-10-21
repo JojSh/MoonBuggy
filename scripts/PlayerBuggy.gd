@@ -72,6 +72,7 @@ var is_on_corner_ramp := false  # Add this to track corner ramp contact
 # Network variables
 @export var is_local_player: bool = false
 @export var network_player_id: int = -1
+var input_player_number: int  # The player number to use for input (1 for network local player, player_number for offline)
 
 var _start_position: Vector3
 @onready var rocket_launcher = $RocketLauncher
@@ -92,6 +93,9 @@ signal hide_controls_help()
 func _ready ():
 	_start_position = global_transform.origin
 	global_position = spawn_point
+	
+	# Initialize input player number (will be updated in setup_network_player)
+	input_player_number = player_number
 	
 	current_boost_level = STARTING_BOOST_LEVEL
 	current_reload_level = STARTING_RELOAD_LEVEL
@@ -142,18 +146,19 @@ func _physics_process(delta: float):
 	if is_reorienting:
 		process_reorientation(delta)
 
-	if Input.is_action_just_pressed(str("p", player_number, "_flip")):
+	if Input.is_action_just_pressed(str("p", input_player_number, "_flip")):
 		# Player explicitly requested a flip
 		reorient_vehicle_over_time(0.25)
 
-	if (player_number == 1): #temporary until assigned for players 2-4
-		if Input.is_action_pressed(str("p", player_number, "_hold_to_aim")):
+	# Only handle targeting for the local player
+	if is_local_player or not NetworkManager.is_multiplayer_active():
+		if Input.is_action_pressed(str("p", input_player_number, "_hold_to_aim")):
 			if ($ChaseCamPivot/ChaseCam.current or $SideCam.current):
 				targeting_laser.show_laser()
 				update_targeting_laser()
 			else:
 				emit_signal("show_crosshair")
-		elif Input.is_action_just_released(str("p", player_number, "_hold_to_aim")):
+		elif Input.is_action_just_released(str("p", input_player_number, "_hold_to_aim")):
 			if ($ChaseCamPivot/ChaseCam.current or $SideCam.current):
 				targeting_laser.hide_laser()
 			else:
@@ -171,7 +176,8 @@ func _physics_process(delta: float):
 	handle_pitch_input()
 	handle_fire_input()
 	
-	if (player_number == 1 && Input.is_action_just_pressed("p1_debug_test_functionality_trigger")):
+	# Debug input handler - only for local player or player 1 in offline mode
+	if ((is_local_player or player_number == 1) && Input.is_action_just_pressed("p1_debug_test_functionality_trigger")):
 		pass
 		# Debug input handler - can be used for testing
 
@@ -391,7 +397,7 @@ func die ():
 		get_tree().create_timer(RESPAWN_TIME).timeout.connect(_respawn)
 
 func handle_return_to_start_position_input ():
-	if (Input.is_action_just_pressed(str("p", player_number, "_reset_to_start_pos")) and GameSettings.debug_mode_on):
+	if (Input.is_action_just_pressed(str("p", input_player_number, "_reset_to_start_pos")) and GameSettings.debug_mode_on):
 		reorientation_cooldown = 1.0
 		self.position = spawn_point
 		self.rotation = spawn_rotation
@@ -399,19 +405,21 @@ func handle_return_to_start_position_input ():
 		update_new_center_of_gravity_point(_initial_gravity_point)
 
 func handle_select_button_input():
-	if player_number == 1 and Input.is_action_just_pressed(str("p", player_number, "_select_button")):
+	# Only handle for local player or player 1 in offline mode
+	if (is_local_player or player_number == 1) and Input.is_action_just_pressed(str("p", input_player_number, "_select_button")):
 		emit_signal("show_controls_help")
-	elif player_number == 1 and Input.is_action_just_released(str("p", player_number, "_select_button")):
+	elif (is_local_player or player_number == 1) and Input.is_action_just_released(str("p", input_player_number, "_select_button")):
 		emit_signal("hide_controls_help")
 
 func handle_start_button_input():
-	if player_number == 1 and Input.is_action_just_pressed(str("p", player_number, "_start_button")):
+	# Only handle for local player or player 1 in offline mode
+	if (is_local_player or player_number == 1) and Input.is_action_just_pressed(str("p", input_player_number, "_start_button")):
 		var root_node = get_node("/root/RootNode")
 		if root_node:
 			root_node.toggle_pause_menu()
 
 func handle_cycle_through_cameras_input ():
-	if Input.is_action_just_pressed(str("p", player_number, "_toggle_camera")):
+	if Input.is_action_just_pressed(str("p", input_player_number, "_toggle_camera")):
 		var camera_configs = [
 			{"camera": $ChaseCamPivot/ChaseCam, "show_crosshair": false},
 			{"camera": $ChaseCamLocked, "show_crosshair": true},
@@ -437,18 +445,18 @@ func handle_cycle_through_cameras_input ():
 			emit_signal("hide_crosshair")
 
 func handle_boost_input (delta):
-	if Input.is_action_pressed(str("p", player_number, "_boost_jump")) and can_boost:
+	if Input.is_action_pressed(str("p", input_player_number, "_boost_jump")) and can_boost:
 		var current_max_boost_duration = current_boost_level / 2 # each 1 level = 0.5s extra boost duration
 		if boost_timer < current_max_boost_duration:
 			start_boost()
 			boost_timer += delta
 		elif boost_timer >= current_max_boost_duration:
 			stop_boost()
-	elif Input.is_action_just_released(str("p", player_number, "_boost_jump")):
+	elif Input.is_action_just_released(str("p", input_player_number, "_boost_jump")):
 		stop_boost()
 
 func handle_steering_input (delta):
-	_steer_target = Input.get_axis(str("p", player_number, "_turn_right"), str("p", player_number, "_turn_left"))
+	_steer_target = Input.get_axis(str("p", input_player_number, "_turn_right"), str("p", input_player_number, "_turn_left"))
 	_steer_target *= STEER_LIMIT
 	steering = move_toward(steering, _steer_target, STEER_SPEED * delta)
 
@@ -471,7 +479,7 @@ func handle_sudden_impact_feedback ():
 	previous_speed = linear_velocity.length()
 
 func handle_acceleration_input ():
-	if Input.is_action_pressed(str("p", player_number, "_accelerate")):
+	if Input.is_action_pressed(str("p", input_player_number, "_accelerate")):
 		var speed := linear_velocity.length()
 		# Special handling for low speeds to help overcome initial inertia
 		if speed < 5.0 and not is_zero_approx(speed):
@@ -486,7 +494,7 @@ func handle_acceleration_input ():
 		engine_force = 0.0
 
 func handle_reverse_input ():
-	if Input.is_action_pressed(str("p", player_number, "_reverse")):
+	if Input.is_action_pressed(str("p", input_player_number, "_reverse")):
 		var speed := linear_velocity.length()
 		# Special handling for low speeds (see handle_acceleration_input comments for more details)
 		if speed < 5.0 and not is_zero_approx(speed):
@@ -494,7 +502,7 @@ func handle_reverse_input ():
 		else:
 			engine_force = -engine_force_value * BRAKE_STRENGTH
 			# Apply analog brake factor for more subtle braking if not fully holding down the trigger.
-			engine_force *= Input.get_action_strength(str("p", player_number, "_reverse"))
+			engine_force *= Input.get_action_strength(str("p", input_player_number, "_reverse"))
 
 func are_all_wheels_grounded() -> bool:
 	return $Wheel1.is_in_contact() and $Wheel2.is_in_contact() and $Wheel3.is_in_contact() and $Wheel4.is_in_contact()
@@ -506,10 +514,10 @@ func handle_pitch_input():
 	
 	var pitch_torque_vector = Vector3.ZERO
 	
-	if Input.is_action_pressed(str("p", player_number, "_angle_up")):
+	if Input.is_action_pressed(str("p", input_player_number, "_angle_up")):
 		# Stronger torque for angling up
 		pitch_torque_vector = global_transform.basis.x * -1.0 * PITCH_TORQUE_UP
-	elif Input.is_action_pressed(str("p", player_number, "_angle_down")):
+	elif Input.is_action_pressed(str("p", input_player_number, "_angle_down")):
 		# Weaker torque for angling down
 		pitch_torque_vector = global_transform.basis.x * 1.0 * PITCH_TORQUE_DOWN
 	
@@ -517,7 +525,7 @@ func handle_pitch_input():
 		apply_torque(pitch_torque_vector)
 
 func handle_fire_input ():
-	if current_reload_level > 0 && Input.is_action_just_pressed(str("p", player_number, "_fire")):
+	if current_reload_level > 0 && Input.is_action_just_pressed(str("p", input_player_number, "_fire")):
 		rocket_launcher.fire_rocket()
 
 func auto_reorient_vehicle_if_stuck_too_long(delta):
@@ -956,7 +964,7 @@ func setup_network_player():
 	if not NetworkManager.is_multiplayer_active():
 		# Not in multiplayer mode, set as local player
 		is_local_player = true
-		print("Player ", player_number, " setup as LOCAL player (offline mode)")
+		input_player_number = player_number  # Use original player number for offline
 		return
 	
 	# In multiplayer mode - determine if this is the local player
@@ -966,13 +974,14 @@ func setup_network_player():
 		# This is the local player
 		is_local_player = true
 		network_player_id = local_player_data.peer_id
+		input_player_number = 1  # Local player in network uses p1 controls
 		
 		# Set multiplayer authority for synchronization
 		$NetworkSync.set_multiplayer_authority(network_player_id)
-		print("Player ", player_number, " setup as LOCAL player (ID: ", network_player_id, ")")
 	else:
 		# This is a remote player - make it a puppet
 		is_local_player = false
+		input_player_number = player_number  # Remote players don't process input anyway
 		
 		# Find the correct peer ID for this player number
 		var correct_peer_id = -1
@@ -984,7 +993,6 @@ func setup_network_player():
 		if correct_peer_id != -1:
 			# Set the correct multiplayer authority for this puppet
 			$NetworkSync.set_multiplayer_authority(correct_peer_id)
-			print("Player ", player_number, " setup as REMOTE player (authority: ", correct_peer_id, ")")
 		else:
 			print("ERROR: Could not find peer ID for player ", player_number)
 		
