@@ -17,6 +17,9 @@ func spawn_multiplayer_rocket(launcher_transform: Transform3D, firing_peer_id: i
 	rocket_projectile.set_multiplayer_authority(firing_peer_id)
 	
 	# Add custom network data to track ownership
+	# Use a unique network ID that will be the same across all clients
+	var network_id = str(firing_peer_id) + "_" + str(rocket_count)
+	rocket_inner.set_meta("network_rocket_id", network_id)
 	rocket_inner.set_meta("firing_player_number", player_number)
 	rocket_inner.set_meta("firing_peer_id", firing_peer_id)
 	
@@ -47,13 +50,18 @@ func spawn_multiplayer_rocket(launcher_transform: Transform3D, firing_peer_id: i
 	var mesh_initial_scale = projectile_mesh.scale
 	var collision_initial_scale = collision_shape.scale
 	var tween = create_tween()
-	if rocket_inner.is_multiplayer_authority():
-		# Scale the mesh to 3x its current scale
-		tween.tween_property(projectile_mesh, "scale", mesh_initial_scale * 3, 0.2)
-	else:
-		# Scale the mesh to 15x its current scale (seems to be necessary for the puppet's mesh)
-		tween.tween_property(projectile_mesh, "scale", mesh_initial_scale * 15, 0.05)
-	# Scale the collision shape to 2.5x  its current scale
+	
+	# we used to need this but don't seem to since stopping setting
+	# freeze = true on the puppet rockets
+	# Keep it here for now just as a reminder / in case we need to bring it back.
+
+	#if rocket_inner.is_multiplayer_authority():
+		## Scale the mesh to 3x its current scale
+		#tween.tween_property(projectile_mesh, "scale", mesh_initial_scale * 3, 0.2)
+	#else:
+		## Scale the mesh to 15x its current scale (seems to be necessary for the puppet's mesh)
+		#tween.tween_property(projectile_mesh, "scale", mesh_initial_scale * 15, 0.05)
+	## Scale the collision shape to 2.5x  its current scale
 	tween.parallel().tween_property(collision_shape, "scale", collision_initial_scale * 2.5, 0.2)
 
 	# Only the authority (firing player) should apply physics forces

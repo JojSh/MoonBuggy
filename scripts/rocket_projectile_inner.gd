@@ -32,6 +32,13 @@ func _process(delta):
 		if Engine.get_process_frames() % 10 == 0:
 			if is_out_of_bounds():
 				rocket_out_of_bounds.emit()
+				# Trigger explosion at current position before despawning
+				var current_position = global_position
+				if NetworkManager.is_multiplayer_active():
+					call_deferred("_trigger_explosion_safely", current_position)
+				else:
+					process_explosion(current_position)
+
 
 func _on_body_entered(body):
 	# Only process collisions on the authority client to prevent duplicate explosions
@@ -112,14 +119,12 @@ func is_out_of_bounds():
 	# maybe this should be read from the map?
 	#const MIN_Z = -550
 	#const MAX_Z = 250
-	#const MIN_X = -200
-	#const MAX_X = 200
+	const MIN_X = -200
+	const MAX_X = 200
 	#const MIN_Y = -150
 	#const MAX_Y = 150
-	const MIN_Z = -550
+	const MIN_Z = -250
 	const MAX_Z = 350
-	const MIN_X = -300
-	const MAX_X = 500
 	const MIN_Y = -300
 	const MAX_Y = 200
 
@@ -144,9 +149,9 @@ func setup_network_authority():
 	if NetworkManager.is_multiplayer_active():
 		is_network_authority = is_multiplayer_authority()
 		if not is_network_authority:
-			# Non-authority clients don't simulate physics
+			# Non-authority clients don't simulate physics, but can receive position updates
 			freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
-			freeze = true
+			# Don't set freeze=true - it blocks MultiplayerSynchronizer updates
 			gravity_scale = 0.0
 	else:
 		# Single player mode - this client has authority
