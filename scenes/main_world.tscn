@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cfp77dx8lxb0i"]
+[gd_scene load_steps=18 format=3 uid="uid://cfp77dx8lxb0i"]
 
 [ext_resource type="Script" uid="uid://c3dgyik2ldfvl" path="res://scripts/RootNode.gd" id="1_06hsa"]
 [ext_resource type="Script" uid="uid://c0ihxjbp18lne" path="res://scripts/GameOverScreen.gd" id="2_p4gfa"]
@@ -9,7 +9,7 @@
 [ext_resource type="Script" uid="uid://ck4smidxkds07" path="res://scripts/WorldMapManager.gd" id="7_682lk"]
 [ext_resource type="Script" uid="uid://dux3qhltupl0x" path="res://scripts/SpectatorManager.gd" id="8_0hjkl"]
 [ext_resource type="PackedScene" uid="uid://tp634kdqbfd" path="res://scenes/PlayerBuggy.tscn" id="8_jsgp5"]
-[ext_resource type="Script" path="res://scripts/MultiplayerRocketManager.gd" id="9_rocket_mgr"]
+[ext_resource type="Script" uid="uid://bd7fa425kj4ii" path="res://scripts/MultiplayerRocketManager.gd" id="9_rocket_mgr"]
 [ext_resource type="Material" uid="uid://cf4w258oi4pca" path="res://resources/car-green.tres" id="10_luqu7"]
 [ext_resource type="Material" uid="uid://c53pgeng2ewby" path="res://resources/car-gold.tres" id="10_stv4k"]
 [ext_resource type="PackedScene" uid="uid://cw0t325yducrj" path="res://scenes/controls_help_ui.tscn" id="11_controls"]

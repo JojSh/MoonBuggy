@@ -23,7 +23,7 @@ func fire_rocket():
 		var local_player_data = NetworkManager.get_local_player_data()
 		var firing_peer_id = local_player_data.peer_id if local_player_data else 1
 		
-		# Call the multiplayer rocket manager to spawn rocket on all clients
+		# Call RPC to spawn rocket on all clients
 		var rocket_manager = get_node("/root/RootNode/MultiplayerRocketManager")
 		rocket_manager.spawn_multiplayer_rocket.rpc(launcher_transform, firing_peer_id, player_number, rocket_count, launch_power)
 	else:
