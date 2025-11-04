@@ -249,17 +249,30 @@ func toggle_pause_menu():
 		show_pause_menu()
 
 func show_pause_menu():
-	get_tree().paused = true
+	# Only pause physics in offline mode
+	if not NetworkManager.is_multiplayer_active():
+		get_tree().paused = true
+	
 	$MenuContainer.visible = true
 	$MenuContainer/Control/PauseMenuScreen.visible = true
 	$MenuContainer/Control/PauseMenuScreen/PauseSound.play()
 	$MenuContainer/Control/PauseMenuScreen/VBoxContainer/ResumeButton.grab_focus()
+	
+	# Update pause menu title based on mode
+	var title_label = $MenuContainer/Control/PauseMenuScreen/VBoxContainer/EmptySpace
+	if NetworkManager.is_multiplayer_active():
+		title_label.text = "\n\n\n\n"
+	else:
+		title_label.text = "\n\nGAME PAUSED\n\n"
 
 func hide_pause_menu():
 	var unpause_sound = $MenuContainer/Control/PauseMenuScreen/UnpauseSound
 	unpause_sound.play()
 	
-	get_tree().paused = false
+	# Only unpause if we paused (offline mode)
+	if not NetworkManager.is_multiplayer_active():
+		get_tree().paused = false
+	
 	$MenuContainer.visible = false
 	$MenuContainer/Control/PauseMenuScreen.visible = false
 
