@@ -363,7 +363,7 @@ func get_current_player (player_number):
 
 func get_active_players ():
 	var active_players = list_of_players.filter(func(player):
-		return is_instance_valid(player) and not player.is_dead
+		return is_instance_valid(player) and not player.is_eliminated
 	)
 
 	return active_players
