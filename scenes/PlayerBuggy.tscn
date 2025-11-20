@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://tp634kdqbfd"]
+[gd_scene load_steps=29 format=3 uid="uid://tp634kdqbfd"]
 
 [ext_resource type="Script" uid="uid://drb3pv07dhnk2" path="res://scripts/PlayerBuggy.gd" id="1_1u0r3"]
 [ext_resource type="Material" uid="uid://sr36pdmgqpu5" path="res://resources/wheel.tres" id="2_1s618"]
@@ -75,8 +75,8 @@ collision_mask = 5
 mass = 70.0
 physics_material_override = SubResource("PhysicsMaterial_kudkn")
 center_of_mass_mode = 1
-max_contacts_reported = 4
 contact_monitor = true
+max_contacts_reported = 4
 engine_force = 1.0
 brake = 1.0
 steering = 0.0174533
@@ -252,7 +252,6 @@ shape = SubResource("BoxShape3D_s5yfx")
 [node name="EngineSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_xtkfv")
 volume_db = -20.0
-autoplay = true
 
 [node name="BoostSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_pk3u8")

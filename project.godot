@@ -26,10 +26,11 @@ NetworkManager="*res://scripts/NetworkManager.gd"
 
 [display]
 
-window/size/viewport_width=3840
-window/size/viewport_height=2160
-window/stretch/mode="viewport"
+window/size/viewport_width=1920
+window/size/viewport_height=1080
 window/stretch/aspect="expand"
+window/stretch/scale_mode="integer"
+window/vsync/vsync_mode=0
 
 [editor_plugins]
 

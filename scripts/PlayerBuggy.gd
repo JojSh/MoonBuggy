@@ -961,6 +961,9 @@ func switch_off_obstacle_course_mode ():
 	_update_boost_display()
 
 func setup_network_player():
+	# Start engine sound when game begins
+	$EngineSound.play()
+	
 	if not NetworkManager.is_multiplayer_active():
 		# Not in multiplayer mode, set as local player
 		is_local_player = true

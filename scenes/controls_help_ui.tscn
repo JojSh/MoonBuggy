@@ -20,6 +20,7 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_bottom = 87.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.32549)
@@ -51,172 +52,294 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Row1" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+[node name="Row0" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
 layout_mode = 2
 
-[node name="Move" type="Label" parent="VBoxContainer/ControlsContainer/Row1"]
+[node name="Gamepad" type="Label" parent="VBoxContainer/ControlsContainer/Row0"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
-text = "Move"
+text = "Gamepad"
 
-[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row1"]
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row0"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="Action" type="Label" parent="VBoxContainer/ControlsContainer/Row0"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Action"
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/ControlsContainer/Row0"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LeftStick2" type="Label" parent="VBoxContainer/ControlsContainer/Row0"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Keyboard"
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/ControlsContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Row1" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
 
 [node name="LeftStick" type="Label" parent="VBoxContainer/ControlsContainer/Row1"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "Left Stick"
 
-[node name="Row2" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
-layout_mode = 2
-
-[node name="Accelerate" type="Label" parent="VBoxContainer/ControlsContainer/Row2"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 36
-text = "Accelerate"
-
-[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row2"]
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row1"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.66
+
+[node name="Steer" type="Label" parent="VBoxContainer/ControlsContainer/Row1"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Steer"
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/ControlsContainer/Row1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="WASD" type="Label" parent="VBoxContainer/ControlsContainer/Row1"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "WASD"
+
+[node name="Row2" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
 
 [node name="A" type="Label" parent="VBoxContainer/ControlsContainer/Row2"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "A"
 
-[node name="Row3" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
-layout_mode = 2
-
-[node name="Reverse" type="Label" parent="VBoxContainer/ControlsContainer/Row3"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 36
-text = "Reverse"
-
-[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row3"]
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row2"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="Accelerate" type="Label" parent="VBoxContainer/ControlsContainer/Row2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Accelerate"
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/ControlsContainer/Row2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="W" type="Label" parent="VBoxContainer/ControlsContainer/Row2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "W"
+
+[node name="Row3" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
 
 [node name="B" type="Label" parent="VBoxContainer/ControlsContainer/Row3"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "B"
 
-[node name="Row4" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
-layout_mode = 2
-
-[node name="JumpBoost" type="Label" parent="VBoxContainer/ControlsContainer/Row4"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 36
-text = "Boost Jump"
-
-[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row4"]
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row3"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="Reverse" type="Label" parent="VBoxContainer/ControlsContainer/Row3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Reverse"
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/ControlsContainer/Row3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="S" type="Label" parent="VBoxContainer/ControlsContainer/Row3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "S"
+
+[node name="Row4" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
 
 [node name="X" type="Label" parent="VBoxContainer/ControlsContainer/Row4"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "X"
 
-[node name="Row5" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
-layout_mode = 2
-
-[node name="ToggleCamera" type="Label" parent="VBoxContainer/ControlsContainer/Row5"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 36
-text = "Toggle Camera"
-
-[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row5"]
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row4"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="JumpBoost" type="Label" parent="VBoxContainer/ControlsContainer/Row4"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Boost Jump"
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/ControlsContainer/Row4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="G" type="Label" parent="VBoxContainer/ControlsContainer/Row4"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "G"
+
+[node name="Row5" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
 
 [node name="Y" type="Label" parent="VBoxContainer/ControlsContainer/Row5"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "Y"
 
-[node name="Row6" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
-layout_mode = 2
-
-[node name="RealignVehicle" type="Label" parent="VBoxContainer/ControlsContainer/Row6"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 36
-text = "Realign Vehicle"
-
-[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row6"]
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row5"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="ToggleCamera" type="Label" parent="VBoxContainer/ControlsContainer/Row5"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Toggle Camera"
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/ControlsContainer/Row5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Q" type="Label" parent="VBoxContainer/ControlsContainer/Row5"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Q"
+
+[node name="Row6" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
 
 [node name="LB" type="Label" parent="VBoxContainer/ControlsContainer/Row6"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "LB"
 
-[node name="Row7" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
-layout_mode = 2
-
-[node name="FireRocket" type="Label" parent="VBoxContainer/ControlsContainer/Row7"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 36
-text = "Fire Rocket"
-
-[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row7"]
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row6"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="RealignVehicle" type="Label" parent="VBoxContainer/ControlsContainer/Row6"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Realign Vehicle"
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/ControlsContainer/Row6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="E" type="Label" parent="VBoxContainer/ControlsContainer/Row6"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "E"
+
+[node name="Row7" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
 
 [node name="RT" type="Label" parent="VBoxContainer/ControlsContainer/Row7"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "RT"
 
-[node name="Row8" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
-layout_mode = 2
-
-[node name="AimRocket" type="Label" parent="VBoxContainer/ControlsContainer/Row8"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 36
-text = "Aim Rocket"
-
-[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row8"]
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row7"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="FireRocket" type="Label" parent="VBoxContainer/ControlsContainer/Row7"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Fire Rocket"
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/ControlsContainer/Row7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="F" type="Label" parent="VBoxContainer/ControlsContainer/Row7"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "F"
+
+[node name="Row8" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
 
 [node name="RT" type="Label" parent="VBoxContainer/ControlsContainer/Row8"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "LT"
 
-[node name="Row9" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
-layout_mode = 2
-
-[node name="ShowControls" type="Label" parent="VBoxContainer/ControlsContainer/Row9"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 36
-text = "Angle Up/Down"
-
-[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row9"]
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row8"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="AimRocket" type="Label" parent="VBoxContainer/ControlsContainer/Row8"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Show Reticle"
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/ControlsContainer/Row8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="C" type="Label" parent="VBoxContainer/ControlsContainer/Row8"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "C"
+
+[node name="Row9" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
+layout_mode = 2
 
 [node name="Right Stick" type="Label" parent="VBoxContainer/ControlsContainer/Row9"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "Right Stick"
 
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row9"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.25
+
+[node name="AimUpDown" type="Label" parent="VBoxContainer/ControlsContainer/Row9"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Aim Up/Down"
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/ControlsContainer/Row9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Z _ X" type="Label" parent="VBoxContainer/ControlsContainer/Row9"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Z / X"
+
 [node name="Row10" type="HBoxContainer" parent="VBoxContainer/ControlsContainer"]
 layout_mode = 2
+
+[node name="Start" type="Label" parent="VBoxContainer/ControlsContainer/Row10"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Start"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row10"]
+layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="ShowControls" type="Label" parent="VBoxContainer/ControlsContainer/Row10"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "Show Controls"
 
-[node name="Spacer" type="Control" parent="VBoxContainer/ControlsContainer/Row10"]
+[node name="Spacer2" type="Control" parent="VBoxContainer/ControlsContainer/Row10"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Start" type="Label" parent="VBoxContainer/ControlsContainer/Row10"]
+[node name="Tab" type="Label" parent="VBoxContainer/ControlsContainer/Row10"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
-text = "Start"
+text = "Tab"

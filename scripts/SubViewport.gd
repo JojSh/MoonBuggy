@@ -22,7 +22,7 @@ func show_crosshair ():
 
 func show_realignment_prompt():
 	# Always show "Press LB to realign" regardless of player
-	$UI/RealignmentPrompt/Label.text = "Press [LB] to realign"
+	$UI/RealignmentPrompt/Label.text = "[LB] or [E] to realign"
 	$UI/RealignmentPrompt.visible = true
 
 func hide_realignment_prompt():

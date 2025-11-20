@@ -261,9 +261,7 @@ func show_pause_menu():
 	# Update pause menu title based on mode
 	var title_label = $MenuContainer/Control/PauseMenuScreen/VBoxContainer/EmptySpace
 	if NetworkManager.is_multiplayer_active():
-		title_label.text = "\n\n\n\n"
-	else:
-		title_label.text = "\n\nGAME PAUSED\n\n"
+		title_label.text = ""
 
 func hide_pause_menu():
 	var unpause_sound = $MenuContainer/Control/PauseMenuScreen/UnpauseSound

@@ -34,7 +34,7 @@ func update_visual():
 		
 		# Show in editor or when debug mode is enabled
 		var should_show = Engine.is_editor_hint() or (GameSettings and GameSettings.debug_mode_on)
-		debug_mesh.visible = should_show
+		debug_mesh.visible = should_show # comment in/out to show / hide in debug mode and editor
 
 func update_debug_visibility():
 	if not Engine.is_editor_hint() and debug_mesh:
@@ -44,3 +44,5 @@ func _on_body_entered(body):
 	if body is VehicleBody3D:
 		body.die()
 		body.get_node("ImpactSound").play()
+	elif body.has_method("rocket_auto_destroy"):
+		body.rocket_auto_destroy()

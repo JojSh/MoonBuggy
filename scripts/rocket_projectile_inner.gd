@@ -31,14 +31,16 @@ func _process(delta):
 		# Check bounds every 10 frames to improve performance
 		if Engine.get_process_frames() % 10 == 0:
 			if is_out_of_bounds():
-				rocket_out_of_bounds.emit()
-				# Trigger explosion at current position before despawning
-				var current_position = global_position
-				if NetworkManager.is_multiplayer_active():
-					call_deferred("_trigger_explosion_safely", current_position)
-				else:
-					process_explosion(current_position)
+				rocket_auto_destroy()
 
+func rocket_auto_destroy ():
+	rocket_out_of_bounds.emit()
+	# Trigger explosion at current position before despawning
+	var current_position = global_position
+	if NetworkManager.is_multiplayer_active():
+		call_deferred("_trigger_explosion_safely", current_position)
+	else:
+		process_explosion(current_position)
 
 func _on_body_entered(body):
 	# Only process collisions on the authority client to prevent duplicate explosions
@@ -117,16 +119,19 @@ func _create_debug_sphere (position: Vector3, radius: float, duration: float = 1
 
 func is_out_of_bounds():
 	# maybe this should be read from the map?
-	#const MIN_Z = -550
-	#const MAX_Z = 250
-	const MIN_X = -200
-	const MAX_X = 200
-	#const MIN_Y = -150
-	#const MAX_Y = 150
-	const MIN_Z = -250
-	const MAX_Z = 350
-	const MIN_Y = -300
-	const MAX_Y = 200
+	#const MIN_X = -200
+	#const MAX_X = 200
+	#const MIN_Z = -250
+	#const MAX_Z = 350
+	#const MIN_Y = -300
+	#const MAX_Y = 200
+
+	const MIN_X = -1000
+	const MAX_X = 1000
+	const MIN_Z = -1000
+	const MAX_Z = 1000
+	const MIN_Y = -1000
+	const MAX_Y = 1000
 
 	return (
 		global_position.z < MIN_Z or global_position.z > MAX_Z or

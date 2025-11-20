@@ -1,9 +1,8 @@
-[gd_scene load_steps=43 format=3 uid="uid://db74hm1deeydx"]
+[gd_scene load_steps=41 format=3 uid="uid://db74hm1deeydx"]
 
 [ext_resource type="Environment" uid="uid://c5eh8m3f8t03j" path="res://resources/bright_sky.tres" id="1_ex67k"]
 [ext_resource type="Material" uid="uid://b0v5v2mk6c10l" path="res://resources/glowy_blue.tres" id="2_enhkb"]
 [ext_resource type="Script" uid="uid://cimstpw6ksrgj" path="res://scripts/GravityAreaParentLevel.gd" id="3_j27uo"]
-[ext_resource type="Texture2D" uid="uid://0snyqnypvtk6" path="res://textures/icon.svg" id="4_2hse1"]
 [ext_resource type="Script" uid="uid://df40lhbi7awkh" path="res://scripts/GravityArea3D.gd" id="5_5wf1g"]
 [ext_resource type="Material" uid="uid://coug284mb8bhx" path="res://resources/glowy_red.tres" id="6_4lixc"]
 [ext_resource type="Material" uid="uid://cme2hqx1ya8pj" path="res://resources/glowy_yellow.tres" id="7_5lfy5"]
@@ -34,10 +33,6 @@ points = PackedVector3Array(-40, -0.1, -15, -40, 0.1, -15, 40, -0.1, -15, -40, -
 
 [sub_resource type="BoxMesh" id="BoxMesh_sj3sa"]
 size = Vector3(80, 0.2, 400)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a1vpj"]
-albedo_texture = ExtResource("4_2hse1")
-uv1_scale = Vector3(80, 400, 1)
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_32rrp"]
 data = PackedVector3Array(-40, 0.1, 200, 40, 0.1, 200, -40, -0.1, 200, 40, 0.1, 200, 40, -0.1, 200, -40, -0.1, 200, 40, 0.1, -200, -40, 0.1, -200, 40, -0.1, -200, -40, 0.1, -200, -40, -0.1, -200, 40, -0.1, -200, 40, 0.1, 200, 40, 0.1, -200, 40, -0.1, 200, 40, 0.1, -200, 40, -0.1, -200, 40, -0.1, 200, -40, 0.1, -200, -40, 0.1, 200, -40, -0.1, -200, -40, 0.1, 200, -40, -0.1, 200, -40, -0.1, -200, 40, 0.1, 200, -40, 0.1, 200, 40, 0.1, -200, -40, 0.1, 200, -40, 0.1, -200, 40, 0.1, -200, -40, -0.1, 200, 40, -0.1, 200, -40, -0.1, -200, 40, -0.1, 200, 40, -0.1, -200, -40, -0.1, -200)
@@ -105,7 +100,7 @@ script = ExtResource("3_j27uo")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelFlatSlope"]
 mesh = SubResource("BoxMesh_sj3sa")
 skeleton = NodePath("../../../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_a1vpj")
+surface_material_override/0 = ExtResource("2_enhkb")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelFlatSlope"]
 transform = Transform3D(1, -4.82327e-16, 8.22013e-16, 1.70906e-15, 1, 3.46177e-08, -3.61898e-15, -3.26314e-08, 1, 0, 0, 0)
@@ -624,8 +619,31 @@ size = Vector3(300, 10, 400)
 transform = Transform3D(1, -2.70327e-16, 3.39847e-16, 3.39847e-16, 0.97437, -0.224951, -2.70327e-16, 0.224951, 0.97437, -94.568, -148.579, 141.638)
 size = Vector3(300, 10, 700)
 
-[node name="Marker3D" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -252.231, 379.317)
+[node name="Killzones" type="Node3D" parent="."]
+
+[node name="KillZone" parent="Killzones" instance=ExtResource("15_uoats")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -208.88303, 0)
+size = Vector3(1000, 30, 1400)
+
+[node name="KillZone2" parent="Killzones" instance=ExtResource("15_uoats")]
+transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, 0, 140, 0)
+size = Vector3(1000, 30, 1400)
+
+[node name="KillZone3" parent="Killzones" instance=ExtResource("15_uoats")]
+transform = Transform3D(-1, 8.742278e-08, 0, 3.6614926e-11, 0.00041882592, -0.99999994, -8.742277e-08, -0.99999994, -0.00041882592, 0, 0, 538.11743)
+size = Vector3(1000, 30, 1000)
+
+[node name="KillZone4" parent="Killzones" instance=ExtResource("15_uoats")]
+transform = Transform3D(-1, -8.742278e-08, 0, -3.821371e-15, 4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, 0, -624.1224)
+size = Vector3(1000, 30, 1000)
+
+[node name="KillZone5" parent="Killzones" instance=ExtResource("15_uoats")]
+transform = Transform3D(0.00047119058, 0.9999999, -4.3711385e-08, -3.821371e-15, 4.371139e-08, 1, 0.9999999, -0.00047119058, 2.0600216e-11, -253.05603, 0, -42.158188)
+size = Vector3(1200, 30, 1000)
+
+[node name="KillZone6" parent="Killzones" instance=ExtResource("15_uoats")]
+transform = Transform3D(-4.371139e-08, -1, -4.371139e-08, 0, -4.371139e-08, 1, -1, 4.371139e-08, 1.9106855e-15, 92.56152, 0, -42.158188)
+size = Vector3(1200, 30, 1000)
 
 [connection signal="body_entered" from="LevelFlatSlope/GravityArea3D" to="LevelFlatSlope" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="LevelSRoad-IncGravArea/GravityArea3D" to="LevelSRoad-IncGravArea" method="_on_area_3d_body_entered"]
