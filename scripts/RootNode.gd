@@ -147,7 +147,10 @@ func register_active_players():
 		if index < GameSettings.desired_number_players:
 			list_of_players.append(player)
 		else:
-			player.queue_free()
+			if NetworkManager.is_multiplayer_active():
+				list_of_players.append(player)
+			else:
+				player.queue_free()
 		index += 1
 
 func _on_portal_entrance_area_3d_body_entered(body, portal_number: int):
@@ -559,39 +562,47 @@ func setup_network_screens():
 	var local_player_data = NetworkManager.get_local_player_data()
 	var local_player_number = local_player_data.player_number if local_player_data else 1
 	
-	# Find and setup the local player
+	await get_tree().create_timer(0.3).timeout
+	
+	for player in list_of_players:
+		player.setup_network_player()
+	
+	# Find local player and enable their camera
 	var local_player
 	for player in list_of_players:
 		if player.player_number == local_player_number:
 			local_player = player
-			break
+			player.get_node("ChaseCamPivot/ChaseCam").current = true
+			player.visible = true
+		else:
+			# Disable cameras for remote players
+			player.get_node("ChaseCamPivot/ChaseCam").current = false
+			player.get_node("SideCam").current = false
+			player.get_node("FirstPersonCam").current = false
+			player.get_node("ThirdPersonCam").current = false
+			player.get_node("ChaseCamLocked").current = false
+			
+			# Hide players that don't have a connected peer yet
+			var has_player = false
+			for peer_data in NetworkManager.connected_players.values():
+				if peer_data.player_number == player.player_number:
+					has_player = true
+					break
+			player.visible = has_player
+			# Disable physics and collision for unpopulated players
+			if not has_player:
+				player.set_physics_process(false)
+				player.collision_layer = 0
+				player.collision_mask = 0
 	
-	if local_player:
-		# Setup local player with full screen
-		$PlayerScreenManager/PlayerContainer.remove_child(local_player)
-		$SinglePlayerCamera.add_child(local_player)
-		$SinglePlayerCamera.connect_crosshair_control_signals()
-
-		# Setup puppet players (keep them alive but move to world)
-		var puppet_players = list_of_players.filter(func(p): return p != local_player)
-		for puppet_player in puppet_players:
-			# Remove from PlayerContainer and add to world as puppet
-			$PlayerScreenManager/PlayerContainer.remove_child(puppet_player)
-			$SinglePlayerCamera.add_child(puppet_player)  # Add puppets to same scene as local player
+	if not local_player:
+		return
 		
-		# NOW setup network players - after network is established
-		for player in list_of_players:
-			player.setup_network_player()
-		
-		# Keep all players in list (local + puppets)
-		# list_of_players stays the same - don't remove puppets
-	else:
-		print("ERROR: Could not find local player with number ", local_player_number)
-		
-	print("Network screen setup complete")
+	if local_player and $SinglePlayerCamera:
+		local_player.connect("hide_crosshair", $SinglePlayerCamera.hide_crosshair)
+		local_player.connect("show_crosshair", $SinglePlayerCamera.show_crosshair)
 
 func _on_network_player_joined(peer_id: int):
-	# A new player joined during gameplay - spawn a puppet for them
 	if not NetworkManager.is_multiplayer_active():
 		return
 	
@@ -599,8 +610,18 @@ func _on_network_player_joined(peer_id: int):
 	var player_number = player_data.get("player_number", -1)
 	
 	if player_number > 0:
-		print("Spawning puppet for new player ", player_number, " (peer: ", peer_id, ")")
-		# TODO: Spawn puppet player here when needed
+		for player in list_of_players:
+			if player.player_number == player_number:
+				var network_sync = player.get_node_or_null("NetworkSync")
+				if network_sync:
+					network_sync.set_multiplayer_authority(peer_id)
+					player.setup_network_player()
+					player.visible = true  # Show the player when they join
+					# Re-enable physics and collision when player joins
+					player.set_physics_process(true)
+					player.collision_layer = 1
+					player.collision_mask = 1
+				break
 
 func _on_network_player_left(peer_id: int):
 	# A player left during gameplay - remove their puppet

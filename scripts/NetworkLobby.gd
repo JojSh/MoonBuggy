@@ -9,6 +9,8 @@ extends Control
 @onready var start_game_button = $VBoxContainer/StartGameButton
 @onready var back_button = $VBoxContainer/BackButton
 
+var room_code_label: Label  # Displayed when hosting in WebRTC mode
+
 signal lobby_closed
 signal start_local_game
 signal start_network_game
@@ -38,13 +40,36 @@ func _ready():
 	if not back_button.pressed.is_connected(_on_back_button_pressed):
 		back_button.pressed.connect(_on_back_button_pressed)
 	
-	# Setup UI
+	# Setup UI based on network mode
+	_configure_ui_for_network_mode()
 	host_button.grab_focus()
 	update_ui()
 
+func _configure_ui_for_network_mode():
+	if NetworkManager.is_webrtc_mode():
+		# Web mode via relay server
+		ip_input.text = ""
+		ip_input.placeholder_text = "Leave empty to use default relay"
+		status_label.text = "Web Mode - Connect to game"
+		host_button.disabled = true
+		start_game_button.disabled = true
+		join_button.text = "Connect to Game"
+		start_game_button.text = "Play!"
+	else:
+		# ENet mode: Standard IP connection
+		ip_input.placeholder_text = "Enter IP Address"
+		status_label.text = "Ready to host or join game"
+		host_button.disabled = false
+		join_button.text = "Join Game"
+		start_game_button.text = "Start Game"
+
 func _on_host_button_pressed():
-	status_label.text = "Starting server..."
-	
+	if NetworkManager.is_webrtc_mode():
+		status_label.text = "Hosting is not available in Web mode. Use Join to connect to relay."
+		return
+	else:
+		status_label.text = "Starting server..."
+
 	if NetworkManager.host_game():
 		status_label.text = "Hosting game on port " + str(NetworkManager.DEFAULT_PORT)
 		host_button.disabled = true
@@ -52,28 +77,36 @@ func _on_host_button_pressed():
 		local_mode_button.disabled = true
 		start_game_button.disabled = false
 		start_game_button.grab_focus()
-		
 		# Add host to players list
 		add_player_to_list(1, "Host (You)")
 	else:
 		status_label.text = "Failed to start server!"
 
 func _on_join_button_pressed():
-	var ip = ip_input.text.strip_edges()
+	var address = ip_input.text.strip_edges()
 	
-	if ip.is_empty():
+	if address.is_empty() and not NetworkManager.is_webrtc_mode():
 		status_label.text = "Please enter server IP address"
 		return
 	
-	status_label.text = "Connecting to " + ip + "..."
+	if NetworkManager.is_webrtc_mode():
+		if address.is_empty():
+			status_label.text = "Connecting to default relay..."
+		else:
+			status_label.text = "Connecting to relay " + address + "..."
+	else:
+		status_label.text = "Connecting to " + address + "..."
 	
-	if NetworkManager.join_game(ip):
+	if NetworkManager.join_game(address):
 		host_button.disabled = true
 		join_button.disabled = true
 		local_mode_button.disabled = true
 	else:
 		print("join_game returned false - connection failed")  # Debug
-		status_label.text = "Failed to connect!"
+		if NetworkManager.is_webrtc_mode():
+			status_label.text = "Failed to connect to relay!"
+		else:
+			status_label.text = "Failed to connect!"
 
 func _on_local_mode_button_pressed():
 	# Skip networking, go directly to local multiplayer
@@ -81,14 +114,15 @@ func _on_local_mode_button_pressed():
 
 func _on_start_game_button_pressed():
 	if NetworkManager.is_server():
-		# Host starts the game for everyone
-		start_network_game_for_all.rpc()  # This will call the RPC on all clients INCLUDING host
+		start_network_game_for_all.rpc()
+	elif NetworkManager.is_webrtc_mode():
+		# In WebRTC mode, just start locally - no RPC coordination needed
+		emit_signal("start_network_game")
 	else:
 		status_label.text = "Only the host can start the game"
 
-@rpc("authority", "call_local", "reliable")
+@rpc("any_peer", "call_local", "reliable")
 func start_network_game_for_all():
-	# This is called on all clients (including host) to start the game
 	emit_signal("start_network_game")
 
 func _on_back_button_pressed():
@@ -109,12 +143,46 @@ func _on_player_disconnected(peer_id: int):
 	status_label.text = "Player " + str(peer_id) + " left the game"
 
 func _on_connection_succeeded():
-	status_label.text = "Connected to server!"
+	status_label.text = "Connected! Click Play when ready."
 	
 	# Add local player to list
 	var local_data = NetworkManager.get_local_player_data()
 	if local_data:
 		add_player_to_list(local_data.peer_id, local_data.name + " (You)")
+	
+	# Set NetworkSync authority immediately to prevent sync errors during lobby
+	_set_initial_network_authority()
+	
+	# Update UI to enable start button
+	update_ui()
+
+func _set_initial_network_authority():
+	var root = get_tree().root.get_node("RootNode")
+	if not root:
+		return
+
+	var player_container = root.get_node_or_null("PlayerScreenManager/PlayerContainer")
+	if not player_container:
+		return
+
+	var local_player_data = NetworkManager.get_local_player_data()
+	if not local_player_data:
+		return
+
+	for child in player_container.get_children():
+		_assign_initial_network_authority(child, local_player_data)
+
+func _assign_initial_network_authority(player, local_player_data):
+	var my_player_number = local_player_data.player_number
+	var network_sync_node = player.get_node_or_null("NetworkSync")
+	if player.name.begins_with("PlayerBuggy") and network_sync_node:
+		if player.player_number == my_player_number: # it's a local player
+			network_sync_node.set_multiplayer_authority(local_player_data.peer_id)
+		else: # remote player's puppet
+			for peer_data in NetworkManager.connected_players.values():
+				if peer_data.player_number == player.player_number:
+					network_sync_node.set_multiplayer_authority(peer_data.peer_id)
+					break
 
 func _on_connection_failed():
 	status_label.text = "Failed to connect to server!"
@@ -155,8 +223,15 @@ func update_ui():
 			status_label.text = "Hosting - Waiting for players"
 			start_game_button.disabled = false
 		else:
-			status_label.text = "Connected - Waiting for host to start"
-			start_game_button.disabled = true
+			if NetworkManager.is_webrtc_mode():
+				status_label.text = "Connected - Click Play when ready"
+				start_game_button.disabled = false
+			else:
+				status_label.text = "Connected - Waiting for host to start"
+				start_game_button.disabled = true
 	else:
-		status_label.text = "Ready to connect..."
+		if NetworkManager.is_webrtc_mode():
+			status_label.text = "Web Mode - Connect to relay"
+		else:
+			status_label.text = "Ready to connect..."
 		start_game_button.disabled = true

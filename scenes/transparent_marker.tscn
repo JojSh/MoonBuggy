@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://bn0rrx1287fyd"]
+
+[ext_resource type="ArrayMesh" uid="uid://nvtl8ha1n0co" path="res://meshes/curvycube.obj" id="1_4g6bs"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mc3ud"]
+transparency = 1
+blend_mode = 1
+
+[node name="TransparentMarker" type="MeshInstance3D"]
+mesh = ExtResource("1_4g6bs")
+surface_material_override/0 = SubResource("StandardMaterial3D_mc3ud")

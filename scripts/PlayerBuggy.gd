@@ -964,29 +964,23 @@ func setup_network_player():
 	# Start engine sound when game begins
 	$EngineSound.play()
 	
+	
 	if not NetworkManager.is_multiplayer_active():
-		# Not in multiplayer mode, set as local player
 		is_local_player = true
-		input_player_number = player_number  # Use original player number for offline
+		input_player_number = player_number
 		return
 	
-	# In multiplayer mode - determine if this is the local player
 	var local_player_data = NetworkManager.get_local_player_data()
 	
 	if local_player_data and local_player_data.has("player_number") and local_player_data.player_number == player_number:
-		# This is the local player
 		is_local_player = true
 		network_player_id = local_player_data.peer_id
-		input_player_number = 1  # Local player in network uses p1 controls
-		
-		# Set multiplayer authority for synchronization
+		input_player_number = 1
 		$NetworkSync.set_multiplayer_authority(network_player_id)
 	else:
-		# This is a remote player - make it a puppet
 		is_local_player = false
-		input_player_number = player_number  # Remote players don't process input anyway
+		input_player_number = player_number
 		
-		# Find the correct peer ID for this player number
 		var correct_peer_id = -1
 		for peer_data in NetworkManager.connected_players.values():
 			if peer_data.player_number == player_number:
@@ -994,18 +988,9 @@ func setup_network_player():
 				break
 		
 		if correct_peer_id != -1:
-			# Set the correct multiplayer authority for this puppet
 			$NetworkSync.set_multiplayer_authority(correct_peer_id)
-		else:
-			print("ERROR: Could not find peer ID for player ", player_number)
 		
-		# Disable input processing for remote players
 		set_physics_process(false)
 		set_process_input(false)
 		
-		# Disable cameras for remote players
-		$ChaseCamPivot/ChaseCam.current = false
-		$SideCam.current = false
-		$FirstPersonCam.current = false
-		$ThirdPersonCam.current = false
-		$ChaseCamLocked.current = false
+		# Camera management is handled by RootNode.setup_network_screens()

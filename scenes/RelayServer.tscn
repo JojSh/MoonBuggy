@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://d386d3r66kgjf"]
+
+[ext_resource type="Script" uid="uid://cjbgyoeow5oay" path="res://scripts/RelayServer.gd" id="1_gb51u"]
+
+[node name="Node" type="Node"]
+script = ExtResource("1_gb51u")
