@@ -284,83 +284,72 @@ func setup_network_screens():
 
 ---
 
-## Current State (as of 2025-12-02)
+## Current State (as of 2025-12-05)
 
-### ✅ WORKING - Position Sync Fixed!
+### ✅ WORKING
 1. **Players can see each other moving** ✅
 2. **Rockets/explosions sync** ✅
 3. **Late joiners work** ✅
 4. **Authority properly assigned** ✅
 5. **Unique player numbers** ✅
+6. **Unpopulated player buggies hidden** ✅
+7. **No collision with invisible cars** ✅
 
 ### ❌ Known Issues
 1. **Late joiner auto-start** - Player 2 must manually click "Start" (minor UX issue)
 2. **Particle warnings** - WebGL compatibility renderer doesn't support sub-emitters (cosmetic)
 
 ## Key Solutions Applied
-1. **0.2s delay before player number assignment** - prevents race condition
-2. **Keep all PlayerBuggy nodes in multiplayer** - allows late joiners
-3. **No player reparenting** - preserves MultiplayerSynchronizer paths
+1. **0.2s delay before player number assignment** (`NetworkManager._on_connected_to_server()` line 166) - prevents race condition
+2. **Keep all PlayerBuggy nodes in multiplayer** (`RootNode.register_active_players()` line 150-153) - allows late joiners
+3. **No player reparenting** (`RootNode.setup_network_screens()` lines 555-604) - preserves MultiplayerSynchronizer paths
 4. **Early authority setting** - NetworkSync authority set in lobby
-5. **Late-joiner authority setup** - authority set when players join mid-game
+5. **Late-joiner authority setup** (`RootNode._on_network_player_joined()` line 618-631) - authority + physics enabled when players join
+6. **Unpopulated players disabled** - visibility=false, physics disabled, collision disabled (lines 591-603)
 
----
-
-## Current Investigation
-
-### Next Steps
-1. **Re-export and test** the no-reparenting fix
-2. **Check console for**:
-   - Does `Node not found: NetworkSync` error still appear?
-   - Do players see each other moving?
-   - Any new errors?
-3. **If position sync works**: Investigate late-joiner auto-start separately
-4. **If position sync fails**: Alternative approaches needed (MultiplayerSpawner, RemoteTransform, etc.)
-
-### Debug Steps Needed
-1. **Player 2 Console Check**: Verify late-joiner detection logs appear
-2. **Both Consoles**: Confirm `[NetworkManager] _announce_player called` messages
-3. **Verify Scene Tree**: Check if PlayerBuggy nodes exist on both clients
-4. **Authority Verification**: Confirm `$NetworkSync.get_multiplayer_authority()` returns correct peer ID
+### Issue 11: Unpopulated Player Buggies Visible (2025-12-05)
+**Problem**: All 4 player cars visible in network game even when only 1-2 players connected
+**Fix 1**: Set `player.visible = false` for unpopulated players in `setup_network_screens()` (line 591)
+**Fix 2**: Disable physics and collision for invisible players:
+- `player.set_physics_process(false)`
+- `player.collision_layer = 0`
+- `player.collision_mask = 0`
+**Re-enable**: When player joins, `_on_network_player_joined()` restores visibility + physics + collision
+**Result**: Can't crash into invisible cars ✅
 
 ---
 
 ## Code References
 
-### NetworkManager Key Functions
+### RootNode Network Setup
 ```gdscript
-// NetworkManager.gd line 62-95
-func join_game(address, port):
-    if current_network_mode == ENET:
-        return _join_game_enet(address, port)
-    else:
-        return _join_game_relay(address)
-
-func _join_game_relay(server_url_or_empty):
-    var url = server_url_or_empty if !empty else DEFAULT_RELAY_URL
-    var peer = WebSocketMultiplayerPeer.new()
-    peer.create_client(url)
-    multiplayer.multiplayer_peer = peer
-
-// NetworkManager.gd line 152-173
-func _on_connected_to_server():
-    if is_webrtc_mode():
-        var my_id = multiplayer.get_unique_id()
-        if my_id == 1: return  // Don't register if we're relay
-        
-        var player_number = _get_next_available_player_number()
-        connected_players[my_id] = {peer_id, player_number, name}
-        _announce_player.rpc(my_id, player_number)
-
-// NetworkManager.gd line 199-221
-@rpc("any_peer", "call_remote", "reliable")
-func _announce_player(peer_id, player_number):
-    if my_id == 1: return  // Relay ignores
-    if peer_id == 1: return  // Clients ignore relay
+// RootNode.gd lines 555-604
+func setup_network_screens():
+    # Clean up split screens (not needed for network)
+    # Wait 0.3s for RPC propagation
+    await get_tree().create_timer(0.3).timeout
     
-    if not connected_players.has(peer_id):
-        connected_players[peer_id] = {peer_id, player_number, name}
-        player_connected.emit(peer_id)
+    # Call setup_network_player() for all players
+    for player in list_of_players:
+        player.setup_network_player()
+    
+    # Enable camera for local player only
+    # Disable unpopulated players:
+    if not has_player:
+        player.visible = false
+        player.set_physics_process(false)
+        player.collision_layer = 0
+        player.collision_mask = 0
+
+// RootNode.gd lines 612-631
+func _on_network_player_joined(peer_id):
+    # When late joiner arrives:
+    network_sync.set_multiplayer_authority(peer_id)
+    player.setup_network_player()
+    player.visible = true
+    player.set_physics_process(true)
+    player.collision_layer = 1
+    player.collision_mask = 1
 ```
 
 ### PlayerBuggy Authority Setup
@@ -427,40 +416,17 @@ func _on_peer_connected(id):
 4. Test with 2 different browsers/devices
 5. Check browser dev tools console for errors
 
----
+## Outstanding Issues to Investigate
 
-## Next Steps
-
-1. **Get Debug Logs from Player 2**:
-   - Deploy latest build with debug logging
-   - Have Player 2 join after Player 1 starts game
-   - Check console for:
-     ```
-     [NetworkLobby] Waiting 0.5s for peer announcements...
-     [NetworkLobby] After wait, player_count=?, connected_players=?
-     [NetworkManager] _announce_player called: my_id=?, announcing peer=?, player_number=?
-     ```
-
-2. **If RPC Working**: Late-joiner should auto-start. If not, check `get_player_count()` value
-
-3. **If RPC Not Working**: Investigate why `_announce_player` not propagating
-   - Check relay server logs for RPC messages
-   - Verify `@rpc("any_peer", "call_remote", "reliable")` configuration
-   - Ensure relay isn't filtering the RPC
-
-4. **Position Sync Investigation**:
-   - Add logging in `_physics_process` to verify sync data being sent
-   - Check if `$NetworkSync.get_multiplayer_authority()` matches expected peer
-   - Verify MultiplayerSynchronizer root node path is correct
-   - Test with simpler sync properties (position only)
+1. **Late Joiner Auto-Start**: Player 2 still needs to manually click "Start Game" instead of auto-joining when game already in progress. Check if `_announce_player` RPC propagating correctly.
 
 ---
 
 ## Important Notes
 
-- **Don't export with debug logs to production** - remove print statements before final itch.io deployment
 - **Relay server must stay running** - if relay crashes, all web clients disconnect
 - **ngrok URL changes** - update `DEFAULT_RELAY_URL` if ngrok tunnel restarts
 - **Browser cache** - hard refresh (Cmd+Shift+R) when testing new builds
-- **MultiplayerSynchronizer authority** - must be set AFTER all peers announced themselves
-- **0.3s delay** - critical for RPC propagation, may need adjustment based on network latency
+- **0.3s delay in setup_network_screens()** - critical for RPC propagation before authority assignment
+- **Unpopulated players** - must disable physics/collision, not just visibility, to prevent collisions
+- **Offline modes preserved** - single player and split-screen still use reparenting (lines 98-136 in RootNode.gd)
