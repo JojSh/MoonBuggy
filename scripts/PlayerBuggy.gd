@@ -72,6 +72,11 @@ var is_on_corner_ramp := false  # Add this to track corner ramp contact
 # Network variables
 @export var is_local_player: bool = false
 @export var network_player_id: int = -1
+@export var is_laser_visible: bool = false:  # Synced across network
+	set(value):
+		if is_laser_visible != value:
+			is_laser_visible = value
+			_apply_laser_visibility_for_remote_player()
 var input_player_number: int  # The player number to use for input (1 for network local player, player_number for offline)
 
 var _start_position: Vector3
@@ -114,7 +119,12 @@ func _ready ():
 
 func _physics_process(delta: float):
 	if is_dead: return
-	
+
+	# Update laser length for remote players every frame (visibility is set in the setter)
+	if NetworkManager.is_multiplayer_active() and not is_local_player:
+		if is_laser_visible and targeting_laser:
+			update_targeting_laser()
+
 	# In multiplayer mode, only process physics for local player
 	# In offline mode, process physics for all players
 	if NetworkManager.is_multiplayer_active() and not is_local_player:
@@ -154,12 +164,14 @@ func _physics_process(delta: float):
 	if is_local_player or not NetworkManager.is_multiplayer_active():
 		if Input.is_action_pressed(str("p", input_player_number, "_hold_to_aim")):
 			if ($ChaseCamPivot/ChaseCam.current or $SideCam.current):
+				is_laser_visible = true
 				targeting_laser.show_laser()
 				update_targeting_laser()
 			else:
 				emit_signal("show_crosshair")
 		elif Input.is_action_just_released(str("p", input_player_number, "_hold_to_aim")):
 			if ($ChaseCamPivot/ChaseCam.current or $SideCam.current):
+				is_laser_visible = false
 				targeting_laser.hide_laser()
 			else:
 				emit_signal("hide_crosshair")
@@ -938,13 +950,21 @@ func update_targeting_laser():
 	)
 	query.collision_mask = 1
 	query.exclude = [self]
-	
+
 	var result = space_state.intersect_ray(query)
 	if result:
 		var distance = global_transform.origin.distance_to(result.position)
 		targeting_laser.update_laser_length(distance)
 	else:
 		targeting_laser.update_laser_length(10000.0)  # Increased to match raycast distance
+
+func _apply_laser_visibility_for_remote_player():
+	if NetworkManager.is_multiplayer_active() and not is_local_player and targeting_laser:
+		if is_laser_visible:
+			targeting_laser.show_laser()
+			update_targeting_laser()
+		else:
+			targeting_laser.hide_laser()
 
 func switch_on_obstacle_course_mode ():
 	playing_obstacle_course_mode = true

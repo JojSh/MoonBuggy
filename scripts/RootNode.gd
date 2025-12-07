@@ -590,10 +590,16 @@ func setup_network_screens():
 					break
 			player.visible = has_player
 			# Disable physics and collision for unpopulated players
+			# But keep physics enabled for remote players so they can display lasers etc.
 			if not has_player:
 				player.set_physics_process(false)
 				player.collision_layer = 0
 				player.collision_mask = 0
+			else:
+				# Remote player exists - ensure physics is enabled
+				player.set_physics_process(true)
+				player.collision_layer = 1
+				player.collision_mask = 1
 	
 	if not local_player:
 		return

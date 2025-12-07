@@ -67,6 +67,9 @@ properties/2/replication_mode = 1
 properties/3/path = NodePath(":angular_velocity")
 properties/3/spawn = false
 properties/3/replication_mode = 1
+properties/4/path = NodePath(":is_laser_visible")
+properties/4/spawn = false
+properties/4/replication_mode = 1
 
 [node name="VehicleBody3D" type="VehicleBody3D"]
 transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 0, 0, 0)
