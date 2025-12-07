@@ -77,6 +77,11 @@ var is_on_corner_ramp := false  # Add this to track corner ramp contact
 		if is_laser_visible != value:
 			is_laser_visible = value
 			_apply_laser_visibility_for_remote_player()
+@export var is_boosting: bool = false:  # Synced across network
+	set(value):
+		if is_boosting != value:
+			is_boosting = value
+			_apply_boost_visibility_for_remote_player()
 var input_player_number: int  # The player number to use for input (1 for network local player, player_number for offline)
 
 var _start_position: Vector3
@@ -315,6 +320,7 @@ func set_on_corner_ramp_false():
 func start_boost ():
 	var up_direction = global_transform.basis.y
 	apply_central_impulse(up_direction * jump_initial_impulse)
+	is_boosting = true
 	$Beams.visible = true
 	$Beams/Beam/BeamTrigger.play("Beam Start")
 	$Beams/Beam2/BeamTrigger.play("Beam Start")
@@ -324,6 +330,7 @@ func start_boost ():
 		is_boost_sound_playing = true
 
 func stop_boost ():
+	is_boosting = false
 	if is_boost_sound_playing:
 		$BoostSound.stop()
 		# Try to force the animation to its end
@@ -965,6 +972,17 @@ func _apply_laser_visibility_for_remote_player():
 			update_targeting_laser()
 		else:
 			targeting_laser.hide_laser()
+
+func _apply_boost_visibility_for_remote_player():
+	if NetworkManager.is_multiplayer_active() and not is_local_player:
+		if is_boosting:
+			$Beams.visible = true
+			$Beams/Beam/BeamTrigger.play("Beam Start")
+			$Beams/Beam2/BeamTrigger.play("Beam Start")
+		else:
+			$Beams/Beam/BeamTrigger.play("RESET")
+			$Beams/Beam2/BeamTrigger.play("RESET")
+			$Beams.visible = false
 
 func switch_on_obstacle_course_mode ():
 	playing_obstacle_course_mode = true
