@@ -31,6 +31,8 @@ func _process(delta):
 
 func show_main_menu():
 	get_tree().paused = true
+	$MenuContainer.visible = true
+	$MenuContainer/Control/MainMenuContainer.visible = true
 	$MenuContainer/Control/MainMenuContainer/VBoxContainer/SinglePlayerLocalButton.grab_focus()
 	update_map_display_text()
 
