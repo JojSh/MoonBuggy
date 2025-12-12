@@ -357,7 +357,7 @@ collision_bounce = 1.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Explosion"]
 libraries = {
-"": SubResource("AnimationLibrary_1julr")
+&"": SubResource("AnimationLibrary_1julr")
 }
 
 [node name="PrimaryExplosion" type="GPUParticles3D" parent="Explosion"]
