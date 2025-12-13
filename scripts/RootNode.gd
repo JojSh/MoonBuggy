@@ -366,7 +366,12 @@ func get_current_player (player_number):
 
 func get_active_players ():
 	var active_players = list_of_players.filter(func(player):
-		return is_instance_valid(player) and not player.is_eliminated
+		if not is_instance_valid(player) or player.is_eliminated:
+			return false
+		# In network games, exclude unpopulated players (marked invisible)
+		if NetworkManager.is_multiplayer_active() and not player.visible:
+			return false
+		return true
 	)
 
 	return active_players

@@ -16,7 +16,7 @@
 [ext_resource type="AudioStream" uid="uid://dwt3h0tsfcxgu" path="res://sounds/Checkpoint1.ogg" id="12_checkpoint_sound"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_mq556"]
-font_size = 320
+font_size = 240
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wrm68"]
 albedo_color = Color(0.89793, 0.659596, 1, 1)
@@ -162,8 +162,6 @@ layout_mode = 2
 
 [node name="EmptySpace" type="Label" parent="MenuContainer/Control/GameOverScreen/VBoxContainer"]
 layout_mode = 2
-text = "
-"
 label_settings = SubResource("LabelSettings_mq556")
 horizontal_alignment = 1
 vertical_alignment = 1

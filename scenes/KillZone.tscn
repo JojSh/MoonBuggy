@@ -13,6 +13,7 @@ albedo_color = Color(1, 0, 0, 0.15)
 size = Vector3(10, 10, 10)
 
 [node name="KillZone" type="Area3D"]
+visible = false
 collision_mask = 5
 script = ExtResource("1_qypna")
 
