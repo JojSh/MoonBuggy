@@ -1,0 +1,93 @@
+[gd_scene load_steps=3 format=3 uid="uid://df4ag6klw4xya"]
+
+[ext_resource type="Script" uid="uid://dydd8y3qvp2y8" path="res://scripts/MobileTouchUI.gd" id="1_mobile_ui"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+bg_color = Color(0.2, 0.2, 0.2, 0.5)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 0.8)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="MobileTouchUI" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_mobile_ui")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="FireButton" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 720.0
+offset_top = 832.0
+offset_right = 920.0
+offset_bottom = 1032.0
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button")
+text = "FIRE"
+
+[node name="BoostButton" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 996.0
+offset_top = 834.0
+offset_right = 1196.0
+offset_bottom = 1034.0
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button")
+text = "BOOST"
+
+[node name="EnableSensorsButton" type="Button" parent="Control"]
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 20.0
+offset_right = 150.0
+offset_bottom = 90.0
+theme_override_font_sizes/font_size = 20
+text = "Enable Mobile Control"
+
+[node name="CameraButton" type="Button" parent="Control"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -788.0
+offset_top = 20.0
+offset_right = -688.0
+offset_bottom = 90.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 18
+text = "CAM"
+
+[node name="MenuButton" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 688.0
+offset_top = 20.0
+offset_right = 788.0
+offset_bottom = 90.0
+theme_override_font_sizes/font_size = 18
+text = "MENU"
+
+[connection signal="button_down" from="Control/FireButton" to="." method="_on_fire_button_button_down"]
+[connection signal="button_up" from="Control/FireButton" to="." method="_on_fire_button_button_up"]
+[connection signal="button_down" from="Control/BoostButton" to="." method="_on_boost_button_button_down"]
+[connection signal="button_up" from="Control/BoostButton" to="." method="_on_boost_button_button_up"]
+[connection signal="pressed" from="Control/EnableSensorsButton" to="." method="_on_enable_sensors_button_pressed"]
+[connection signal="pressed" from="Control/CameraButton" to="." method="_on_camera_button_pressed"]
+[connection signal="pressed" from="Control/MenuButton" to="." method="_on_menu_button_pressed"]

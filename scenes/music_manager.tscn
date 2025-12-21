@@ -10,7 +10,9 @@ script = ExtResource("1_f3oqh")
 [node name="MoonbuggyOST1" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_f7spn")
 volume_db = -5.2
+playback_type = 1
 
 [node name="MoonbuggyOST2" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_8r7au")
 volume_db = -5.2
+playback_type = 1

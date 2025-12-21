@@ -607,6 +607,7 @@ func setup_network_screens():
 					player.get_node("EngineSound").stop()
 			else:
 				# Remote player exists - ensure physics is enabled
+
 				player.set_physics_process(true)
 				player.collision_layer = 1
 				player.collision_mask = 1

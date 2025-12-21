@@ -167,14 +167,27 @@ func _physics_process(delta: float):
 
 	# Only handle targeting for the local player
 	if is_local_player or not NetworkManager.is_multiplayer_active():
-		if Input.is_action_pressed(str("p", input_player_number, "_hold_to_aim")):
+		var aim_pressed = false
+		var aim_released = false
+
+		# Check mobile input first
+		if MobileInputManager and MobileInputManager.has_method("is_mobile_active") and MobileInputManager.is_mobile_active():
+			if MobileInputManager.has_method("get_fire_button_held"):
+				aim_pressed = MobileInputManager.get_fire_button_held()
+			if MobileInputManager.has_method("get_fire_just_released"):
+				aim_released = MobileInputManager.get_fire_just_released()
+		else:
+			aim_pressed = Input.is_action_pressed(str("p", input_player_number, "_hold_to_aim"))
+			aim_released = Input.is_action_just_released(str("p", input_player_number, "_hold_to_aim"))
+
+		if aim_pressed:
 			if ($ChaseCamPivot/ChaseCam.current or $SideCam.current):
 				is_laser_visible = true
 				targeting_laser.show_laser()
 				update_targeting_laser()
 			else:
 				emit_signal("show_crosshair")
-		elif Input.is_action_just_released(str("p", input_player_number, "_hold_to_aim")):
+		elif aim_released:
 			if ($ChaseCamPivot/ChaseCam.current or $SideCam.current):
 				is_laser_visible = false
 				targeting_laser.hide_laser()
@@ -438,7 +451,16 @@ func handle_start_button_input():
 			root_node.toggle_pause_menu()
 
 func handle_cycle_through_cameras_input ():
-	if Input.is_action_just_pressed(str("p", input_player_number, "_toggle_camera")):
+	var camera_toggle_pressed = false
+
+	# Check mobile input first
+	if is_local_player and MobileInputManager and MobileInputManager.has_method("is_mobile_active") and MobileInputManager.is_mobile_active():
+		if MobileInputManager.has_method("get_camera_just_pressed"):
+			camera_toggle_pressed = MobileInputManager.get_camera_just_pressed()
+	else:
+		camera_toggle_pressed = Input.is_action_just_pressed(str("p", input_player_number, "_toggle_camera"))
+
+	if camera_toggle_pressed:
 		var camera_configs = [
 			{"camera": $ChaseCamPivot/ChaseCam, "show_crosshair": false},
 			{"camera": $ChaseCamLocked, "show_crosshair": true},
@@ -464,19 +486,36 @@ func handle_cycle_through_cameras_input ():
 			emit_signal("hide_crosshair")
 
 func handle_boost_input (delta):
-	if Input.is_action_pressed(str("p", input_player_number, "_boost_jump")) and can_boost:
+	var boost_pressed = false
+	var boost_released = false
+
+	# Check mobile input first
+	if is_local_player and MobileInputManager and MobileInputManager.has_method("is_mobile_active") and MobileInputManager.is_mobile_active():
+		if MobileInputManager.has_method("get_boost_pressed"):
+			boost_pressed = MobileInputManager.get_boost_pressed()
+		# For mobile, we check if button state changed from pressed to not pressed
+		boost_released = not boost_pressed and is_boosting
+	else:
+		boost_pressed = Input.is_action_pressed(str("p", input_player_number, "_boost_jump"))
+		boost_released = Input.is_action_just_released(str("p", input_player_number, "_boost_jump"))
+
+	if boost_pressed and can_boost:
 		var current_max_boost_duration = current_boost_level / 2 # each 1 level = 0.5s extra boost duration
 		if boost_timer < current_max_boost_duration:
 			start_boost()
 			boost_timer += delta
 		elif boost_timer >= current_max_boost_duration:
 			stop_boost()
-	elif Input.is_action_just_released(str("p", input_player_number, "_boost_jump")):
+	elif boost_released:
 		stop_boost()
 
 func handle_steering_input (delta):
-	_steer_target = Input.get_axis(str("p", input_player_number, "_turn_right"), str("p", input_player_number, "_turn_left"))
-	_steer_target *= STEER_LIMIT
+	# Use mobile tilt steering for local player on mobile, otherwise use keyboard/gamepad
+	if is_local_player and MobileInputManager and MobileInputManager.has_method("is_mobile_active") and MobileInputManager.is_mobile_active():
+		_steer_target = MobileInputManager.get_steering() * STEER_LIMIT
+	else:
+		_steer_target = Input.get_axis(str("p", input_player_number, "_turn_right"), str("p", input_player_number, "_turn_left"))
+		_steer_target *= STEER_LIMIT
 	steering = move_toward(steering, _steer_target, STEER_SPEED * delta)
 
 func handle_engine_sound ():
@@ -498,6 +537,27 @@ func handle_sudden_impact_feedback ():
 	previous_speed = linear_velocity.length()
 
 func handle_acceleration_input ():
+	var accel_value = 0.0
+
+	# Check mobile tilt input first
+	if is_local_player and MobileInputManager and MobileInputManager.has_method("is_mobile_active") and MobileInputManager.is_mobile_active():
+		if MobileInputManager.has_method("get_accel_input"):
+			accel_value = MobileInputManager.get_accel_input()
+			# Only process forward tilt (positive values after negation)
+			if accel_value > 0:
+				var speed := linear_velocity.length()
+				# Special handling for low speeds to help overcome initial inertia
+				if speed < 5.0 and not is_zero_approx(speed):
+					# At low speeds, apply extra force (inverse to speed)
+					engine_force = clampf(engine_force_value * 5.0 / speed * accel_value, 0.0, 100.0)
+				else:
+					# At non-low speeds, use regular engine force scaled by tilt amount
+					engine_force = engine_force_value * accel_value
+			else:
+				engine_force = 0.0
+			return
+
+	# Desktop input
 	if Input.is_action_pressed(str("p", input_player_number, "_accelerate")):
 		var speed := linear_velocity.length()
 		# Special handling for low speeds to help overcome initial inertia
@@ -513,6 +573,22 @@ func handle_acceleration_input ():
 		engine_force = 0.0
 
 func handle_reverse_input ():
+	# Check mobile tilt input first
+	if is_local_player and MobileInputManager and MobileInputManager.has_method("is_mobile_active") and MobileInputManager.is_mobile_active():
+		if MobileInputManager.has_method("get_accel_input"):
+			var accel_value = MobileInputManager.get_accel_input()
+			# Only process backward tilt (negative values)
+			if accel_value < 0:
+				var speed := linear_velocity.length()
+				var reverse_strength = abs(accel_value)
+				# Special handling for low speeds
+				if speed < 5.0 and not is_zero_approx(speed):
+					engine_force = -clampf(engine_force_value * BRAKE_STRENGTH * 5.0 / speed * reverse_strength, 0.0, 100.0)
+				else:
+					engine_force = -engine_force_value * BRAKE_STRENGTH * reverse_strength
+			return
+
+	# Desktop input
 	if Input.is_action_pressed(str("p", input_player_number, "_reverse")):
 		var speed := linear_velocity.length()
 		# Special handling for low speeds (see handle_acceleration_input comments for more details)
@@ -544,7 +620,16 @@ func handle_pitch_input():
 		apply_torque(pitch_torque_vector)
 
 func handle_fire_input ():
-	if current_reload_level > 0 && Input.is_action_just_pressed(str("p", input_player_number, "_fire")):
+	var fire_pressed = false
+
+	# Check mobile input for local player on mobile
+	if is_local_player and MobileInputManager and MobileInputManager.has_method("is_mobile_active") and MobileInputManager.is_mobile_active():
+		if MobileInputManager.has_method("get_fire_just_released"):
+			fire_pressed = MobileInputManager.get_fire_just_released()
+	else:
+		fire_pressed = Input.is_action_just_pressed(str("p", input_player_number, "_fire"))
+
+	if current_reload_level > 0 && fire_pressed:
 		rocket_launcher.fire_rocket()
 
 func auto_reorient_vehicle_if_stuck_too_long(delta):

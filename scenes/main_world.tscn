@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://cfp77dx8lxb0i"]
+[gd_scene load_steps=19 format=3 uid="uid://cfp77dx8lxb0i"]
 
 [ext_resource type="Script" uid="uid://c3dgyik2ldfvl" path="res://scripts/RootNode.gd" id="1_06hsa"]
 [ext_resource type="Script" uid="uid://c0ihxjbp18lne" path="res://scripts/GameOverScreen.gd" id="2_p4gfa"]
@@ -14,6 +14,7 @@
 [ext_resource type="Material" uid="uid://c53pgeng2ewby" path="res://resources/car-gold.tres" id="10_stv4k"]
 [ext_resource type="PackedScene" uid="uid://cw0t325yducrj" path="res://scenes/controls_help_ui.tscn" id="11_controls"]
 [ext_resource type="AudioStream" uid="uid://dwt3h0tsfcxgu" path="res://sounds/Checkpoint1.ogg" id="12_checkpoint_sound"]
+[ext_resource type="PackedScene" uid="uid://df4ag6klw4xya" path="res://scenes/MobileTouchUI.tscn" id="13_mobile_ui"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_mq556"]
 font_size = 240
@@ -230,6 +231,8 @@ volume_db = 6.0
 stream = ExtResource("12_checkpoint_sound")
 volume_db = 6.0
 pitch_scale = 0.7
+
+[node name="MobileTouchUI" parent="." instance=ExtResource("13_mobile_ui")]
 
 [node name="PlayerScreenManager" type="Node3D" parent="."]
 
