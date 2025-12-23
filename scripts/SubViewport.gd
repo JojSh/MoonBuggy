@@ -21,7 +21,6 @@ func show_crosshair ():
 	$AimingReticle.visible = true
 
 func show_realignment_prompt():
-	# Always show "Press LB to realign" regardless of player
 	$UI/RealignmentPrompt/Label.text = "[LB] / [E] to realign"
 	$UI/RealignmentPrompt.visible = true
 

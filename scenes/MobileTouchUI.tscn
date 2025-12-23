@@ -84,6 +84,23 @@ offset_bottom = 90.0
 theme_override_font_sizes/font_size = 18
 text = "MENU"
 
+[node name="FlipButton" type="Button" parent="Control"]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = 100.0
+offset_right = 100.0
+offset_bottom = 200.0
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button")
+text = "FLIP"
+
 [connection signal="button_down" from="Control/FireButton" to="." method="_on_fire_button_button_down"]
 [connection signal="button_up" from="Control/FireButton" to="." method="_on_fire_button_button_up"]
 [connection signal="button_down" from="Control/BoostButton" to="." method="_on_boost_button_button_down"]
@@ -91,3 +108,4 @@ text = "MENU"
 [connection signal="pressed" from="Control/EnableSensorsButton" to="." method="_on_enable_sensors_button_pressed"]
 [connection signal="pressed" from="Control/CameraButton" to="." method="_on_camera_button_pressed"]
 [connection signal="pressed" from="Control/MenuButton" to="." method="_on_menu_button_pressed"]
+[connection signal="pressed" from="Control/FlipButton" to="." method="_on_flip_button_pressed"]

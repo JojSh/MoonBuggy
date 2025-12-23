@@ -34,6 +34,7 @@ var is_boost_pressed := false
 var is_accelerate_pressed := false
 var is_camera_just_pressed := false
 var is_shake_just_detected := false
+var is_flip_just_requested := false
 
 var _is_mobile_cache: bool = false
 var _mobile_check_done: bool = false
@@ -86,6 +87,7 @@ func _process(delta):
 	is_fire_just_released = false
 	is_camera_just_pressed = false
 	is_shake_just_detected = false
+	# Don't auto-reset flip - it's consumed when read
 
 	if shake_cooldown > 0:
 		shake_cooldown -= delta
@@ -200,6 +202,14 @@ func get_camera_just_pressed() -> bool:
 
 func get_shake_just_detected() -> bool:
 	return is_shake_just_detected
+
+func set_flip_requested():
+	is_flip_just_requested = true
+
+func get_flip_just_requested() -> bool:
+	var result = is_flip_just_requested
+	is_flip_just_requested = false  # Consume the flag when read
+	return result
 
 func _request_motion_permission():
 	# iOS 13+ Safari requires permission for motion sensors

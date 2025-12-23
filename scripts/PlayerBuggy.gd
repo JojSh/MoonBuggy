@@ -22,6 +22,7 @@ var boost_timer := 0.0
 var can_boost := true
 var is_dead := false
 var time_upside_down := 0.0
+var realignment_prompt_shown := false
 var death_camera: Camera3D
 var death_collision_shapes := {}  # Dictionary to store shapes for each part
 var inputs_paused := false
@@ -161,9 +162,15 @@ func _physics_process(delta: float):
 	if is_reorienting:
 		process_reorientation(delta)
 
-	if Input.is_action_just_pressed(str("p", input_player_number, "_flip")):
+	# Check for flip input from keyboard/gamepad or mobile flip button
+	var flip_requested = Input.is_action_just_pressed(str("p", input_player_number, "_flip"))
+	if is_local_player and MobileInputManager and MobileInputManager.has_method("get_flip_just_requested"):
+		flip_requested = flip_requested or MobileInputManager.get_flip_just_requested()
+
+	if flip_requested:
 		# Player explicitly requested a flip
 		reorient_vehicle_over_time(0.25)
+		# Don't reset the flag here - let it reset when car is no longer stuck
 
 	# Only handle targeting for the local player
 	if is_local_player or not NetworkManager.is_multiplayer_active():
@@ -284,7 +291,8 @@ func perform_reorientation(orientation_data: Dictionary, gradual: bool = false, 
 		return
 
 	reorientation_cooldown = REORIENTATION_COOLDOWN_DURATION
-	
+
+	# Hide the prompt/button immediately when reorientation starts
 	emit_signal("realignment_resolved")
 	
 	if gradual:
@@ -657,18 +665,22 @@ func auto_reorient_vehicle_if_stuck_too_long(delta):
 		
 		if is_stuck:
 			time_upside_down += ORIENTATION_CHECK_INTERVAL  # Add the full interval since we checked
-			# Show realignment prompt after 0.5 seconds of being stuck
-			if time_upside_down > 1.0:
+			# Show realignment prompt after 0.5 seconds of being stuck (only once)
+			if time_upside_down > 1.0 and not realignment_prompt_shown:
+				print("PlayerBuggy: Emitting needs_realignment signal, time_upside_down=", time_upside_down)
 				emit_signal("needs_realignment")
-			
+				realignment_prompt_shown = true
+
 			if time_upside_down > MAX_UPSIDE_DOWN_TIME:
 				# For safety feature, reset cooldown and call gradual reorient
 				reorientation_cooldown = 0.0  # Ensure we can reorient
 				reorient_vehicle_over_time(0.25)
 				time_upside_down = 0.0
+				realignment_prompt_shown = false
 		else:
 			if time_upside_down > 0.0:  # Only emit if we were previously stuck
 				emit_signal("realignment_resolved")
+				realignment_prompt_shown = false
 			time_upside_down = 0.0
 
 func generate_and_separate_clone_of_part (og_part, death_velocity, death_position):
