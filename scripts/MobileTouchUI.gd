@@ -78,7 +78,9 @@ func _on_camera_button_pressed():
 		MobileInputManager.set_camera_pressed()
 
 func _on_menu_button_pressed():
-	get_tree().paused = not get_tree().paused
+	var root_node = get_tree().root.get_node_or_null("RootNode")
+	if root_node and root_node.has_method("toggle_pause_menu"):
+		root_node.toggle_pause_menu()
 
 func _on_flip_button_pressed():
 	if MobileInputManager:
