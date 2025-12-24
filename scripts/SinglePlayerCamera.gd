@@ -20,6 +20,18 @@ func hide_crosshair ():
 func show_crosshair ():
 	$AimingReticle.visible = true
 
+func _get_realignment_prompt_node():
+	# Try to find RealignmentPrompt under camera first (offline single player)
+	var realignment_prompt = get_node_or_null("UI/RealignmentPrompt")
+
+	# If not found, try RootNode/SinglePlayerUI (network mode)
+	if not realignment_prompt:
+		var root_node = get_tree().root.get_node_or_null("RootNode")
+		if root_node:
+			realignment_prompt = root_node.get_node_or_null("SinglePlayerUI/RealignmentPrompt")
+
+	return realignment_prompt
+
 func show_realignment_prompt():
 	# Check if mobile controls are enabled - show flip button instead of text
 	var mobile_ui = get_tree().root.get_node_or_null("RootNode/MobileTouchUI")
@@ -29,7 +41,7 @@ func show_realignment_prompt():
 		return
 
 	# Fallback: Show text prompt
-	var realignment_prompt = get_node_or_null("UI/RealignmentPrompt")
+	var realignment_prompt = _get_realignment_prompt_node()
 	if realignment_prompt:
 		var label = realignment_prompt.get_node_or_null("Label")
 		if label:
@@ -42,7 +54,7 @@ func hide_realignment_prompt():
 	if mobile_ui and mobile_ui.has_method("hide_flip_button"):
 		mobile_ui.hide_flip_button()
 
-	var realignment_prompt = get_node_or_null("UI/RealignmentPrompt")
+	var realignment_prompt = _get_realignment_prompt_node()
 	if realignment_prompt:
 		realignment_prompt.visible = false
 

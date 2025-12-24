@@ -667,7 +667,6 @@ func auto_reorient_vehicle_if_stuck_too_long(delta):
 			time_upside_down += ORIENTATION_CHECK_INTERVAL  # Add the full interval since we checked
 			# Show realignment prompt after 0.5 seconds of being stuck (only once)
 			if time_upside_down > 1.0 and not realignment_prompt_shown:
-				print("PlayerBuggy: Emitting needs_realignment signal, time_upside_down=", time_upside_down)
 				emit_signal("needs_realignment")
 				realignment_prompt_shown = true
 

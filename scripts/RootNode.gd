@@ -614,10 +614,14 @@ func setup_network_screens():
 	
 	if not local_player:
 		return
-		
+
 	if local_player and $SinglePlayerCamera:
 		local_player.connect("hide_crosshair", $SinglePlayerCamera.hide_crosshair)
 		local_player.connect("show_crosshair", $SinglePlayerCamera.show_crosshair)
+		local_player.connect("needs_realignment", $SinglePlayerCamera.show_realignment_prompt)
+		local_player.connect("realignment_resolved", $SinglePlayerCamera.hide_realignment_prompt)
+		local_player.connect("show_controls_help", $SinglePlayerCamera.show_controls_help)
+		local_player.connect("hide_controls_help", $SinglePlayerCamera.hide_controls_help)
 
 func _on_network_player_joined(peer_id: int):
 	if not NetworkManager.is_multiplayer_active():
