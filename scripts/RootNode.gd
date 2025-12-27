@@ -170,9 +170,10 @@ func _on_portal_entrance_area_3d_body_entered(body, portal_number: int):
 
 func _on_player_eliminated(player_number):
 	var alive_players = get_active_players()
-	
+
 	if alive_players.size() == 1:
-		var winner_text = str("Player ", alive_players[0].player_number, " wins!")
+		var winner_name = _get_player_name(alive_players[0].player_number)
+		var winner_text = str(winner_name, " wins!")
 		show_game_over_menu(winner_text)
 	elif alive_players.size() == 0:
 		var draw_text = str("DRAW! Everybody died.")
@@ -651,3 +652,12 @@ func _on_network_player_left(peer_id: int):
 
 func _on_network_multiplayer_pressed():
 	show_network_lobby()
+
+func _get_player_name(player_number: int) -> String:
+	# In network mode, get name from NetworkManager
+	if NetworkManager.is_multiplayer_active():
+		for peer_data in NetworkManager.connected_players.values():
+			if peer_data.player_number == player_number:
+				return peer_data.name
+	# Fallback to "Player X" for offline mode
+	return "Player " + str(player_number)

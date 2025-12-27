@@ -104,10 +104,10 @@ signal hide_controls_help()
 func _ready ():
 	_start_position = global_transform.origin
 	global_position = spawn_point
-	
+
 	# Initialize input player number (will be updated in setup_network_player)
 	input_player_number = player_number
-	
+
 	current_boost_level = STARTING_BOOST_LEVEL
 	current_reload_level = STARTING_RELOAD_LEVEL
 
@@ -117,10 +117,14 @@ func _ready ():
 
 	set_player_colour_from_exported_variable()
 	genenerate_collision_shapes_for_desctructible_parts()
-	
+
 	_update_lives_display()
 	_update_boost_display()
-	
+
+	# Listen for network player data updates
+	if NetworkManager:
+		NetworkManager.player_data_updated.connect(_on_player_data_updated)
+
 	# Network setup will be called manually after network is ready
 
 func _physics_process(delta: float):
@@ -1123,8 +1127,34 @@ func setup_network_player():
 		
 		if correct_peer_id != -1:
 			$NetworkSync.set_multiplayer_authority(correct_peer_id)
-		
+
 		set_physics_process(false)
 		set_process_input(false)
-		
+
 		# Camera management is handled by RootNode.setup_network_screens()
+
+	# Update player name label for network play
+	update_player_name_label()
+
+func update_player_name_label():
+	var name_label = get_node_or_null("PlayerNameLabel")
+	if not name_label:
+		return
+
+	# Only show names in network multiplayer
+	if not NetworkManager.is_multiplayer_active():
+		name_label.visible = false
+		return
+
+	# Find this player's data
+	for peer_data in NetworkManager.connected_players.values():
+		if peer_data.player_number == player_number:
+			name_label.text = peer_data.name
+			name_label.visible = true
+			return
+
+	# If no data found, hide the label
+	name_label.visible = false
+
+func _on_player_data_updated():
+	update_player_name_label()
