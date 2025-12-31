@@ -42,7 +42,11 @@ func update_debug_visibility():
 
 func _on_body_entered(body):
 	if body is VehicleBody3D:
-		body.die()
-		body.get_node("ImpactSound").play()
+		# Only kill players on their authoritative client
+		# In single player, everyone is authoritative
+		if not NetworkManager.is_multiplayer_active() or body.is_local_player:
+			body.die()
+			body.get_node("ImpactSound").play()
+		# Note: Non-authority clients will receive death via _report_player_death RPC
 	elif body.has_method("rocket_auto_destroy"):
 		body.rocket_auto_destroy()

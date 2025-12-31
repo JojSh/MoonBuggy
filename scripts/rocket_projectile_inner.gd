@@ -34,6 +34,9 @@ func _process(delta):
 				rocket_auto_destroy()
 
 func rocket_auto_destroy ():
+	# CRITICAL: Disable synchronizer FIRST to prevent sync errors
+	_disable_network_sync()
+
 	rocket_out_of_bounds.emit()
 	# Trigger explosion at current position before despawning
 	var current_position = global_position
@@ -46,10 +49,13 @@ func _on_body_entered(body):
 	# Only process collisions on the authority client to prevent duplicate explosions
 	if not is_network_authority and NetworkManager.is_multiplayer_active():
 		return
-	
+
+	# CRITICAL: Disable synchronizer FIRST to prevent sync errors
+	_disable_network_sync()
+
 	# Get the current position before we queue_free
 	var collision_position = global_position
-	
+
 	# Sync explosion across all clients
 	if NetworkManager.is_multiplayer_active():
 		# Authority client triggers explosion on all clients
@@ -92,7 +98,11 @@ func _apply_explosive_force (collision_position):
 	for result in results:
 		var hit_body = result["collider"]
 		if hit_body is VehicleBody3D:
-			hit_body.die()
+			# Only kill players if this is their authoritative client
+			# In single player, everyone is authoritative
+			if not NetworkManager.is_multiplayer_active() or hit_body.is_local_player:
+				hit_body.die()
+			# Note: Non-authority clients will receive death via _report_player_death RPC
 		if hit_body is RigidBody3D and hit_body != self:  # Skip the rocket itself
 			var direction = (hit_body.global_position - collision_position).normalized()
 			var distance = hit_body.global_position.distance_to(collision_position)
@@ -149,6 +159,23 @@ func assign_player_control(player: Node, enable_roll_leveling: bool = false):
 func is_under_player_control() -> bool:
 	return rocket_controller != null and rocket_controller.is_active
 
+func _disable_network_sync():
+	"""Immediately disable MultiplayerSynchronizer to prevent sync errors during destruction"""
+	if not is_inside_tree():
+		return
+
+	var rocket_outer = get_parent()
+	if rocket_outer:
+		var network_sync = rocket_outer.get_node_or_null("NetworkSync")
+		if network_sync and network_sync is MultiplayerSynchronizer:
+			# Stop the synchronizer completely
+			network_sync.replication_interval = 0
+			network_sync.set_process_mode(Node.PROCESS_MODE_DISABLED)
+			# Remove from scene tree to stop all sync attempts
+			if network_sync.is_inside_tree():
+				rocket_outer.remove_child(network_sync)
+				network_sync.queue_free()
+
 func setup_network_authority():
 	# Determine if this client has authority over this rocket
 	if NetworkManager.is_multiplayer_active():
@@ -187,8 +214,14 @@ func _on_network_synchronized():
 
 # Safe explosion triggering with error handling
 func _trigger_explosion_safely(explosion_position: Vector3):
-	if is_inside_tree() and not is_queued_for_deletion():
-		trigger_networked_explosion.rpc(explosion_position)
+	if not is_inside_tree() or is_queued_for_deletion():
+		return
+
+	# Additional check: verify parent exists
+	if not get_parent():
+		return
+
+	trigger_networked_explosion.rpc(explosion_position)
 
 func _trigger_explosion_locally(explosion_position: Vector3):
 	if is_inside_tree() and not is_queued_for_deletion():
@@ -197,6 +230,9 @@ func _trigger_explosion_locally(explosion_position: Vector3):
 # RPC function to synchronize explosions across all clients
 @rpc("any_peer", "call_local", "reliable")
 func trigger_networked_explosion(explosion_position: Vector3):
+	# CRITICAL: Disable synchronizer FIRST on ALL clients
+	_disable_network_sync()
+
 	# Safety check to prevent crashes
 	if is_inside_tree() and not is_queued_for_deletion():
 		process_explosion(explosion_position)
@@ -225,6 +261,6 @@ func process_explosion(collision_position: Vector3):
 	if is_network_authority or not NetworkManager.is_multiplayer_active():
 		await get_tree().create_timer(0.01).timeout
 		_apply_explosive_force(collision_position)
-	
-	# Remove the rocket
+
+	# Remove the rocket (NetworkSync already disabled at start of destruction)
 	queue_free()

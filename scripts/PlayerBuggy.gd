@@ -85,6 +85,12 @@ var is_on_corner_ramp := false  # Add this to track corner ramp contact
 			_apply_boost_visibility_for_remote_player()
 var input_player_number: int  # The player number to use for input (1 for network local player, player_number for offline)
 
+# State sync variables
+var state_sync_timer: float = 0.0
+const STATE_SYNC_INTERVAL: float = 1.0  # Broadcast state every 1 second
+const POSITION_DRIFT_THRESHOLD: float = 5.0  # Units
+const VELOCITY_DRIFT_THRESHOLD: float = 10.0  # Units/sec
+
 var _start_position: Vector3
 @onready var rocket_launcher = $RocketLauncher
 @onready var original_parts: Array[Node3D] = [$Body, $Wheel1, $Wheel2, $Wheel3, $Wheel4, $RocketLauncher]
@@ -139,6 +145,13 @@ func _physics_process(delta: float):
 	# In offline mode, process physics for all players
 	if NetworkManager.is_multiplayer_active() and not is_local_player:
 		return
+
+	# State sync - broadcast my authoritative state periodically
+	if is_local_player and NetworkManager.is_multiplayer_active() and GameSettings.enable_periodic_state_sync:
+		state_sync_timer += delta
+		if state_sync_timer >= STATE_SYNC_INTERVAL:
+			_broadcast_my_state()
+			state_sync_timer = 0.0
 
 	if inputs_paused:
 		stop_boost()
@@ -376,6 +389,10 @@ func die ():
 	if is_dead: return
 	is_dead = true
 
+	# Report death to other clients if this is the local player (authority for own death)
+	if is_local_player and NetworkManager.is_multiplayer_active():
+		_report_player_death.rpc()
+
 	# Store death position and velocity before disabling physics
 	var death_position = global_position
 	var death_velocity = linear_velocity  # Capture the vehicle's velocity
@@ -426,14 +443,23 @@ func die ():
 		generate_and_separate_clone_of_part(original_part, death_velocity, death_position)
 
 	current_lives -= 1
+
+	# Sync the new lives count to other clients
+	if is_local_player and NetworkManager.is_multiplayer_active():
+		_sync_lives_count.rpc(current_lives)
+
 	if (current_lives == 0):
 		is_eliminated = true
-		
+
 		# Register with SpectatorManager for rocket control
 		var spectator_manager = get_node_or_null("/root/RootNode/SpectatorManager")
 		if spectator_manager:
 			spectator_manager.register_eliminated_player(self)
-		
+
+		# Sync elimination to other clients
+		if is_local_player and NetworkManager.is_multiplayer_active():
+			_report_player_eliminated.rpc()
+
 		emit_signal("player_eliminated", player_number)
 		return
 	else:
@@ -725,6 +751,10 @@ func generate_and_separate_clone_of_part (og_part, death_velocity, death_positio
 	duplicate_part_rgdbdy.apply_impulse(direction * SEPARATION_FORCE)
 
 func _respawn ():
+	# Only respawn on the authoritative client (the player's own game)
+	if not is_local_player and NetworkManager.is_multiplayer_active():
+		return
+
 	emit_signal("player_lost_a_life", player_number)
 	reorientation_cooldown = 1.0
 	# Reset position and rotation
@@ -777,7 +807,11 @@ func _respawn ():
 		$ChaseCamLocked.current = false
 
 	is_dead = false
-	
+
+	# Sync respawn to other clients
+	if is_local_player and NetworkManager.is_multiplayer_active():
+		_report_player_respawn.rpc()
+
 	if (GameSettings.debug_mode_on):
 		current_boost_level = 5.5
 		_update_boost_display()
@@ -1158,3 +1192,126 @@ func update_player_name_label():
 
 func _on_player_data_updated():
 	update_player_name_label()
+
+# ============================================================================
+# STATE SYNCHRONIZATION SYSTEM
+# ============================================================================
+
+func _broadcast_my_state():
+	"""Broadcast this player's authoritative state to all other clients"""
+	if not is_local_player or not GameSettings.enable_periodic_state_sync:
+		return
+
+	var my_state = {
+		"player_number": player_number,
+		"peer_id": network_player_id,
+		"position": global_position,
+		"velocity": linear_velocity,
+		"rotation": rotation,
+		"health": current_lives,
+		"is_dead": is_dead,
+		"boost_level": current_boost_level
+	}
+
+	_receive_player_state.rpc(my_state)
+
+@rpc("any_peer", "call_remote", "reliable")
+func _receive_player_state(remote_state: Dictionary):
+	"""Receive and verify state from another player"""
+	if not GameSettings.enable_periodic_state_sync:
+		return
+
+	var remote_player_num = remote_state.get("player_number", -1)
+
+	# Only process states for THIS player number's puppet
+	if remote_player_num == player_number:
+		# This state is for me - verify my puppet state on this client
+		_verify_and_correct_my_puppet_state(remote_state)
+
+func _verify_and_correct_my_puppet_state(authoritative_state: Dictionary):
+	"""Verify and correct this puppet's state against the authoritative data"""
+	# This function runs on remote clients that have a puppet of this player
+	# It corrects the puppet's state if it has drifted from the authority
+
+	if is_local_player:
+		# I'm the authority, no correction needed
+		return
+
+	# Check position drift
+	var auth_pos = authoritative_state.position
+	var position_diff = global_position.distance_to(auth_pos)
+
+	if position_diff > POSITION_DRIFT_THRESHOLD:
+		print("[StateSync] CORRECTION: Player ", player_number, " position drift: ", position_diff, " units")
+		# Smoothly interpolate to correct position
+		global_position = global_position.lerp(auth_pos, 0.5)
+		linear_velocity = authoritative_state.velocity
+
+	# Check velocity drift
+	var auth_vel = authoritative_state.velocity
+	var velocity_diff = linear_velocity.distance_to(auth_vel)
+
+	if velocity_diff > VELOCITY_DRIFT_THRESHOLD:
+		print("[StateSync] CORRECTION: Player ", player_number, " velocity drift: ", velocity_diff, " units/sec")
+		linear_velocity = linear_velocity.lerp(auth_vel, 0.5)
+
+	# Check health/death state
+	var auth_health = authoritative_state.health
+	var auth_dead = authoritative_state.is_dead
+
+	if current_lives != auth_health:
+		print("[StateSync] CORRECTION: Player ", player_number, " health: ", current_lives, " -> ", auth_health)
+		current_lives = auth_health
+		_update_lives_display()
+
+	if is_dead != auth_dead:
+		if auth_dead and not is_dead:
+			print("[StateSync] CORRECTION: Player ", player_number, " death synced")
+			die()
+		elif not auth_dead and is_dead:
+			print("[StateSync] WARNING: Player ", player_number, " puppet is dead but authority says alive")
+
+@rpc("any_peer", "call_local", "reliable")
+func _report_player_death():
+	"""Authoritative death report from the dying player"""
+	# Force this player to die on all clients
+	if not is_dead:
+		# Don't call die() here as it would broadcast again
+		# Just set the death state
+		is_dead = true
+		set_physics_process(false)
+		set_process_input(false)
+		$EngineSound.stop()
+
+		# Notify game manager
+		var root_node = get_tree().root.get_node_or_null("RootNode")
+		if root_node and root_node.has_method("_on_player_eliminated"):
+			root_node._on_player_eliminated(player_number)
+
+@rpc("any_peer", "call_remote", "reliable")
+func _report_player_respawn():
+	"""Authoritative respawn notification from the respawning player"""
+	# Sync respawn state on non-authority clients (puppets)
+	if not is_local_player:
+		is_dead = false
+		set_physics_process(true)
+		$EngineSound.play()
+
+		# Show original parts
+		for part in original_parts:
+			if part:
+				part.visible = true
+
+@rpc("any_peer", "call_remote", "reliable")
+func _sync_lives_count(new_lives: int):
+	"""Sync the current lives count from authority to puppets"""
+	if not is_local_player:
+		current_lives = new_lives
+		_update_lives_display()
+
+@rpc("any_peer", "call_remote", "reliable")
+func _report_player_eliminated():
+	"""Authoritative elimination notification"""
+	if not is_local_player:
+		is_eliminated = true
+		emit_signal("player_eliminated", player_number)

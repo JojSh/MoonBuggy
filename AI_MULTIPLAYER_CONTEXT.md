@@ -60,16 +60,16 @@ scenes/relay_server.tscn         - Relay server scene file
 ```gdscript
 // NetworkManager.gd line 207-210
 func _announce_player(peer_id, player_number):
-    if my_id == 1: return  // If WE are relay, ignore all announcements
-    if peer_id == 1: return  // If announcing peer is relay, ignore
+	if my_id == 1: return  // If WE are relay, ignore all announcements
+	if peer_id == 1: return  // If announcing peer is relay, ignore
 
 // NetworkManager.gd line 128-131
 func _on_player_connected(peer_id):
-    if peer_id == 1 and is_webrtc_mode(): return  // Ignore relay connection event
+	if peer_id == 1 and is_webrtc_mode(): return  // Ignore relay connection event
 
 // NetworkManager.gd line 157-159
 func _on_connected_to_server():
-    if my_id == 1: return  // Don't register if we're the relay
+	if my_id == 1: return  // Don't register if we're the relay
 ```
 
 **Result**: Relay server successfully filtered, only real game clients in `connected_players`
@@ -119,7 +119,7 @@ await get_tree().create_timer(0.3).timeout
 print("[RootNode] Starting network player setup after announcement delay")
 print("[RootNode] Connected players: ", NetworkManager.connected_players)
 for player in list_of_players:
-    player.setup_network_player()
+	player.setup_network_player()
 ```
 
 **Debug Logs Added**:
@@ -159,17 +159,17 @@ print("[PlayerBuggy] Set puppet authority to peer ", correct_peer_id, " for play
 ```gdscript
 // NetworkLobby.gd lines 160-173 in _on_connection_succeeded()
 if NetworkManager.is_webrtc_mode():
-    print("[NetworkLobby] Waiting 0.5s for peer announcements...")
-    await get_tree().create_timer(0.5).timeout
-    
-    var player_count = NetworkManager.get_player_count()
-    print("[NetworkLobby] After wait, player_count=", player_count, ", connected_players=", NetworkManager.connected_players)
-    
-    if player_count > 1:
-        print("[NetworkLobby] Late joiner detected (", player_count, " players already connected), auto-starting game")
-        emit_signal("start_network_game")  // Skip lobby, auto-join game
-    else:
-        print("[NetworkLobby] First player (player_count=", player_count, "), waiting for user to start game")
+	print("[NetworkLobby] Waiting 0.5s for peer announcements...")
+	await get_tree().create_timer(0.5).timeout
+	
+	var player_count = NetworkManager.get_player_count()
+	print("[NetworkLobby] After wait, player_count=", player_count, ", connected_players=", NetworkManager.connected_players)
+	
+	if player_count > 1:
+		print("[NetworkLobby] Late joiner detected (", player_count, " players already connected), auto-starting game")
+		emit_signal("start_network_game")  // Skip lobby, auto-join game
+	else:
+		print("[NetworkLobby] First player (player_count=", player_count, "), waiting for user to start game")
 ```
 
 **Status**: NOT WORKING - Player 2 still needs to manually click "Start Game"
@@ -325,57 +325,57 @@ func setup_network_screens():
 ```gdscript
 // RootNode.gd lines 555-604
 func setup_network_screens():
-    # Clean up split screens (not needed for network)
-    # Wait 0.3s for RPC propagation
-    await get_tree().create_timer(0.3).timeout
-    
-    # Call setup_network_player() for all players
-    for player in list_of_players:
-        player.setup_network_player()
-    
-    # Enable camera for local player only
-    # Disable unpopulated players:
-    if not has_player:
-        player.visible = false
-        player.set_physics_process(false)
-        player.collision_layer = 0
-        player.collision_mask = 0
+	# Clean up split screens (not needed for network)
+	# Wait 0.3s for RPC propagation
+	await get_tree().create_timer(0.3).timeout
+	
+	# Call setup_network_player() for all players
+	for player in list_of_players:
+		player.setup_network_player()
+	
+	# Enable camera for local player only
+	# Disable unpopulated players:
+	if not has_player:
+		player.visible = false
+		player.set_physics_process(false)
+		player.collision_layer = 0
+		player.collision_mask = 0
 
 // RootNode.gd lines 612-631
 func _on_network_player_joined(peer_id):
-    # When late joiner arrives:
-    network_sync.set_multiplayer_authority(peer_id)
-    player.setup_network_player()
-    player.visible = true
-    player.set_physics_process(true)
-    player.collision_layer = 1
-    player.collision_mask = 1
+	# When late joiner arrives:
+	network_sync.set_multiplayer_authority(peer_id)
+	player.setup_network_player()
+	player.visible = true
+	player.set_physics_process(true)
+	player.collision_layer = 1
+	player.collision_mask = 1
 ```
 
 ### PlayerBuggy Authority Setup
 ```gdscript
 // PlayerBuggy.gd line 963-1017
 func setup_network_player():
-    if not NetworkManager.is_multiplayer_active():
-        is_local_player = true
-        return
-    
-    var local_player_data = NetworkManager.get_local_player_data()
-    
-    if local_player_data.player_number == player_number:
-        // This IS the local player
-        is_local_player = true
-        network_player_id = local_player_data.peer_id
-        $NetworkSync.set_multiplayer_authority(network_player_id)
-    else:
-        // This is a remote player (puppet)
-        is_local_player = false
-        
-        // Find correct peer ID from connected_players
-        for peer_data in NetworkManager.connected_players.values():
-            if peer_data.player_number == player_number:
-                $NetworkSync.set_multiplayer_authority(peer_data.peer_id)
-                break
+	if not NetworkManager.is_multiplayer_active():
+		is_local_player = true
+		return
+	
+	var local_player_data = NetworkManager.get_local_player_data()
+	
+	if local_player_data.player_number == player_number:
+		// This IS the local player
+		is_local_player = true
+		network_player_id = local_player_data.peer_id
+		$NetworkSync.set_multiplayer_authority(network_player_id)
+	else:
+		// This is a remote player (puppet)
+		is_local_player = false
+		
+		// Find correct peer ID from connected_players
+		for peer_data in NetworkManager.connected_players.values():
+			if peer_data.player_number == player_number:
+				$NetworkSync.set_multiplayer_authority(peer_data.peer_id)
+				break
 ```
 
 ### Relay Server
@@ -385,16 +385,16 @@ const PORT = 9080
 var connected_players = {}  // peer_id -> player_data
 
 func _ready():
-    var peer = WebSocketMultiplayerPeer.new()
-    peer.create_server(PORT)
-    multiplayer.multiplayer_peer = peer
+	var peer = WebSocketMultiplayerPeer.new()
+	peer.create_server(PORT)
+	multiplayer.multiplayer_peer = peer
 
 func _on_peer_connected(id):
-    print("Player ", id, " connected to relay")
-    var player_number = _get_next_player_number()
-    connected_players[id] = {peer_id: id, player_number, name}
-    print("Assigned player number ", player_number, " to peer ", id)
-    // Note: Clients handle their own peer announcements
+	print("Player ", id, " connected to relay")
+	var player_number = _get_next_player_number()
+	connected_players[id] = {peer_id: id, player_number, name}
+	print("Assigned player number ", player_number, " to peer ", id)
+	// Note: Clients handle their own peer announcements
 ```
 
 ---

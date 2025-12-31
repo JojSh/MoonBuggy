@@ -27,8 +27,10 @@ func _on_body_entered(body):
 	if body is VehicleBody3D:
 		emit_signal("collected")
 		# Call the method specified in the export variable
+		# Only apply effects on the authoritative client (the player's own game)
 		if body.has_method(effect_method):
-			body.call(effect_method)
+			if not NetworkManager.is_multiplayer_active() or body.is_local_player:
+				body.call(effect_method)
 		queue_free()
 	else:
 		if (body.name.begins_with("Level")):
