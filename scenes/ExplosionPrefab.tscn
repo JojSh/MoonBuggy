@@ -235,8 +235,6 @@ collision_mode = 1
 collision_friction = 0.5
 collision_bounce = 1.0
 collision_use_scale = true
-sub_emitter_mode = 1
-sub_emitter_frequency = 100.0
 
 [sub_resource type="QuadMesh" id="QuadMesh_b4gqm"]
 
