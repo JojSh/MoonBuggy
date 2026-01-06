@@ -3,24 +3,14 @@ extends Node
 # Mobile input detection for tilt steering, touch controls, and shake to menu
 # AutoLoad singleton
 
-signal fire_button_pressed
-signal fire_button_released
 signal boost_button_pressed
 signal boost_button_released
-signal accelerate_button_pressed
-signal accelerate_button_released
 signal shake_detected
 
-# Tilt steering sensitivity
+# Tilt sensitivity
 @export var tilt_sensitivity: float = 2.0
 @export var tilt_deadzone: float = 0.1
-@export var accel_tilt_sensitivity: float = 0.3
 @export var accel_tilt_deadzone: float = 0.5
-
-# Shake detection
-@export var shake_threshold: float = 25.0
-var previous_accel := Vector3.ZERO
-var shake_cooldown := 0.0
 
 # Current tilt steering value (-1 to 1)
 var steering_input: float = 0.0
@@ -31,7 +21,6 @@ var accel_input: float = 0.0
 var is_fire_button_held := false
 var is_fire_just_released := false
 var is_boost_pressed := false
-var is_accelerate_pressed := false
 var is_camera_just_pressed := false
 var is_shake_just_detected := false
 var is_flip_just_requested := false
@@ -77,9 +66,7 @@ func is_mobile_platform() -> bool:
 		return _is_mobile_cache
 	return _detect_mobile()
 
-var _js_tilt_value: float = 0.0
-
-func _process(delta):
+func _process(_delta):
 	if not _is_mobile_cache:
 		return
 
@@ -87,65 +74,51 @@ func _process(delta):
 	is_fire_just_released = false
 	is_camera_just_pressed = false
 	is_shake_just_detected = false
-	# Don't auto-reset flip - it's consumed when read
 
-	if shake_cooldown > 0:
-		shake_cooldown -= delta
+	var tilt = _read_tilt_values()
+	steering_input = _calculate_steering(tilt.x)
+	accel_input = _calculate_accel_from_tilt(tilt.z)
 
-	# Get accelerometer data
+func _read_tilt_values() -> Vector3:
 	var accel = Input.get_accelerometer()
 	var gravity = Input.get_gravity()
 
-	# Use gravity for tilt if accelerometer is zero
 	if accel == Vector3.ZERO and gravity != Vector3.ZERO:
 		accel = gravity
 
-	# Tilt steering (use X axis for portrait mode)
-	var tilt_x = accel.x
-	var tilt_y = accel.y
-
-	# If Godot's built-in sensors aren't working, try JavaScript values
 	if accel == Vector3.ZERO and gravity == Vector3.ZERO and OS.has_feature("web"):
-		var js_tilt_x = JavaScriptBridge.eval("window.mobileTiltX || 0")
-		var js_tilt_y = JavaScriptBridge.eval("window.mobileTiltY || 0")
-		if js_tilt_x != null:
-			tilt_x = float(js_tilt_x)
-		if js_tilt_y != null:
-			tilt_y = float(js_tilt_y)
+		var js_x = JavaScriptBridge.eval("window.mobileTiltX || 0")
+		var js_z = JavaScriptBridge.eval("window.mobileTiltZ || 0")
+		return Vector3(
+			float(js_x) if js_x != null else 0.0,
+			0.0,
+			float(js_z) if js_z != null else 0.0
+		)
 
-	# Calculate steering from X axis (inverted so tilt left = steer left)
+	return accel
+
+func _calculate_steering(tilt_x: float) -> float:
 	if abs(tilt_x) < tilt_deadzone:
-		steering_input = 0.0
+		return 0.0
+	return clamp(-tilt_x * tilt_sensitivity, -1.0, 1.0)
+
+func _calculate_accel_from_tilt(tilt_z: float) -> float:
+	# Z axis mapping: upright (Z=0) = reverse, tilted away (Z=-4) = neutral, more tilt (Z=-5.5) = forward
+	const NEUTRAL_Z = -4.0
+	const MAX_FORWARD_Z = 1.5
+	const MAX_REVERSE_Z = 4.0
+
+	var z_offset = tilt_z - NEUTRAL_Z
+
+	if abs(z_offset) < accel_tilt_deadzone:
+		return 0.0
+
+	var active_z = z_offset - sign(z_offset) * accel_tilt_deadzone
+
+	if active_z < 0:
+		return clamp(-active_z / MAX_FORWARD_Z, 0.0, 1.0)
 	else:
-		steering_input = clamp(-tilt_x * tilt_sensitivity, -1.0, 1.0)
-
-	# Calculate acceleration from Y axis
-	# Y is around -8.4 when phone is held upright in portrait
-	# Tilt away (forward): Y becomes MORE negative (e.g., -10, -11)
-	# Tilt toward (backward): Y becomes LESS negative (e.g., -6, -7)
-
-	# Use -8.4 as neutral
-	var neutral_y = -8.4
-	var y_offset = tilt_y - neutral_y
-
-	if abs(y_offset) < accel_tilt_deadzone:
-		accel_input = 0.0
-	else:
-		# y_offset < 0 means Y became more negative = tilt away = forward (positive)
-		# y_offset > 0 means Y became less negative = tilt toward = reverse (negative)
-		var normalized_tilt = y_offset - sign(y_offset) * accel_tilt_deadzone
-		accel_input = clamp(normalized_tilt * accel_tilt_sensitivity, -1.0, 1.0)
-
-	# Shake detection (disabled for web/mobile - using UI button instead)
-	# if shake_cooldown <= 0 and previous_accel != Vector3.ZERO:
-	# 	var accel_delta = (accel - previous_accel).length()
-	# 	if accel_delta > shake_threshold:
-	# 		print("SHAKE DETECTED! Delta: ", accel_delta, " Threshold: ", shake_threshold)
-	# 		emit_signal("shake_detected")
-	# 		is_shake_just_detected = true
-	# 		shake_cooldown = 1.0
-
-	previous_accel = accel
+		return clamp(-active_z / MAX_REVERSE_Z, -1.0, 0.0)
 
 func get_steering() -> float:
 	if not is_mobile_platform():
@@ -183,16 +156,6 @@ func set_boost_pressed(pressed: bool):
 
 func get_boost_pressed() -> bool:
 	return is_boost_pressed
-
-func set_accelerate_pressed(pressed: bool):
-	if pressed and not is_accelerate_pressed:
-		emit_signal("accelerate_button_pressed")
-	elif not pressed and is_accelerate_pressed:
-		emit_signal("accelerate_button_released")
-	is_accelerate_pressed = pressed
-
-func get_accelerate_pressed() -> bool:
-	return is_accelerate_pressed
 
 func set_camera_pressed():
 	is_camera_just_pressed = true
