@@ -17,7 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://df4ag6klw4xya" path="res://scenes/MobileTouchUI.tscn" id="13_mobile_ui"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_mq556"]
-font_size = 240
+font_size = 96
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wrm68"]
 albedo_color = Color(0.89793, 0.659596, 1, 1)
@@ -41,9 +41,9 @@ layout_mode = 3
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -400.0
+offset_left = -300.0
 offset_top = 155.0
-offset_right = 400.0
+offset_right = 300.0
 offset_bottom = 275.0
 grow_horizontal = 2
 
@@ -103,49 +103,49 @@ alignment = 1
 layout_mode = 2
 theme_type_variation = &"FlatButton"
 theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
-theme_override_font_sizes/font_size = 100
+theme_override_font_sizes/font_size = 48
 text = "Single player (local)"
 
 [node name="TwoPlayerSplitScreenButton" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"FlatButton"
 theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
-theme_override_font_sizes/font_size = 100
+theme_override_font_sizes/font_size = 48
 text = "Two player split-screen"
 
 [node name="ThreePlayerSplitScreenButton" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"FlatButton"
 theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
-theme_override_font_sizes/font_size = 100
+theme_override_font_sizes/font_size = 48
 text = "Three player split-screen"
 
 [node name="FourPlayerSplitScreenButton" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"FlatButton"
 theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
-theme_override_font_sizes/font_size = 100
+theme_override_font_sizes/font_size = 48
 text = "Four player split-screen"
 
 [node name="NetworkMultiplayer" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"FlatButton"
 theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
-theme_override_font_sizes/font_size = 100
+theme_override_font_sizes/font_size = 48
 text = "Network multiplayer"
 
 [node name="DebugToggle" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"FlatButton"
 theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
-theme_override_font_sizes/font_size = 100
+theme_override_font_sizes/font_size = 48
 text = "Toggle debug on/off"
 
 [node name="ChangeMap" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"FlatButton"
 theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
-theme_override_font_sizes/font_size = 100
+theme_override_font_sizes/font_size = 48
 text = "Change map: "
 
 [node name="GameOverScreen" type="MarginContainer" parent="MenuContainer/Control"]
@@ -178,13 +178,13 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_stretch_ratio = 1.94
 theme_override_colors/font_focus_color = Color(0.988235, 0.67451, 0.384314, 1)
-theme_override_font_sizes/font_size = 150
+theme_override_font_sizes/font_size = 64
 text = "Play again?"
 
 [node name="ReturnToMainMenuButton" type="Button" parent="MenuContainer/Control/GameOverScreen/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_focus_color = Color(0.988235, 0.67451, 0.384314, 1)
-theme_override_font_sizes/font_size = 150
+theme_override_font_sizes/font_size = 64
 text = "Return to main menu"
 
 [node name="PauseMenuScreen" type="MarginContainer" parent="MenuContainer/Control"]
@@ -206,7 +206,7 @@ alignment = 1
 
 [node name="EmptySpace" type="Label" parent="MenuContainer/Control/PauseMenuScreen/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 200
+theme_override_font_sizes/font_size = 80
 text = "GAME - PAUSED"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -214,13 +214,13 @@ vertical_alignment = 1
 [node name="ResumeButton" type="Button" parent="MenuContainer/Control/PauseMenuScreen/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_focus_color = Color(0.988235, 0.67451, 0.384314, 1)
-theme_override_font_sizes/font_size = 150
+theme_override_font_sizes/font_size = 64
 text = "Resume Game"
 
 [node name="ReturnToMainMenuButton" type="Button" parent="MenuContainer/Control/PauseMenuScreen/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_focus_color = Color(0.988235, 0.67451, 0.384314, 1)
-theme_override_font_sizes/font_size = 150
+theme_override_font_sizes/font_size = 64
 text = "Return to Main Menu"
 
 [node name="PauseSound" type="AudioStreamPlayer" parent="MenuContainer/Control/PauseMenuScreen"]
@@ -278,7 +278,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer2P/SubViewportContainer1" instance=ExtResource("6_eup8v")]
-size = Vector2i(960, 1080)
+size = Vector2i(540, 1920)
 
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer2P"]
 layout_mode = 2
@@ -287,7 +287,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer2P/SubViewportContainer2" instance=ExtResource("6_eup8v")]
-size = Vector2i(960, 1080)
+size = Vector2i(540, 1920)
 
 [node name="GridContainer3P" type="GridContainer" parent="PlayerScreenManager/SplitScreens"]
 anchors_preset = 15
@@ -306,7 +306,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer1" instance=ExtResource("6_eup8v")]
-size = Vector2i(960, 538)
+size = Vector2i(540, 958)
 
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer3P"]
 layout_mode = 2
@@ -315,7 +315,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer2" instance=ExtResource("6_eup8v")]
-size = Vector2i(960, 538)
+size = Vector2i(540, 958)
 
 [node name="SubViewportContainer3" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer3P"]
 layout_mode = 2
@@ -324,7 +324,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer3P/SubViewportContainer3" instance=ExtResource("6_eup8v")]
-size = Vector2i(960, 538)
+size = Vector2i(540, 958)
 
 [node name="GridContainer4P" type="GridContainer" parent="PlayerScreenManager/SplitScreens"]
 anchors_preset = 15
@@ -343,7 +343,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer1" instance=ExtResource("6_eup8v")]
-size = Vector2i(960, 538)
+size = Vector2i(540, 958)
 
 [node name="SubViewportContainer2" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
 layout_mode = 2
@@ -352,7 +352,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer2" instance=ExtResource("6_eup8v")]
-size = Vector2i(960, 538)
+size = Vector2i(540, 958)
 
 [node name="SubViewportContainer3" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
 layout_mode = 2
@@ -361,7 +361,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer3" instance=ExtResource("6_eup8v")]
-size = Vector2i(960, 538)
+size = Vector2i(540, 958)
 
 [node name="SubViewportContainer4" type="SubViewportContainer" parent="PlayerScreenManager/SplitScreens/GridContainer4P"]
 layout_mode = 2
@@ -370,7 +370,7 @@ size_flags_vertical = 3
 stretch = true
 
 [node name="SubViewport" parent="PlayerScreenManager/SplitScreens/GridContainer4P/SubViewportContainer4" instance=ExtResource("6_eup8v")]
-size = Vector2i(960, 538)
+size = Vector2i(540, 958)
 
 [node name="SinglePlayerCamera" type="Camera3D" parent="."]
 script = ExtResource("7_0tkgs")
