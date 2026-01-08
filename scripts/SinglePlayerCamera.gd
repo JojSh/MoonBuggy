@@ -1,5 +1,9 @@
 extends Camera3D
 
+func _ready():
+	if GameSettings.is_portrait_mode():
+		fov = 85.0
+
 # called from Rootnode programmatically
 func connect_crosshair_control_signals ():
 	var p1_vehicle = get_children().filter(func(child):

@@ -121,6 +121,7 @@ func _ready ():
 	# This prevents rubber banding from position mismatches in the scene file
 	$ChaseCamPivot.position = Vector3.ZERO  # Reset position to be relative to vehicle center
 
+	_adjust_cameras_for_orientation()
 	set_player_colour_from_exported_variable()
 	genenerate_collision_shapes_for_desctructible_parts()
 
@@ -1031,6 +1032,25 @@ func update_camera_state(new_desired_up: Vector3):
 	# Update camera with both direction and state
 	$ChaseCamPivot.set_desired_up(new_desired_up)
 	$ChaseCamPivot.set_camera_state(airborne, boosting, gravity_transitioning)
+
+func _adjust_cameras_for_orientation():
+	if GameSettings.is_portrait_mode():
+		# Use moderate FOV to avoid fisheye, but pull cameras back for wider view
+		var portrait_fov = 85.0
+		var distance_multiplier = 1.3
+
+		$ChaseCamPivot/ChaseCam.fov = portrait_fov
+		$ChaseCamPivot/ChaseCam.position.z *= distance_multiplier
+
+		$ChaseCamLocked.fov = portrait_fov
+		$ChaseCamLocked.position.z *= distance_multiplier
+
+		$ThirdPersonCam.fov = portrait_fov
+		$ThirdPersonCam.position.z *= distance_multiplier
+
+		# Side cam - move further out
+		$SideCam.fov = portrait_fov
+		$SideCam.position.x *= distance_multiplier
 
 func notify_chase_cam_of_teleportation ():
 	if $ChaseCamPivot/ChaseCam.current == true:
