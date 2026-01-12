@@ -1291,6 +1291,12 @@ func _verify_and_correct_my_puppet_state(authoritative_state: Dictionary):
 		elif not auth_dead and is_dead:
 			print("[StateSync] WARNING: Player ", player_number, " puppet is dead but authority says alive")
 
+	# Check boost level
+	var auth_boost = authoritative_state.get("boost_level", current_boost_level)
+	if current_boost_level != auth_boost:
+		current_boost_level = auth_boost
+		_update_boost_display()
+
 @rpc("any_peer", "call_local", "reliable")
 func _report_player_death():
 	"""Authoritative death report from the dying player"""
