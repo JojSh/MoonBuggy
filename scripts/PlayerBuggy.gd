@@ -392,7 +392,8 @@ func die ():
 
 	# Report death to other clients if this is the local player (authority for own death)
 	if is_local_player and NetworkManager.is_multiplayer_active():
-		_report_player_death.rpc()
+		for peer_id in NetworkManager.get_game_peer_ids():
+			_report_player_death.rpc_id(peer_id)
 
 	# Store death position and velocity before disabling physics
 	var death_position = global_position
@@ -447,7 +448,8 @@ func die ():
 
 	# Sync the new lives count to other clients
 	if is_local_player and NetworkManager.is_multiplayer_active():
-		_sync_lives_count.rpc(current_lives)
+		for peer_id in NetworkManager.get_game_peer_ids():
+			_sync_lives_count.rpc_id(peer_id, current_lives)
 
 	if (current_lives == 0):
 		is_eliminated = true
@@ -459,7 +461,8 @@ func die ():
 
 		# Sync elimination to other clients
 		if is_local_player and NetworkManager.is_multiplayer_active():
-			_report_player_eliminated.rpc()
+			for peer_id in NetworkManager.get_game_peer_ids():
+				_report_player_eliminated.rpc_id(peer_id)
 
 		emit_signal("player_eliminated", player_number)
 		return
@@ -811,7 +814,8 @@ func _respawn ():
 
 	# Sync respawn to other clients
 	if is_local_player and NetworkManager.is_multiplayer_active():
-		_report_player_respawn.rpc()
+		for peer_id in NetworkManager.get_game_peer_ids():
+			_report_player_respawn.rpc_id(peer_id)
 
 	if (GameSettings.debug_mode_on):
 		current_boost_level = 5.5
@@ -1233,7 +1237,8 @@ func _broadcast_my_state():
 		"boost_level": current_boost_level
 	}
 
-	_receive_player_state.rpc(my_state)
+	for peer_id in NetworkManager.get_game_peer_ids():
+		_receive_player_state.rpc_id(peer_id, my_state)
 
 @rpc("any_peer", "call_remote", "reliable")
 func _receive_player_state(remote_state: Dictionary):

@@ -1,4 +1,3 @@
-# In your item spawner script
 class_name ItemSpawner
 extends Node
 
@@ -89,11 +88,6 @@ func _receive_item_sync(items_data: Array):
 func _check_and_start_spawning():
 	if _spawning_started:
 		return
-	_start_spawning()
-
-func _start_spawning():
-	if _spawning_started:
-		return
 	_spawning_started = true
 
 	# Stop the check timer - no longer needed
@@ -109,8 +103,9 @@ func _start_spawning():
 	if _is_spawn_authority():
 		spawn_random_item()
 	else:
-		# Request sync from authority (player 1)
-		_request_item_sync.rpc()
+		# Request sync from authority (broadcasts to game peers, authority responds)
+		for peer_id in NetworkManager.get_game_peer_ids():
+			_request_item_sync.rpc_id(peer_id)
 
 @rpc("any_peer", "call_remote", "reliable")
 func _request_item_sync():
@@ -164,7 +159,8 @@ func spawn_random_item():
 
 	# Broadcast to other clients in multiplayer
 	if NetworkManager.is_multiplayer_active() and _is_spawn_authority():
-		_broadcast_spawn.rpc(rng_index, item_type_index)
+		for peer_id in NetworkManager.get_game_peer_ids():
+			_broadcast_spawn.rpc_id(peer_id, rng_index, item_type_index)
 
 	return item
 
@@ -218,22 +214,18 @@ func select_weighted_pickup_index() -> int:
 	return 0
 
 func _on_item_collected(position_index: int):
-	# Mark position as available again
-	occupied_positions[position_index] = false
-	spawned_items.erase(position_index)
-
-	# In multiplayer, broadcast collection to other clients
-	if NetworkManager.is_multiplayer_active():
-		_broadcast_collection.rpc(position_index)
+	_remove_item(position_index)
 
 func _on_item_moved_off_position(position_index: int):
-	# Mark position as available again when item is moved off position
+	_remove_item(position_index)
+
+func _remove_item(position_index: int):
 	occupied_positions[position_index] = false
 	spawned_items.erase(position_index)
 
-	# In multiplayer, broadcast removal to other clients
 	if NetworkManager.is_multiplayer_active():
-		_broadcast_collection.rpc(position_index)
+		for peer_id in NetworkManager.get_game_peer_ids():
+			_broadcast_collection.rpc_id(peer_id, position_index)
 
 @rpc("any_peer", "call_remote", "reliable")
 func _broadcast_collection(position_index: int):

@@ -234,6 +234,14 @@ func is_multiplayer_active() -> bool:
 func is_server() -> bool:
 	return multiplayer.is_server()
 
+func get_game_peer_ids() -> Array:
+	# Returns peer IDs of actual game clients (excludes relay server in WebRTC mode)
+	var peers = Array(multiplayer.get_peers())
+	if is_webrtc_mode():
+		# In WebRTC mode, peer 1 is the relay server - exclude it
+		return peers.filter(func(id): return id != 1)
+	return peers
+
 func get_local_player_data() -> Dictionary:
 	var local_id = multiplayer.get_unique_id()
 	return connected_players.get(local_id, {})
