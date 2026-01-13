@@ -4,7 +4,8 @@
 [ext_resource type="Material" uid="uid://sgneeu34bvsi" path="res://resources/glowy_green_life_pickup.tres" id="2_8l3ju"]
 [ext_resource type="PackedScene" uid="uid://drx63qf0rgw51" path="res://scenes/collectible_bubble.tscn" id="3_2arri"]
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_p5x7e"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_j7dmx"]
+radius = 1.2
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_7wt2y"]
 
@@ -15,13 +16,13 @@ axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
 mass = 20.0
-max_contacts_reported = 4
 contact_monitor = true
+max_contacts_reported = 4
 script = ExtResource("1_ytsnn")
 effect_method = "increment_lives"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("CapsuleShape3D_p5x7e")
+shape = SubResource("SphereShape3D_j7dmx")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 material_override = ExtResource("2_8l3ju")

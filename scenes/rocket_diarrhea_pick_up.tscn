@@ -4,7 +4,8 @@
 [ext_resource type="Shader" uid="uid://d2ro03oh1y8g8" path="res://resources/invincibility_shader.tres" id="2_gfj2t"]
 [ext_resource type="PackedScene" uid="uid://drx63qf0rgw51" path="res://scenes/collectible_bubble.tscn" id="3_71bt8"]
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qye62"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_82ltt"]
+radius = 1.2
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mhorq"]
 render_priority = 0
@@ -19,13 +20,13 @@ axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
 mass = 20.0
-max_contacts_reported = 4
 contact_monitor = true
+max_contacts_reported = 4
 script = ExtResource("1_3w7yu")
 effect_method = "activate_rocket_diarrhea"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("CapsuleShape3D_qye62")
+shape = SubResource("SphereShape3D_82ltt")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 material_override = SubResource("ShaderMaterial_mhorq")
