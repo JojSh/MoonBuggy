@@ -27,10 +27,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -602.0
-offset_top = -218.0
-offset_right = 598.0
-offset_bottom = 182.0
+offset_left = -540.0
+offset_top = -286.0
+offset_right = 540.0
+offset_bottom = 250.0
 grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
@@ -59,9 +59,11 @@ size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 40
 text = "127.0.0.1"
 placeholder_text = "192.168.1.100"
+alignment = 1
 
 [node name="JoinButton" type="Button" parent="VBoxContainer/JoinContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 40
 text = "Join Game"
 
@@ -130,7 +132,7 @@ text = "Back to Main Menu"
 
 [connection signal="pressed" from="VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/JoinContainer/JoinButton" to="." method="_on_join_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/NameContainer/UpdateNameButton" to="." method="_on_update_name_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/LocalModeButton" to="." method="_on_local_mode_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/NameContainer/UpdateNameButton" to="." method="_on_update_name_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/StartGameButton" to="." method="_on_start_game_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]

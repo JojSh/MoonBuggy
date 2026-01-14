@@ -52,7 +52,7 @@ func _configure_ui_for_network_mode():
 	if NetworkManager.is_webrtc_mode():
 		# Web mode via relay server
 		ip_input.text = ""
-		ip_input.placeholder_text = "Leave empty to use default relay"
+		ip_input.placeholder_text = "Using default relay"
 		status_label.text = "Web Mode - Connect to game"
 		host_button.disabled = true
 		start_game_button.disabled = true
