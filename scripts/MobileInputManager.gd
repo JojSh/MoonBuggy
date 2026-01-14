@@ -27,6 +27,7 @@ var is_flip_just_requested := false
 
 var _is_mobile_cache: bool = false
 var _mobile_check_done: bool = false
+var _mobile_controls_enabled: bool = false  # Explicitly toggled by user via UI
 
 func _ready():
 	# Delay mobile check to allow sensors to initialize
@@ -76,6 +77,14 @@ func _process(_delta):
 	is_shake_just_detected = false
 
 	var tilt = _read_tilt_values()
+
+	# If no valid sensor data (all zeros), don't calculate tilt input
+	# This prevents false input on desktop where there's no accelerometer
+	if tilt == Vector3.ZERO:
+		steering_input = 0.0
+		accel_input = 0.0
+		return
+
 	steering_input = _calculate_steering(tilt.x)
 	accel_input = _calculate_accel_from_tilt(tilt.z)
 
@@ -131,7 +140,15 @@ func get_accel_input() -> float:
 	return accel_input
 
 func is_mobile_active() -> bool:
-	return is_mobile_platform()
+	# Only active if both: platform supports mobile AND user has enabled mobile controls
+	return is_mobile_platform() and _mobile_controls_enabled
+
+func set_mobile_controls_enabled(enabled: bool):
+	_mobile_controls_enabled = enabled
+	if enabled:
+		set_process(true)
+	# Note: We don't disable processing when disabled, as the platform may still
+	# need to read sensors - we just won't use them for input
 
 # Called by touch UI buttons
 func set_fire_button_down():

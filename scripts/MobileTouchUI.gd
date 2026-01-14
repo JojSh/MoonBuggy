@@ -74,6 +74,7 @@ func _on_enable_sensors_button_pressed():
 		# Enable mobile controls
 		if MobileInputManager:
 			MobileInputManager._request_motion_permission()
+			MobileInputManager.set_mobile_controls_enabled(true)
 
 		# Show all the mobile control buttons
 		$Control/FireButton.visible = true
@@ -87,6 +88,8 @@ func _on_enable_sensors_button_pressed():
 		$Control/EnableSensorsButton.text = "Disable Mobile Control"
 	else:
 		# Disable mobile controls
+		if MobileInputManager:
+			MobileInputManager.set_mobile_controls_enabled(false)
 		# Hide all the mobile control buttons
 		$Control/FireButton.visible = false
 		$Control/BoostButton.visible = false
