@@ -34,6 +34,11 @@ var playing_obstacle_course_mode := false
 var current_boost_level: float
 var current_reload_level: int
 var current_camera_index: int = 0
+var has_manually_toggled_camera: bool = false  # Track if player has toggled camera at least once
+
+# Fire input state (calculated once per frame, used for both targeting and firing)
+var _fire_held: bool = false
+var _fire_released: bool = false
 
 # Variables for gradual reorientation
 const REORIENTATION_COOLDOWN_DURATION := 3.0  # 3.0 second cooldown
@@ -190,34 +195,37 @@ func _physics_process(delta: float):
 		reorient_vehicle_over_time(0.25)
 		# Don't reset the flag here - let it reset when car is no longer stuck
 
-	# Only handle targeting for the local player
+	# Calculate fire input state once per frame (used for both targeting and firing)
+	_fire_held = false
+	_fire_released = false
 	if is_local_player or not NetworkManager.is_multiplayer_active():
-		var aim_pressed = false
-		var aim_released = false
-
-		# Check mobile input first
 		if MobileInputManager and MobileInputManager.has_method("is_mobile_active") and MobileInputManager.is_mobile_active():
 			if MobileInputManager.has_method("get_fire_button_held"):
-				aim_pressed = MobileInputManager.get_fire_button_held()
+				_fire_held = MobileInputManager.get_fire_button_held()
 			if MobileInputManager.has_method("get_fire_just_released"):
-				aim_released = MobileInputManager.get_fire_just_released()
+				_fire_released = MobileInputManager.get_fire_just_released()
 		else:
-			aim_pressed = Input.is_action_pressed(str("p", input_player_number, "_hold_to_aim"))
-			aim_released = Input.is_action_just_released(str("p", input_player_number, "_hold_to_aim"))
+			_fire_held = Input.is_action_pressed(str("p", input_player_number, "_fire"))
+			_fire_released = Input.is_action_just_released(str("p", input_player_number, "_fire"))
 
-		if aim_pressed:
-			if ($ChaseCamPivot/ChaseCam.current or $SideCam.current):
+		# Locked camera: crosshair always visible (only after player has manually toggled), laser shows when aiming
+		if $ChaseCamLocked.current and has_manually_toggled_camera:
+			emit_signal("show_crosshair")
+			if _fire_held:
 				is_laser_visible = true
 				targeting_laser.show_laser()
 				update_targeting_laser()
-			else:
-				emit_signal("show_crosshair")
-		elif aim_released:
-			if ($ChaseCamPivot/ChaseCam.current or $SideCam.current):
+			elif _fire_released:
 				is_laser_visible = false
 				targeting_laser.hide_laser()
-			else:
-				emit_signal("hide_crosshair")
+		# Other cameras (or locked camera before manual toggle): just show laser when aiming
+		elif _fire_held:
+			is_laser_visible = true
+			targeting_laser.show_laser()
+			update_targeting_laser()
+		elif _fire_released:
+			is_laser_visible = false
+			targeting_laser.hide_laser()
 
 	handle_cycle_through_cameras_input()
 	handle_return_to_start_position_input()
@@ -507,21 +515,23 @@ func handle_cycle_through_cameras_input ():
 			{"camera": $ChaseCamPivot/ChaseCam, "show_crosshair": false},
 			{"camera": $ChaseCamLocked, "show_crosshair": true},
 			{"camera": $SideCam, "show_crosshair": false},
-			{"camera": $FirstPersonCam, "show_crosshair": true},
-			{"camera": $ThirdPersonCam, "show_crosshair": true}
+			{"camera": $FirstPersonCam, "show_crosshair": false},
+			{"camera": $ThirdPersonCam, "show_crosshair": false}
 		]
-		
+
 		if not GameSettings.debug_mode_on:
 			camera_configs = camera_configs.slice(0, 2)
 			# Clamp camera index to valid range for non-debug mode
 			current_camera_index = current_camera_index % camera_configs.size()
-		
+
 		# Cycle to next camera
 		current_camera_index = (current_camera_index + 1) % camera_configs.size()
 		var next_config = camera_configs[current_camera_index]
-		
+
 		next_config.camera.current = true
-		
+		has_manually_toggled_camera = true
+
+		# Only ChaseCamLocked shows permanent crosshair; other cameras use laser sight
 		if next_config.show_crosshair:
 			emit_signal("show_crosshair")
 		else:
@@ -661,17 +671,9 @@ func handle_pitch_input():
 	if pitch_torque_vector != Vector3.ZERO:
 		apply_torque(pitch_torque_vector)
 
-func handle_fire_input ():
-	var fire_pressed = false
-
-	# Check mobile input for local player on mobile
-	if is_local_player and MobileInputManager and MobileInputManager.has_method("is_mobile_active") and MobileInputManager.is_mobile_active():
-		if MobileInputManager.has_method("get_fire_just_released"):
-			fire_pressed = MobileInputManager.get_fire_just_released()
-	else:
-		fire_pressed = Input.is_action_just_pressed(str("p", input_player_number, "_fire"))
-
-	if current_reload_level > 0 && fire_pressed:
+func handle_fire_input():
+	# Fire on release - uses _fire_released calculated earlier in _physics_process
+	if current_reload_level > 0 and _fire_released:
 		rocket_launcher.fire_rocket()
 
 func auto_reorient_vehicle_if_stuck_too_long(delta):
