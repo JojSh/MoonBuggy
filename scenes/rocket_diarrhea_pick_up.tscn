@@ -23,7 +23,7 @@ mass = 20.0
 contact_monitor = true
 max_contacts_reported = 4
 script = ExtResource("1_3w7yu")
-effect_method = "activate_rocket_diarrhea"
+effect_method = "prepare_rocket_diarrhea"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_82ltt")

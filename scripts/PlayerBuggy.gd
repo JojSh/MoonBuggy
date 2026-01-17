@@ -35,6 +35,7 @@ var current_boost_level: float
 var current_reload_level: int
 var current_camera_index: int = 0
 var has_manually_toggled_camera: bool = false  # Track if player has toggled camera at least once
+var rocket_diarrhea_armed: bool = false  # Triggers on next fire
 
 # Fire input state (calculated once per frame, used for both targeting and firing)
 var _fire_held: bool = false
@@ -673,8 +674,12 @@ func handle_pitch_input():
 
 func handle_fire_input():
 	# Fire on release - uses _fire_released calculated earlier in _physics_process
-	if current_reload_level > 0 and _fire_released:
-		rocket_launcher.fire_rocket()
+	if _fire_released:
+		if rocket_diarrhea_armed:
+			rocket_diarrhea_armed = false
+			activate_rocket_diarrhea()
+		elif current_reload_level > 0:
+			rocket_launcher.fire_rocket()
 
 func auto_reorient_vehicle_if_stuck_too_long(delta):
 	# Skip this check if we're already in a reorientation process
@@ -877,9 +882,24 @@ func pause_inputs ():
 	freeze = true  # This is a built-in property of PhysicsBody3D that completely stops physics simulation
 	linear_velocity = Vector3.ZERO
 	angular_velocity = Vector3.ZERO
-
-func activate_rocket_diarrhea ():
+	
+func prepare_rocket_diarrhea():
 	$PickupSound.play()
+	rocket_diarrhea_armed = true
+	# Apply invincibility shader to rocket shaft only (surface 0) to indicate powerup is armed
+	var rocket_mesh = $RocketLauncher/MeshInstance3D
+	if rocket_mesh:
+		var invincibility_shader = preload("res://resources/invincibility_shader.tres")
+		var shader_material = ShaderMaterial.new()
+		shader_material.shader = invincibility_shader
+		rocket_mesh.set_surface_override_material(0, shader_material)
+
+func activate_rocket_diarrhea():
+	$PickupSound.play()
+	# Restore original rocket shaft material (surface 0 only)
+	var rocket_mesh = $RocketLauncher/MeshInstance3D
+	if rocket_mesh:
+		rocket_mesh.set_surface_override_material(0, null)  # Removes override, reverts to original .tres
 	$RocketLauncher.activate_diarrhea()
 	is_invincible = true
 	collision_layer = 0
