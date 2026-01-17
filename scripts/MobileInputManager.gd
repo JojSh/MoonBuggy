@@ -29,6 +29,10 @@ var _is_mobile_cache: bool = false
 var _mobile_check_done: bool = false
 var _mobile_controls_enabled: bool = false  # Explicitly toggled by user via UI
 
+# Accel display locking (for aiming mode - freezes the visual indicator)
+var _accel_display_locked: bool = false
+var _locked_accel_display_value: float = 0.0
+
 func _ready():
 	# Delay mobile check to allow sensors to initialize
 	call_deferred("_check_mobile_platform")
@@ -138,6 +142,19 @@ func get_accel_input() -> float:
 	if not is_mobile_platform():
 		return 0.0
 	return accel_input
+
+func get_accel_display_value() -> float:
+	# Returns locked value for UI display when in aiming mode
+	if _accel_display_locked:
+		return _locked_accel_display_value
+	return get_accel_input()
+
+func lock_accel_display(value: float):
+	_accel_display_locked = true
+	_locked_accel_display_value = value
+
+func unlock_accel_display():
+	_accel_display_locked = false
 
 func is_mobile_active() -> bool:
 	# Only active if both: platform supports mobile AND user has enabled mobile controls

@@ -31,7 +31,7 @@ func _ready():
 func _process(delta):
 	# Update accelerometer bar
 	if accel_bar_fill and mobile_controls_enabled and MobileInputManager:
-		var accel_value = MobileInputManager.get_accel_input()
+		var accel_value = MobileInputManager.get_accel_display_value()
 
 		# Smooth the acceleration value to reduce jitter
 		var smoothing_speed = 8.0  # Lower = smoother but slower response

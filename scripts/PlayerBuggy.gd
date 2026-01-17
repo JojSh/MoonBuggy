@@ -41,6 +41,10 @@ var rocket_diarrhea_armed: bool = false  # Triggers on next fire
 var _fire_held: bool = false
 var _fire_released: bool = false
 
+# Mobile aiming mode - when fire held, lock accel and use tilt for pitch
+var _mobile_aiming: bool = false
+var _locked_accel_value: float = 0.0
+
 # Variables for gradual reorientation
 const REORIENTATION_COOLDOWN_DURATION := 3.0  # 3.0 second cooldown
 var reorientation_timer := 0.0
@@ -197,10 +201,13 @@ func _physics_process(delta: float):
 		# Don't reset the flag here - let it reset when car is no longer stuck
 
 	# Calculate fire input state once per frame (used for both targeting and firing)
+	var was_fire_held = _fire_held
 	_fire_held = false
 	_fire_released = false
+	var is_mobile = MobileInputManager and MobileInputManager.has_method("is_mobile_active") and MobileInputManager.is_mobile_active()
+
 	if is_local_player or not NetworkManager.is_multiplayer_active():
-		if MobileInputManager and MobileInputManager.has_method("is_mobile_active") and MobileInputManager.is_mobile_active():
+		if is_mobile:
 			if MobileInputManager.has_method("get_fire_button_held"):
 				_fire_held = MobileInputManager.get_fire_button_held()
 			if MobileInputManager.has_method("get_fire_just_released"):
@@ -209,6 +216,20 @@ func _physics_process(delta: float):
 			_fire_held = Input.is_action_pressed(str("p", input_player_number, "_fire"))
 			_fire_released = Input.is_action_just_released(str("p", input_player_number, "_fire"))
 
+	# Mobile aiming mode: lock acceleration when fire is first pressed
+	if is_mobile and _fire_held and not was_fire_held:
+		# Just started holding fire - lock current acceleration and display
+		_locked_accel_value = MobileInputManager.get_accel_input() if MobileInputManager.has_method("get_accel_input") else 0.0
+		_mobile_aiming = true
+		if MobileInputManager.has_method("lock_accel_display"):
+			MobileInputManager.lock_accel_display(_locked_accel_value)
+	elif is_mobile and not _fire_held and _mobile_aiming:
+		_mobile_aiming = false
+		if MobileInputManager.has_method("unlock_accel_display"):
+			MobileInputManager.unlock_accel_display()
+
+	# Handle targeting/laser sight (independent of mobile aiming mode)
+	if is_local_player or not NetworkManager.is_multiplayer_active():
 		# Locked camera: crosshair always visible (only after player has manually toggled), laser shows when aiming
 		if $ChaseCamLocked.current and has_manually_toggled_camera:
 			emit_signal("show_crosshair")
@@ -594,21 +615,25 @@ func handle_acceleration_input ():
 
 	# Check mobile tilt input first
 	if is_local_player and MobileInputManager and MobileInputManager.has_method("is_mobile_active") and MobileInputManager.is_mobile_active():
-		if MobileInputManager.has_method("get_accel_input"):
+		# Use locked acceleration when in mobile aiming mode, otherwise read current tilt
+		if _mobile_aiming:
+			accel_value = _locked_accel_value
+		elif MobileInputManager.has_method("get_accel_input"):
 			accel_value = MobileInputManager.get_accel_input()
-			# Only process forward tilt (positive values after negation)
-			if accel_value > 0:
-				var speed := linear_velocity.length()
-				# Special handling for low speeds to help overcome initial inertia
-				if speed < 5.0 and not is_zero_approx(speed):
-					# At low speeds, apply extra force (inverse to speed)
-					engine_force = clampf(engine_force_value * 5.0 / speed * accel_value, 0.0, 100.0)
-				else:
-					# At non-low speeds, use regular engine force scaled by tilt amount
-					engine_force = engine_force_value * accel_value
+
+		# Only process forward tilt (positive values)
+		if accel_value > 0:
+			var speed := linear_velocity.length()
+			# Special handling for low speeds to help overcome initial inertia
+			if speed < 5.0 and not is_zero_approx(speed):
+				# At low speeds, apply extra force (inverse to speed)
+				engine_force = clampf(engine_force_value * 5.0 / speed * accel_value, 0.0, 100.0)
 			else:
-				engine_force = 0.0
-			return
+				# At non-low speeds, use regular engine force scaled by tilt amount
+				engine_force = engine_force_value * accel_value
+		else:
+			engine_force = 0.0
+		return
 
 	# Desktop input
 	if Input.is_action_pressed(str("p", input_player_number, "_accelerate")):
@@ -628,18 +653,23 @@ func handle_acceleration_input ():
 func handle_reverse_input ():
 	# Check mobile tilt input first
 	if is_local_player and MobileInputManager and MobileInputManager.has_method("is_mobile_active") and MobileInputManager.is_mobile_active():
-		if MobileInputManager.has_method("get_accel_input"):
-			var accel_value = MobileInputManager.get_accel_input()
-			# Only process backward tilt (negative values)
-			if accel_value < 0:
-				var speed := linear_velocity.length()
-				var reverse_strength = abs(accel_value)
-				# Special handling for low speeds
-				if speed < 5.0 and not is_zero_approx(speed):
-					engine_force = -clampf(engine_force_value * BRAKE_STRENGTH * 5.0 / speed * reverse_strength, 0.0, 100.0)
-				else:
-					engine_force = -engine_force_value * BRAKE_STRENGTH * reverse_strength
-			return
+		# Use locked acceleration when in mobile aiming mode, otherwise read current tilt
+		var accel_value = 0.0
+		if _mobile_aiming:
+			accel_value = _locked_accel_value
+		elif MobileInputManager.has_method("get_accel_input"):
+			accel_value = MobileInputManager.get_accel_input()
+
+		# Only process backward tilt (negative values)
+		if accel_value < 0:
+			var speed := linear_velocity.length()
+			var reverse_strength = abs(accel_value)
+			# Special handling for low speeds
+			if speed < 5.0 and not is_zero_approx(speed):
+				engine_force = -clampf(engine_force_value * BRAKE_STRENGTH * 5.0 / speed * reverse_strength, 0.0, 100.0)
+			else:
+				engine_force = -engine_force_value * BRAKE_STRENGTH * reverse_strength
+		return
 
 	# Desktop input
 	if Input.is_action_pressed(str("p", input_player_number, "_reverse")):
@@ -659,16 +689,27 @@ func handle_pitch_input():
 	# Only allow pitching when all wheels are grounded
 	if not are_all_wheels_grounded():
 		return
-	
+
 	var pitch_torque_vector = Vector3.ZERO
-	
-	if Input.is_action_pressed(str("p", input_player_number, "_angle_up")):
-		# Stronger torque for angling up
-		pitch_torque_vector = global_transform.basis.x * -1.0 * PITCH_TORQUE_UP
-	elif Input.is_action_pressed(str("p", input_player_number, "_angle_down")):
-		# Weaker torque for angling down
-		pitch_torque_vector = global_transform.basis.x * 1.0 * PITCH_TORQUE_DOWN
-	
+
+	# Mobile aiming mode: use tilt for pitch control
+	if _mobile_aiming and MobileInputManager and MobileInputManager.has_method("get_accel_input"):
+		var tilt_value = MobileInputManager.get_accel_input()
+		# Use the same tilt range as acceleration but for pitch
+		# Positive tilt (forward) = angle down, negative tilt (back) = angle up
+		if tilt_value > 0.1:  # Small deadzone
+			pitch_torque_vector = global_transform.basis.x * 1.0 * PITCH_TORQUE_DOWN * tilt_value
+		elif tilt_value < -0.1:
+			pitch_torque_vector = global_transform.basis.x * -1.0 * PITCH_TORQUE_UP * abs(tilt_value)
+	else:
+		# Desktop/controller input
+		if Input.is_action_pressed(str("p", input_player_number, "_angle_up")):
+			# Stronger torque for angling up
+			pitch_torque_vector = global_transform.basis.x * -1.0 * PITCH_TORQUE_UP
+		elif Input.is_action_pressed(str("p", input_player_number, "_angle_down")):
+			# Weaker torque for angling down
+			pitch_torque_vector = global_transform.basis.x * 1.0 * PITCH_TORQUE_DOWN
+
 	if pitch_torque_vector != Vector3.ZERO:
 		apply_torque(pitch_torque_vector)
 
