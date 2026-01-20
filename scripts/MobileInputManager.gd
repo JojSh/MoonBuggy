@@ -10,7 +10,7 @@ signal shake_detected
 # Tilt sensitivity
 @export var tilt_sensitivity: float = 2.0
 @export var tilt_deadzone: float = 0.1
-@export var accel_tilt_deadzone: float = 0.5
+@export var accel_tilt_deadzone: float = 0.8
 
 # Current tilt steering value (-1 to 1)
 var steering_input: float = 0.0

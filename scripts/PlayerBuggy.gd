@@ -41,9 +41,16 @@ var rocket_diarrhea_armed: bool = false  # Triggers on next fire
 var _fire_held: bool = false
 var _fire_released: bool = false
 
-# Mobile aiming mode - when fire held, lock accel and use tilt for pitch
+# Mobile aiming mode - when fire held, lock accel and use tilt for rocket pitch
 var _mobile_aiming: bool = false
 var _locked_accel_value: float = 0.0
+var _rocket_aim_pitch: float = 0.0  # Current pitch offset for rocket/laser aiming
+var _smoothed_aim_tilt: float = 0.0  # Smoothed tilt value for aiming
+var _should_reset_aim_after_fire: bool = false  # Flag to reset aim after firing
+var _mobile_aim_delay_elapsed: float = 0.0  # Time elapsed since fire button pressed on mobile
+const ROCKET_AIM_MAX_PITCH: float = 0.5  # Max pitch angle in radians (~28 degrees)
+const MOBILE_AIM_DELAY: float = 0.2  # Delay before tilt affects aim (prevents accidental ground shots)
+const MOBILE_AIM_SMOOTHING: float = 5.0  # How quickly the aim smoothly follows tilt (higher = faster)
 
 # Variables for gradual reorientation
 const REORIENTATION_COOLDOWN_DURATION := 3.0  # 3.0 second cooldown
@@ -221,10 +228,14 @@ func _physics_process(delta: float):
 		# Just started holding fire - lock current acceleration and display
 		_locked_accel_value = MobileInputManager.get_accel_input() if MobileInputManager.has_method("get_accel_input") else 0.0
 		_mobile_aiming = true
+		_rocket_aim_pitch = 0.0  # Reset aim pitch when starting to aim
+		_mobile_aim_delay_elapsed = 0.0  # Reset delay timer
 		if MobileInputManager.has_method("lock_accel_display"):
 			MobileInputManager.lock_accel_display(_locked_accel_value)
 	elif is_mobile and not _fire_held and _mobile_aiming:
 		_mobile_aiming = false
+		# Note: Don't reset rocket aim here - it needs to persist until after firing
+		# The reset happens in handle_fire_input() after the rocket is launched
 		if MobileInputManager.has_method("unlock_accel_display"):
 			MobileInputManager.unlock_accel_display()
 
@@ -686,32 +697,49 @@ func are_all_wheels_grounded() -> bool:
 	return $Wheel1.is_in_contact() and $Wheel2.is_in_contact() and $Wheel3.is_in_contact() and $Wheel4.is_in_contact()
 
 func handle_pitch_input():
-	# Only allow pitching when all wheels are grounded
-	if not are_all_wheels_grounded():
+	var aim_speed = 2.0  # How fast the rocket aims (radians per second)
+	var delta = get_physics_process_delta_time()
+
+	# Mobile aiming mode: use tilt to aim rocket/laser
+	if _mobile_aiming and MobileInputManager and MobileInputManager.has_method("get_accel_input"):
+		# Increment delay timer
+		_mobile_aim_delay_elapsed += delta
+		# Only apply tilt after delay (prevents accidental ground shots from quick taps)
+		if _mobile_aim_delay_elapsed >= MOBILE_AIM_DELAY:
+			var tilt_value = MobileInputManager.get_accel_input()
+			# Calculate target pitch from tilt
+			# Positive tilt (forward) = aim down, negative tilt (back) = aim up
+			var target_pitch = 0.0
+			if abs(tilt_value) > 0.25:  # Deadzone to reduce jitter
+				target_pitch = clamp(-tilt_value * ROCKET_AIM_MAX_PITCH, -ROCKET_AIM_MAX_PITCH, ROCKET_AIM_MAX_PITCH)
+			# Smoothly interpolate toward target pitch
+			_rocket_aim_pitch = lerp(_rocket_aim_pitch, target_pitch, MOBILE_AIM_SMOOTHING * delta)
+			_apply_rocket_aim()
 		return
 
-	var pitch_torque_vector = Vector3.ZERO
+	# Desktop/controller input: aim rocket/laser with angle up/down keys
+	if Input.is_action_pressed(str("p", input_player_number, "_angle_up")):
+		_rocket_aim_pitch = clamp(_rocket_aim_pitch + aim_speed * delta, -ROCKET_AIM_MAX_PITCH, ROCKET_AIM_MAX_PITCH)
+		_apply_rocket_aim()
+	elif Input.is_action_pressed(str("p", input_player_number, "_angle_down")):
+		_rocket_aim_pitch = clamp(_rocket_aim_pitch - aim_speed * delta, -ROCKET_AIM_MAX_PITCH, ROCKET_AIM_MAX_PITCH)
+		_apply_rocket_aim()
+	elif _rocket_aim_pitch != 0.0:
+		# Gradually return to neutral when not pressing
+		_rocket_aim_pitch = move_toward(_rocket_aim_pitch, 0.0, aim_speed * delta)
+		_apply_rocket_aim()
 
-	# Mobile aiming mode: use tilt for pitch control
-	if _mobile_aiming and MobileInputManager and MobileInputManager.has_method("get_accel_input"):
-		var tilt_value = MobileInputManager.get_accel_input()
-		# Use the same tilt range as acceleration but for pitch
-		# Positive tilt (forward) = angle down, negative tilt (back) = angle up
-		if tilt_value > 0.1:  # Small deadzone
-			pitch_torque_vector = global_transform.basis.x * 1.0 * PITCH_TORQUE_DOWN * tilt_value
-		elif tilt_value < -0.1:
-			pitch_torque_vector = global_transform.basis.x * -1.0 * PITCH_TORQUE_UP * abs(tilt_value)
-	else:
-		# Desktop/controller input
-		if Input.is_action_pressed(str("p", input_player_number, "_angle_up")):
-			# Stronger torque for angling up
-			pitch_torque_vector = global_transform.basis.x * -1.0 * PITCH_TORQUE_UP
-		elif Input.is_action_pressed(str("p", input_player_number, "_angle_down")):
-			# Weaker torque for angling down
-			pitch_torque_vector = global_transform.basis.x * 1.0 * PITCH_TORQUE_DOWN
+func _apply_rocket_aim():
+	# Rotate rocket launcher and targeting laser based on aim pitch
+	# Note: TargetingLaser has opposite orientation, so negate its rotation
+	$RocketLauncher.rotation.x = _rocket_aim_pitch
+	$TargetingLaser.rotation.x = -_rocket_aim_pitch
 
-	if pitch_torque_vector != Vector3.ZERO:
-		apply_torque(pitch_torque_vector)
+func _reset_rocket_aim():
+	# Reset rocket/laser to default orientation
+	_rocket_aim_pitch = 0.0
+	$RocketLauncher.rotation.x = 0.0
+	$TargetingLaser.rotation.x = 0.0
 
 func handle_fire_input():
 	# Fire on release - uses _fire_released calculated earlier in _physics_process
@@ -721,6 +749,9 @@ func handle_fire_input():
 			activate_rocket_diarrhea()
 		elif current_reload_level > 0:
 			rocket_launcher.fire_rocket()
+		# Reset rocket aim after firing on mobile (aim persisted until this point)
+		if MobileInputManager and MobileInputManager.has_method("is_mobile_active") and MobileInputManager.is_mobile_active():
+			_reset_rocket_aim()
 
 func auto_reorient_vehicle_if_stuck_too_long(delta):
 	# Skip this check if we're already in a reorientation process

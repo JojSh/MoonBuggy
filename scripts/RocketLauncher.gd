@@ -11,11 +11,15 @@ var rocket_count: int = 0  # Track rockets fired by this launcher
 func fire_rocket():
 	if !can_fire: return
 	hide_rocket()
-	
+
 	# Get the firing player's information
 	var firing_player = get_parent()  # Should be the PlayerBuggy
 	var player_number = firing_player.player_number
 	var launcher_transform = $MeshInstance3D.global_transform
+
+	# Offset spawn position forward to avoid collision with car when launcher is angled
+	var forward_offset = -launcher_transform.basis.x * 1  # Push 0.5 units in firing direction
+	launcher_transform.origin += forward_offset
 	
 	# Use multiplayer rocket spawning if in network mode
 	if NetworkManager.is_multiplayer_active():
