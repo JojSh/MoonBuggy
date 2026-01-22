@@ -1401,12 +1401,20 @@ func _report_player_death():
 	"""Authoritative death report from the dying player"""
 	# Force this player to die on all clients
 	if not is_dead:
+		# Capture position and velocity before disabling physics (for death visual effects)
+		var death_position = global_position
+		var death_velocity = linear_velocity
+
 		# Don't call die() here as it would broadcast again
 		# Just set the death state
 		is_dead = true
 		set_physics_process(false)
 		set_process_input(false)
 		$EngineSound.stop()
+
+		# Create visual death effects (parts flying apart) - same as in die()
+		for original_part in original_parts:
+			generate_and_separate_clone_of_part(original_part, death_velocity, death_position)
 
 		# Notify game manager
 		var root_node = get_tree().root.get_node_or_null("RootNode")
