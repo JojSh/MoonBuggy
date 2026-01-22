@@ -41,6 +41,21 @@ func load_map(map_index):
 func cycle_to_next_map():
 	# Calculate next map index (with wrap-around)
 	var next_map_index = (current_map_index + 1) % AVAILABLE_MAPS.size()
-	
+
 	# Load the next map
 	load_map(next_map_index)
+
+# Map name to index mapping
+const MAP_NAME_TO_INDEX = {
+	"Map1": 0,
+	"Map2": 1,
+	"ObstacleCourse1P": 2,
+	"ObstacleCourse1P2": 3
+}
+
+# Loads a specific map by name
+func load_map_by_name(map_name: String):
+	if MAP_NAME_TO_INDEX.has(map_name):
+		load_map(MAP_NAME_TO_INDEX[map_name])
+	else:
+		push_error("Unknown map name: " + map_name)

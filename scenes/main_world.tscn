@@ -99,54 +99,261 @@ color = Color(0.302973, 0.180791, 0.35748, 1)
 layout_mode = 2
 alignment = 1
 
-[node name="SinglePlayerLocalButton" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
+[node name="PlayOnlineButton" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"FlatButton"
 theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
 theme_override_font_sizes/font_size = 48
-text = "Single player (local)"
+text = "Play Online"
 
-[node name="TwoPlayerSplitScreenButton" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
+[node name="PlayOfflineButton" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"FlatButton"
 theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
 theme_override_font_sizes/font_size = 48
-text = "Two player split-screen"
+text = "Play Offline"
 
-[node name="ThreePlayerSplitScreenButton" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
-layout_mode = 2
-theme_type_variation = &"FlatButton"
-theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
-theme_override_font_sizes/font_size = 48
-text = "Three player split-screen"
+[node name="OfflineMenuContainer" type="MarginContainer" parent="MenuContainer/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="FourPlayerSplitScreenButton" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
+[node name="ColorRect" type="ColorRect" parent="MenuContainer/Control/OfflineMenuContainer"]
 layout_mode = 2
-theme_type_variation = &"FlatButton"
-theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
-theme_override_font_sizes/font_size = 48
-text = "Four player split-screen"
+color = Color(0.302973, 0.180791, 0.35748, 1)
 
-[node name="NetworkMultiplayer" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuContainer/Control/OfflineMenuContainer"]
 layout_mode = 2
-theme_type_variation = &"FlatButton"
-theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
-theme_override_font_sizes/font_size = 48
-text = "Network multiplayer"
+alignment = 1
 
-[node name="DebugToggle" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
+[node name="SinglePlayerButton" type="Button" parent="MenuContainer/Control/OfflineMenuContainer/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"FlatButton"
 theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
 theme_override_font_sizes/font_size = 48
-text = "Toggle debug on/off"
+text = "Single Player"
 
-[node name="ChangeMap" type="Button" parent="MenuContainer/Control/MainMenuContainer/VBoxContainer"]
+[node name="MultiplayerButton" type="Button" parent="MenuContainer/Control/OfflineMenuContainer/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"FlatButton"
 theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
 theme_override_font_sizes/font_size = 48
-text = "Change map: "
+text = "Local Multiplayer"
+
+[node name="DebugToggle" type="Button" parent="MenuContainer/Control/OfflineMenuContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "Debug: Off"
+
+[node name="BackButton" type="Button" parent="MenuContainer/Control/OfflineMenuContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "Back"
+
+[node name="SinglePlayerMenuContainer" type="MarginContainer" parent="MenuContainer/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="MenuContainer/Control/SinglePlayerMenuContainer"]
+layout_mode = 2
+color = Color(0.302973, 0.180791, 0.35748, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuContainer/Control/SinglePlayerMenuContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="ExploreButton" type="Button" parent="MenuContainer/Control/SinglePlayerMenuContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "Explore"
+
+[node name="TimeTrialsButton" type="Button" parent="MenuContainer/Control/SinglePlayerMenuContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "Time Trials"
+
+[node name="BackButton" type="Button" parent="MenuContainer/Control/SinglePlayerMenuContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "Back"
+
+[node name="PlayerCountMenuContainer" type="MarginContainer" parent="MenuContainer/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="MenuContainer/Control/PlayerCountMenuContainer"]
+layout_mode = 2
+color = Color(0.302973, 0.180791, 0.35748, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuContainer/Control/PlayerCountMenuContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="TwoPlayerButton" type="Button" parent="MenuContainer/Control/PlayerCountMenuContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "2 Players"
+
+[node name="ThreePlayerButton" type="Button" parent="MenuContainer/Control/PlayerCountMenuContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "3 Players"
+
+[node name="FourPlayerButton" type="Button" parent="MenuContainer/Control/PlayerCountMenuContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "4 Players"
+
+[node name="BackButton" type="Button" parent="MenuContainer/Control/PlayerCountMenuContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "Back"
+
+[node name="ExploreMapsContainer" type="MarginContainer" parent="MenuContainer/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="MenuContainer/Control/ExploreMapsContainer"]
+layout_mode = 2
+color = Color(0.302973, 0.180791, 0.35748, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuContainer/Control/ExploreMapsContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Map1Button" type="Button" parent="MenuContainer/Control/ExploreMapsContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "Map 1"
+
+[node name="Map2Button" type="Button" parent="MenuContainer/Control/ExploreMapsContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "Map 2"
+
+[node name="BackButton" type="Button" parent="MenuContainer/Control/ExploreMapsContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "Back"
+
+[node name="TimeTrialMapsContainer" type="MarginContainer" parent="MenuContainer/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="MenuContainer/Control/TimeTrialMapsContainer"]
+layout_mode = 2
+color = Color(0.302973, 0.180791, 0.35748, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuContainer/Control/TimeTrialMapsContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="ObstacleCourse1Button" type="Button" parent="MenuContainer/Control/TimeTrialMapsContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "Obstacle Course 1"
+
+[node name="ObstacleCourse2Button" type="Button" parent="MenuContainer/Control/TimeTrialMapsContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "Obstacle Course 2"
+
+[node name="BackButton" type="Button" parent="MenuContainer/Control/TimeTrialMapsContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "Back"
+
+[node name="MultiplayerMapsContainer" type="MarginContainer" parent="MenuContainer/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="MenuContainer/Control/MultiplayerMapsContainer"]
+layout_mode = 2
+color = Color(0.302973, 0.180791, 0.35748, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuContainer/Control/MultiplayerMapsContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Map1Button" type="Button" parent="MenuContainer/Control/MultiplayerMapsContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "Map 1"
+
+[node name="Map2Button" type="Button" parent="MenuContainer/Control/MultiplayerMapsContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "Map 2"
+
+[node name="BackButton" type="Button" parent="MenuContainer/Control/MultiplayerMapsContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "Back"
 
 [node name="GameOverScreen" type="MarginContainer" parent="MenuContainer/Control"]
 visible = false
@@ -391,13 +598,28 @@ script = ExtResource("9_rocket_mgr")
 [node name="World" type="Node3D" parent="."]
 script = ExtResource("7_682lk")
 
-[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/SinglePlayerLocalButton" to="." method="_on_choose_player_count_button_pressed" binds= [1]]
-[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/TwoPlayerSplitScreenButton" to="." method="_on_choose_player_count_button_pressed" binds= [2]]
-[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/ThreePlayerSplitScreenButton" to="." method="_on_choose_player_count_button_pressed" binds= [3]]
-[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/FourPlayerSplitScreenButton" to="." method="_on_choose_player_count_button_pressed" binds= [4]]
-[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/NetworkMultiplayer" to="." method="_on_network_multiplayer_pressed"]
-[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/DebugToggle" to="." method="_on_debug_toggle_pressed"]
-[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/ChangeMap" to="." method="_on_change_map_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/PlayOnlineButton" to="." method="_on_play_online_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/MainMenuContainer/VBoxContainer/PlayOfflineButton" to="." method="_on_play_offline_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/OfflineMenuContainer/VBoxContainer/SinglePlayerButton" to="." method="_on_single_player_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/OfflineMenuContainer/VBoxContainer/MultiplayerButton" to="." method="_on_local_multiplayer_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/OfflineMenuContainer/VBoxContainer/DebugToggle" to="." method="_on_debug_toggle_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/OfflineMenuContainer/VBoxContainer/BackButton" to="." method="_on_offline_back_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/SinglePlayerMenuContainer/VBoxContainer/ExploreButton" to="." method="_on_explore_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/SinglePlayerMenuContainer/VBoxContainer/TimeTrialsButton" to="." method="_on_time_trials_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/SinglePlayerMenuContainer/VBoxContainer/BackButton" to="." method="_on_single_player_back_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/PlayerCountMenuContainer/VBoxContainer/TwoPlayerButton" to="." method="_on_player_count_selected" binds= [2]]
+[connection signal="pressed" from="MenuContainer/Control/PlayerCountMenuContainer/VBoxContainer/ThreePlayerButton" to="." method="_on_player_count_selected" binds= [3]]
+[connection signal="pressed" from="MenuContainer/Control/PlayerCountMenuContainer/VBoxContainer/FourPlayerButton" to="." method="_on_player_count_selected" binds= [4]]
+[connection signal="pressed" from="MenuContainer/Control/PlayerCountMenuContainer/VBoxContainer/BackButton" to="." method="_on_player_count_back_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/ExploreMapsContainer/VBoxContainer/Map1Button" to="." method="_on_explore_map_selected" binds= ["Map1"]]
+[connection signal="pressed" from="MenuContainer/Control/ExploreMapsContainer/VBoxContainer/Map2Button" to="." method="_on_explore_map_selected" binds= ["Map2"]]
+[connection signal="pressed" from="MenuContainer/Control/ExploreMapsContainer/VBoxContainer/BackButton" to="." method="_on_explore_maps_back_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/TimeTrialMapsContainer/VBoxContainer/ObstacleCourse1Button" to="." method="_on_time_trial_map_selected" binds= ["ObstacleCourse1P"]]
+[connection signal="pressed" from="MenuContainer/Control/TimeTrialMapsContainer/VBoxContainer/ObstacleCourse2Button" to="." method="_on_time_trial_map_selected" binds= ["ObstacleCourse1P2"]]
+[connection signal="pressed" from="MenuContainer/Control/TimeTrialMapsContainer/VBoxContainer/BackButton" to="." method="_on_time_trial_maps_back_pressed"]
+[connection signal="pressed" from="MenuContainer/Control/MultiplayerMapsContainer/VBoxContainer/Map1Button" to="." method="_on_multiplayer_map_selected" binds= ["Map1"]]
+[connection signal="pressed" from="MenuContainer/Control/MultiplayerMapsContainer/VBoxContainer/Map2Button" to="." method="_on_multiplayer_map_selected" binds= ["Map2"]]
+[connection signal="pressed" from="MenuContainer/Control/MultiplayerMapsContainer/VBoxContainer/BackButton" to="." method="_on_multiplayer_maps_back_pressed"]
 [connection signal="pressed" from="MenuContainer/Control/GameOverScreen/VBoxContainer/PlayAgainButton" to="." method="_on_play_again_button_pressed"]
 [connection signal="pressed" from="MenuContainer/Control/GameOverScreen/VBoxContainer/ReturnToMainMenuButton" to="." method="_on_return_to_main_menu_button_pressed"]
 [connection signal="pressed" from="MenuContainer/Control/PauseMenuScreen/VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]

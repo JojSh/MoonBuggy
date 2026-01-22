@@ -18,7 +18,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.1, 0.1, 0.2, 0.9)
+color = Color(0.302973, 0.180791, 0.35748, 1)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -37,48 +37,18 @@ alignment = 1
 
 [node name="Title" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
-text = "Network Multiplayer"
+theme_override_font_sizes/font_size = 48
+text = "Play Online"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
 layout_mode = 2
 
-[node name="HostButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 40
-text = "Host Game"
-
-[node name="JoinContainer" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-
-[node name="IPInput" type="LineEdit" parent="VBoxContainer/JoinContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 40
-text = "127.0.0.1"
-placeholder_text = "192.168.1.100"
-alignment = 1
-
-[node name="JoinButton" type="Button" parent="VBoxContainer/JoinContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 40
-text = "Join Game"
-
-[node name="LocalModeButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 40
-text = "Local Multiplayer (Skip Network)"
-
-[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
-layout_mode = 2
-
 [node name="StatusLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
-text = "Ready to connect..."
+text = "Connecting..."
 horizontal_alignment = 1
 
 [node name="PlayersList" type="VBoxContainer" parent="VBoxContainer"]
@@ -111,28 +81,24 @@ theme_override_font_sizes/font_size = 32
 placeholder_text = "Enter your name"
 max_length = 20
 
-[node name="UpdateNameButton" type="Button" parent="VBoxContainer/NameContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 32
-text = "Update"
-
-[node name="HSeparator3" type="HSeparator" parent="VBoxContainer"]
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
 layout_mode = 2
 
 [node name="StartGameButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
 disabled = true
-text = "Start Game"
+text = "Play!"
 
 [node name="BackButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
-text = "Back to Main Menu"
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
+theme_override_font_sizes/font_size = 48
+text = "Back"
 
-[connection signal="pressed" from="VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/JoinContainer/JoinButton" to="." method="_on_join_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/LocalModeButton" to="." method="_on_local_mode_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/NameContainer/UpdateNameButton" to="." method="_on_update_name_button_pressed"]
+[connection signal="text_changed" from="VBoxContainer/NameContainer/NameInput" to="." method="_on_name_input_text_changed"]
 [connection signal="pressed" from="VBoxContainer/StartGameButton" to="." method="_on_start_game_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]

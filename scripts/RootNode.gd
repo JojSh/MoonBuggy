@@ -13,6 +13,9 @@ var all_active_rockets: Array[RigidBody3D] = []
 var network_lobby_scene = preload("res://scenes/NetworkLobby.tscn")
 var network_lobby_instance = null
 
+# Menu navigation state
+var selected_player_count: int = 1
+
 func _ready():
 	if GameSettings.should_skip_main_menu:
 		hide_main_menu()
@@ -31,10 +34,21 @@ func _process(delta):
 
 func show_main_menu():
 	get_tree().paused = true
+	hide_all_menus()
 	$MenuContainer.visible = true
 	$MenuContainer/Control/MainMenuContainer.visible = true
-	$MenuContainer/Control/MainMenuContainer/VBoxContainer/SinglePlayerLocalButton.grab_focus()
-	update_map_display_text()
+	$MenuContainer/Control/MainMenuContainer/VBoxContainer/PlayOnlineButton.grab_focus()
+
+func hide_all_menus():
+	$MenuContainer/Control/MainMenuContainer.visible = false
+	$MenuContainer/Control/OfflineMenuContainer.visible = false
+	$MenuContainer/Control/SinglePlayerMenuContainer.visible = false
+	$MenuContainer/Control/PlayerCountMenuContainer.visible = false
+	$MenuContainer/Control/ExploreMapsContainer.visible = false
+	$MenuContainer/Control/TimeTrialMapsContainer.visible = false
+	$MenuContainer/Control/MultiplayerMapsContainer.visible = false
+	$MenuContainer/Control/GameOverScreen.visible = false
+	$MenuContainer/Control/PauseMenuScreen.visible = false
 
 func hide_main_menu(): 
 	$MenuContainer.visible = false
@@ -234,16 +248,6 @@ func restart_game ():
 func _on_play_again_button_pressed ():
 	restart_game()
 
-func _on_choose_player_count_button_pressed(player_count):
-	GameSettings.desired_number_players = player_count
-	GameSettings.should_skip_main_menu = true
-	hide_main_menu()
-	start_game()
-	get_tree().paused = false
-
-func _on_network_multiplayer_button_pressed():
-	show_network_lobby()
-
 func _on_return_to_main_menu_button_pressed():
 	GameSettings.should_skip_main_menu = false
 	restart_game()
@@ -304,42 +308,102 @@ func turn_off_debug_mode():
 		fps_display.queue_free()
 
 func _on_debug_toggle_pressed():
-	if (GameSettings.debug_mode_on):
+	if GameSettings.debug_mode_on:
 		turn_off_debug_mode()
+		$MenuContainer/Control/OfflineMenuContainer/VBoxContainer/DebugToggle.text = "Debug: Off"
 	else:
 		turn_on_debug_mode()
+		$MenuContainer/Control/OfflineMenuContainer/VBoxContainer/DebugToggle.text = "Debug: On"
 
-func _on_change_map_pressed():
-	$World.cycle_to_next_map()
-	
-	# Reset player positions on the new map
-	assign_spawn_points()
+# New menu navigation functions
+func _on_play_online_pressed():
+	show_network_lobby()
 
-	update_map_display_text()
+func _on_play_offline_pressed():
+	hide_all_menus()
+	$MenuContainer/Control/OfflineMenuContainer.visible = true
+	$MenuContainer/Control/OfflineMenuContainer/VBoxContainer/SinglePlayerButton.grab_focus()
 
-func update_map_display_text():
-	#var current_player = get_current_player(1)
-	if (current_map.name.begins_with("ObstacleCourse")):
-		hide_multiplayer_options()
-	else:
-		unhide_multiplayer_options()
-	$MenuContainer/Control/MainMenuContainer/VBoxContainer/ChangeMap.text = "Change map: " + current_map.name + " "
+func _on_single_player_pressed():
+	hide_all_menus()
+	$MenuContainer/Control/SinglePlayerMenuContainer.visible = true
+	$MenuContainer/Control/SinglePlayerMenuContainer/VBoxContainer/ExploreButton.grab_focus()
 
-func hide_multiplayer_options ():
-	var twoPlayerButton = $MenuContainer/Control/MainMenuContainer/VBoxContainer/TwoPlayerSplitScreenButton
-	var threePlayerButton = $MenuContainer/Control/MainMenuContainer/VBoxContainer/ThreePlayerSplitScreenButton
-	var fourPlayerButton = $MenuContainer/Control/MainMenuContainer/VBoxContainer/FourPlayerSplitScreenButton
+func _on_local_multiplayer_pressed():
+	hide_all_menus()
+	$MenuContainer/Control/PlayerCountMenuContainer.visible = true
+	$MenuContainer/Control/PlayerCountMenuContainer/VBoxContainer/TwoPlayerButton.grab_focus()
 
-	for button in [twoPlayerButton, threePlayerButton, fourPlayerButton]:
-		button.visible = false
+func _on_offline_back_pressed():
+	show_main_menu()
 
-func unhide_multiplayer_options ():
-	var twoPlayerButton = $MenuContainer/Control/MainMenuContainer/VBoxContainer/TwoPlayerSplitScreenButton
-	var threePlayerButton = $MenuContainer/Control/MainMenuContainer/VBoxContainer/ThreePlayerSplitScreenButton
-	var fourPlayerButton = $MenuContainer/Control/MainMenuContainer/VBoxContainer/FourPlayerSplitScreenButton
+func _on_explore_pressed():
+	hide_all_menus()
+	$MenuContainer/Control/ExploreMapsContainer.visible = true
+	$MenuContainer/Control/ExploreMapsContainer/VBoxContainer/Map1Button.grab_focus()
 
-	for button in [twoPlayerButton, threePlayerButton, fourPlayerButton]:
-		button.visible = true
+func _on_time_trials_pressed():
+	hide_all_menus()
+	$MenuContainer/Control/TimeTrialMapsContainer.visible = true
+	$MenuContainer/Control/TimeTrialMapsContainer/VBoxContainer/ObstacleCourse1Button.grab_focus()
+
+func _on_single_player_back_pressed():
+	hide_all_menus()
+	$MenuContainer/Control/OfflineMenuContainer.visible = true
+	$MenuContainer/Control/OfflineMenuContainer/VBoxContainer/SinglePlayerButton.grab_focus()
+
+func _on_player_count_selected(count: int):
+	selected_player_count = count
+	hide_all_menus()
+	$MenuContainer/Control/MultiplayerMapsContainer.visible = true
+	$MenuContainer/Control/MultiplayerMapsContainer/VBoxContainer/Map1Button.grab_focus()
+
+func _on_player_count_back_pressed():
+	hide_all_menus()
+	$MenuContainer/Control/OfflineMenuContainer.visible = true
+	$MenuContainer/Control/OfflineMenuContainer/VBoxContainer/MultiplayerButton.grab_focus()
+
+func _on_explore_map_selected(map_name: String):
+	$World.load_map_by_name(map_name)
+	current_map = $World.current_map_instance
+	GameSettings.desired_number_players = 1
+	GameSettings.should_skip_main_menu = true
+	hide_main_menu()
+	start_game()
+	get_tree().paused = false
+
+func _on_time_trial_map_selected(map_name: String):
+	$World.load_map_by_name(map_name)
+	current_map = $World.current_map_instance
+	GameSettings.desired_number_players = 1
+	GameSettings.should_skip_main_menu = true
+	hide_main_menu()
+	start_game()
+	get_tree().paused = false
+
+func _on_explore_maps_back_pressed():
+	hide_all_menus()
+	$MenuContainer/Control/SinglePlayerMenuContainer.visible = true
+	$MenuContainer/Control/SinglePlayerMenuContainer/VBoxContainer/ExploreButton.grab_focus()
+
+func _on_time_trial_maps_back_pressed():
+	hide_all_menus()
+	$MenuContainer/Control/SinglePlayerMenuContainer.visible = true
+	$MenuContainer/Control/SinglePlayerMenuContainer/VBoxContainer/TimeTrialsButton.grab_focus()
+
+func _on_multiplayer_map_selected(map_name: String):
+	$World.load_map_by_name(map_name)
+	current_map = $World.current_map_instance
+	GameSettings.desired_number_players = selected_player_count
+	GameSettings.should_skip_main_menu = true
+	hide_main_menu()
+	start_game()
+	get_tree().paused = false
+
+func _on_multiplayer_maps_back_pressed():
+	hide_all_menus()
+	$MenuContainer/Control/PlayerCountMenuContainer.visible = true
+	$MenuContainer/Control/PlayerCountMenuContainer/VBoxContainer/TwoPlayerButton.grab_focus()
 
 func _on_level_complete():
 	# Stop the timer if it's running
@@ -649,9 +713,6 @@ func _on_network_player_left(peer_id: int):
 	# A player left during gameplay - remove their puppet
 	print("Player ", peer_id, " left the game")
 	# TODO: Remove puppet player here when needed
-
-func _on_network_multiplayer_pressed():
-	show_network_lobby()
 
 func _get_player_name(player_number: int) -> String:
 	# In network mode, get name from NetworkManager

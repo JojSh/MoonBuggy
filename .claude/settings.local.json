@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Read(//Users/jojmartin/Code/**)"
+      "Read(//Users/jojmartin/Code/**)",
+      "Bash(lsof:*)"
     ],
     "deny": [],
     "ask": []
