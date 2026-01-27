@@ -246,6 +246,11 @@ func restart_game ():
 	get_tree().reload_current_scene()
 
 func _on_play_again_button_pressed ():
+	if NetworkManager.is_multiplayer_active():
+		# In network mode on web, refresh the browser to fully reset
+		if OS.has_feature("web"):
+			JavaScriptBridge.eval("location.reload();")
+			return
 	restart_game()
 
 func _on_return_to_main_menu_button_pressed():

@@ -1251,37 +1251,38 @@ func switch_off_obstacle_course_mode ():
 	_update_boost_display()
 
 func setup_network_player():
-	# Start engine sound when game begins
-	$EngineSound.play()
-	
-	
 	if not NetworkManager.is_multiplayer_active():
 		is_local_player = true
 		input_player_number = player_number
+		$EngineSound.play()
 		return
-	
+
 	var local_player_data = NetworkManager.get_local_player_data()
-	
+
 	if local_player_data and local_player_data.has("player_number") and local_player_data.player_number == player_number:
 		is_local_player = true
 		network_player_id = local_player_data.peer_id
 		input_player_number = 1
 		$NetworkSync.set_multiplayer_authority(network_player_id)
+		# Only play engine sound for local player
+		$EngineSound.play()
 	else:
 		is_local_player = false
 		input_player_number = player_number
-		
+
 		var correct_peer_id = -1
 		for peer_data in NetworkManager.connected_players.values():
 			if peer_data.player_number == player_number:
 				correct_peer_id = peer_data.peer_id
 				break
-		
+
 		if correct_peer_id != -1:
 			$NetworkSync.set_multiplayer_authority(correct_peer_id)
 
 		set_physics_process(false)
 		set_process_input(false)
+		# Stop engine sound for remote players
+		$EngineSound.stop()
 
 		# Camera management is handled by RootNode.setup_network_screens()
 
@@ -1428,7 +1429,7 @@ func _report_player_respawn():
 	if not is_local_player:
 		is_dead = false
 		set_physics_process(true)
-		$EngineSound.play()
+		# Don't play engine sound for remote players - only local player hears their own engine
 
 		# Show original parts
 		for part in original_parts:
