@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://b2odhqx24c2t8"]
+[gd_scene load_steps=4 format=3 uid="uid://b2odhqx24c2t8"]
 
 [ext_resource type="Script" uid="uid://mdq56jnu37d4" path="res://scripts/NetworkLobby.gd" id="1_1x2k3"]
+[ext_resource type="PackedScene" uid="uid://cxtblmouwvmye" path="res://scenes/ExplosionPrefab.tscn" id="2_shader_warmup"]
+[ext_resource type="PackedScene" uid="uid://cav45f268cxd7" path="res://scenes/rocket_thruster.tscn" id="3_shader_warmup"]
 
 [node name="NetworkLobby" type="Control"]
 layout_mode = 3
@@ -98,6 +100,36 @@ theme_type_variation = &"FlatButton"
 theme_override_colors/font_focus_color = Color(0.988048, 0.673111, 0.384808, 1)
 theme_override_font_sizes/font_size = 48
 text = "Back"
+
+[node name="ShaderWarmupContainer" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -72.0
+offset_right = 72.0
+offset_bottom = -8.0
+grow_vertical = 0
+
+[node name="ShaderWarmupViewport" type="SubViewport" parent="ShaderWarmupContainer"]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(64, 64)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="ShaderWarmupContainer/ShaderWarmupViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 8)
+current = true
+fov = 60.0
+
+[node name="WarmupEffects" type="Node3D" parent="ShaderWarmupContainer/ShaderWarmupViewport"]
+
+[node name="ExplosionWarmup" parent="ShaderWarmupContainer/ShaderWarmupViewport/WarmupEffects" instance=ExtResource("2_shader_warmup")]
+
+[node name="ThrusterWarmup" parent="ShaderWarmupContainer/ShaderWarmupViewport/WarmupEffects" instance=ExtResource("3_shader_warmup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
 
 [connection signal="text_changed" from="VBoxContainer/NameContainer/NameInput" to="." method="_on_name_input_text_changed"]
 [connection signal="pressed" from="VBoxContainer/StartGameButton" to="." method="_on_start_game_button_pressed"]

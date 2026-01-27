@@ -6,6 +6,7 @@ extends Control
 @onready var players_container = $VBoxContainer/PlayersList/PlayersContainer
 @onready var start_game_button = $VBoxContainer/StartGameButton
 @onready var back_button = $VBoxContainer/BackButton
+@onready var shader_warmup_container = $ShaderWarmupContainer
 
 signal lobby_closed
 signal start_local_game
@@ -26,6 +27,9 @@ func _ready():
 	NetworkManager.connection_failed.connect(_on_connection_failed)
 	NetworkManager.server_disconnected.connect(_on_server_disconnected)
 	NetworkManager.player_data_updated.connect(_on_player_data_updated)
+
+	# Warm up shaders by playing effect animations in the background viewport
+	_start_shader_warmup()
 
 	# Auto-connect to relay
 	back_button.grab_focus()
@@ -197,3 +201,26 @@ func update_ui():
 	else:
 		status_label.text = "Connecting..."
 		start_game_button.disabled = true
+
+func _start_shader_warmup():
+	# Trigger the explosion and thruster effects to force shader compilation
+	# This prevents stuttering the first time these effects are used in-game
+	var warmup_effects = shader_warmup_container.get_node("ShaderWarmupViewport/WarmupEffects")
+
+	# Play explosion animation
+	var explosion = warmup_effects.get_node("ExplosionWarmup")
+	if explosion:
+		var anim_player = explosion.get_node_or_null("Explosion/AnimationPlayer")
+		if anim_player:
+			anim_player.play("PlayExplosion")
+
+	# Play thruster animation
+	var thruster = warmup_effects.get_node("ThrusterWarmup")
+	if thruster:
+		var rocket_trigger = thruster.get_node_or_null("RocketTrigger")
+		if rocket_trigger:
+			rocket_trigger.play("Rocket Thrust")
+
+	# Hide the warmup viewport after shaders are compiled (give it a moment to render)
+	await get_tree().create_timer(0.5).timeout
+	shader_warmup_container.visible = false
