@@ -35,8 +35,6 @@ var current_boost_level: float
 var current_reload_level: int
 var current_camera_index: int = 0
 var has_manually_toggled_camera: bool = false  # Track if player has toggled camera at least once
-var rocket_diarrhea_armed: bool = false  # Triggers on next fire
-
 # Fire input state (calculated once per frame, used for both targeting and firing)
 var _fire_held: bool = false
 var _fire_released: bool = false
@@ -108,6 +106,11 @@ var is_on_corner_ramp := false  # Add this to track corner ramp contact
 		if is_rocket_loaded != value:
 			is_rocket_loaded = value
 			_apply_rocket_loaded_for_remote_player()
+@export var is_rocket_diarrhea_armed: bool = false:  # Synced across network
+	set(value):
+		if is_rocket_diarrhea_armed != value:
+			is_rocket_diarrhea_armed = value
+			_apply_rocket_diarrhea_shader_for_remote_player()
 var input_player_number: int  # The player number to use for input (1 for network local player, player_number for offline)
 
 # State sync variables
@@ -752,8 +755,8 @@ func _reset_rocket_aim():
 func handle_fire_input():
 	# Fire on release - uses _fire_released calculated earlier in _physics_process
 	if _fire_released:
-		if rocket_diarrhea_armed:
-			rocket_diarrhea_armed = false
+		if is_rocket_diarrhea_armed:
+			is_rocket_diarrhea_armed = false
 			activate_rocket_diarrhea()
 		elif current_reload_level > 0:
 			rocket_launcher.fire_rocket()
@@ -965,21 +968,14 @@ func pause_inputs ():
 	
 func prepare_rocket_diarrhea():
 	$PickupSound.play()
-	rocket_diarrhea_armed = true
+	is_rocket_diarrhea_armed = true
 	# Apply invincibility shader to rocket shaft only (surface 0) to indicate powerup is armed
-	var rocket_mesh = $RocketLauncher/MeshInstance3D
-	if rocket_mesh:
-		var invincibility_shader = preload("res://resources/invincibility_shader.tres")
-		var shader_material = ShaderMaterial.new()
-		shader_material.shader = invincibility_shader
-		rocket_mesh.set_surface_override_material(0, shader_material)
+	_apply_rocket_diarrhea_shader(true)
 
 func activate_rocket_diarrhea():
 	$PickupSound.play()
 	# Restore original rocket shaft material (surface 0 only)
-	var rocket_mesh = $RocketLauncher/MeshInstance3D
-	if rocket_mesh:
-		rocket_mesh.set_surface_override_material(0, null)  # Removes override, reverts to original .tres
+	_apply_rocket_diarrhea_shader(false)
 	$RocketLauncher.activate_diarrhea()
 	is_invincible = true
 	collision_layer = 0
@@ -1257,6 +1253,23 @@ func _apply_rocket_loaded_for_remote_player():
 			$RocketLauncher.show_rocket()
 		else:
 			$RocketLauncher.hide_rocket()
+
+func _apply_rocket_diarrhea_shader_for_remote_player():
+	# Apply/remove glowy shader on rocket for remote players
+	if NetworkManager.is_multiplayer_active() and not is_local_player:
+		_apply_rocket_diarrhea_shader(is_rocket_diarrhea_armed)
+
+func _apply_rocket_diarrhea_shader(armed: bool):
+	# Apply or remove the invincibility shader on the rocket mesh
+	var rocket_mesh = $RocketLauncher/MeshInstance3D
+	if rocket_mesh:
+		if armed:
+			var invincibility_shader = preload("res://resources/invincibility_shader.tres")
+			var shader_material = ShaderMaterial.new()
+			shader_material.shader = invincibility_shader
+			rocket_mesh.set_surface_override_material(0, shader_material)
+		else:
+			rocket_mesh.set_surface_override_material(0, null)
 
 func switch_on_obstacle_course_mode ():
 	playing_obstacle_course_mode = true
