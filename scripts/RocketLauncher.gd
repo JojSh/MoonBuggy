@@ -69,9 +69,17 @@ func deactivate_diarrhea():
 
 func hide_rocket ():
 	$MeshInstance3D.set_visible(false)
+	# Sync rocket loaded state for network play
+	var player = get_parent()
+	if player and player.has_method("get") and "is_rocket_loaded" in player:
+		player.is_rocket_loaded = false
 
 func show_rocket ():
 	$MeshInstance3D.set_visible(true)
+	# Sync rocket loaded state for network play
+	var player = get_parent()
+	if player and player.has_method("get") and "is_rocket_loaded" in player:
+		player.is_rocket_loaded = true
 
 func spawn_local_rocket(launcher_transform: Transform3D):
 	# Original single-player rocket spawning logic

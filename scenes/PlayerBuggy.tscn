@@ -73,6 +73,12 @@ properties/4/replication_mode = 1
 properties/5/path = NodePath(":is_boosting")
 properties/5/spawn = false
 properties/5/replication_mode = 1
+properties/6/path = NodePath(":rocket_aim_pitch")
+properties/6/spawn = false
+properties/6/replication_mode = 1
+properties/7/path = NodePath(":is_rocket_loaded")
+properties/7/spawn = true
+properties/7/replication_mode = 1
 
 [node name="VehicleBody3D" type="VehicleBody3D"]
 transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 0, 0, 0)

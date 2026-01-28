@@ -44,7 +44,6 @@ var _fire_released: bool = false
 # Mobile aiming mode - when fire held, lock accel and use tilt for rocket pitch
 var _mobile_aiming: bool = false
 var _locked_accel_value: float = 0.0
-var _rocket_aim_pitch: float = 0.0  # Current pitch offset for rocket/laser aiming
 var _smoothed_aim_tilt: float = 0.0  # Smoothed tilt value for aiming
 var _should_reset_aim_after_fire: bool = false  # Flag to reset aim after firing
 var _mobile_aim_delay_elapsed: float = 0.0  # Time elapsed since fire button pressed on mobile
@@ -100,6 +99,15 @@ var is_on_corner_ramp := false  # Add this to track corner ramp contact
 		if is_boosting != value:
 			is_boosting = value
 			_apply_boost_visibility_for_remote_player()
+@export var rocket_aim_pitch: float = 0.0:  # Synced across network
+	set(value):
+		rocket_aim_pitch = value
+		_apply_rocket_aim_for_remote_player()
+@export var is_rocket_loaded: bool = true:  # Synced across network
+	set(value):
+		if is_rocket_loaded != value:
+			is_rocket_loaded = value
+			_apply_rocket_loaded_for_remote_player()
 var input_player_number: int  # The player number to use for input (1 for network local player, player_number for offline)
 
 # State sync variables
@@ -228,7 +236,7 @@ func _physics_process(delta: float):
 		# Just started holding fire - lock current acceleration and display
 		_locked_accel_value = MobileInputManager.get_accel_input() if MobileInputManager.has_method("get_accel_input") else 0.0
 		_mobile_aiming = true
-		_rocket_aim_pitch = 0.0  # Reset aim pitch when starting to aim
+		rocket_aim_pitch = 0.0  # Reset aim pitch when starting to aim
 		_mobile_aim_delay_elapsed = 0.0  # Reset delay timer
 		if MobileInputManager.has_method("lock_accel_display"):
 			MobileInputManager.lock_accel_display(_locked_accel_value)
@@ -713,31 +721,31 @@ func handle_pitch_input():
 			if abs(tilt_value) > 0.25:  # Deadzone to reduce jitter
 				target_pitch = clamp(-tilt_value * ROCKET_AIM_MAX_PITCH, -ROCKET_AIM_MAX_PITCH, ROCKET_AIM_MAX_PITCH)
 			# Smoothly interpolate toward target pitch
-			_rocket_aim_pitch = lerp(_rocket_aim_pitch, target_pitch, MOBILE_AIM_SMOOTHING * delta)
+			rocket_aim_pitch = lerp(rocket_aim_pitch, target_pitch, MOBILE_AIM_SMOOTHING * delta)
 			_apply_rocket_aim()
 		return
 
 	# Desktop/controller input: aim rocket/laser with angle up/down keys
 	if Input.is_action_pressed(str("p", input_player_number, "_angle_up")):
-		_rocket_aim_pitch = clamp(_rocket_aim_pitch + aim_speed * delta, -ROCKET_AIM_MAX_PITCH, ROCKET_AIM_MAX_PITCH)
+		rocket_aim_pitch = clamp(rocket_aim_pitch + aim_speed * delta, -ROCKET_AIM_MAX_PITCH, ROCKET_AIM_MAX_PITCH)
 		_apply_rocket_aim()
 	elif Input.is_action_pressed(str("p", input_player_number, "_angle_down")):
-		_rocket_aim_pitch = clamp(_rocket_aim_pitch - aim_speed * delta, -ROCKET_AIM_MAX_PITCH, ROCKET_AIM_MAX_PITCH)
+		rocket_aim_pitch = clamp(rocket_aim_pitch - aim_speed * delta, -ROCKET_AIM_MAX_PITCH, ROCKET_AIM_MAX_PITCH)
 		_apply_rocket_aim()
-	elif _rocket_aim_pitch != 0.0:
+	elif rocket_aim_pitch != 0.0:
 		# Gradually return to neutral when not pressing
-		_rocket_aim_pitch = move_toward(_rocket_aim_pitch, 0.0, aim_speed * delta)
+		rocket_aim_pitch = move_toward(rocket_aim_pitch, 0.0, aim_speed * delta)
 		_apply_rocket_aim()
 
 func _apply_rocket_aim():
 	# Rotate rocket launcher and targeting laser based on aim pitch
 	# Note: TargetingLaser has opposite orientation, so negate its rotation
-	$RocketLauncher.rotation.x = _rocket_aim_pitch
-	$TargetingLaser.rotation.x = -_rocket_aim_pitch
+	$RocketLauncher.rotation.x = rocket_aim_pitch
+	$TargetingLaser.rotation.x = -rocket_aim_pitch
 
 func _reset_rocket_aim():
 	# Reset rocket/laser to default orientation
-	_rocket_aim_pitch = 0.0
+	rocket_aim_pitch = 0.0
 	$RocketLauncher.rotation.x = 0.0
 	$TargetingLaser.rotation.x = 0.0
 
@@ -1235,6 +1243,20 @@ func _apply_boost_visibility_for_remote_player():
 			$Beams/Beam/BeamTrigger.play("RESET")
 			$Beams/Beam2/BeamTrigger.play("RESET")
 			$Beams.visible = false
+
+func _apply_rocket_aim_for_remote_player():
+	# Apply rocket aim pitch to the launcher and laser for remote players
+	if NetworkManager.is_multiplayer_active() and not is_local_player:
+		$RocketLauncher.rotation.x = rocket_aim_pitch
+		$TargetingLaser.rotation.x = -rocket_aim_pitch
+
+func _apply_rocket_loaded_for_remote_player():
+	# Show/hide rocket on launcher for remote players
+	if NetworkManager.is_multiplayer_active() and not is_local_player:
+		if is_rocket_loaded:
+			$RocketLauncher.show_rocket()
+		else:
+			$RocketLauncher.hide_rocket()
 
 func switch_on_obstacle_course_mode ():
 	playing_obstacle_course_mode = true
