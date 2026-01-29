@@ -10,23 +10,37 @@ const RocketProjectile = preload("res://scenes/rocket_projectile.tscn")
 func spawn_multiplayer_rocket(launcher_transform: Transform3D, firing_peer_id: int, player_number: int, rocket_count: int, launch_power: float):
 	# Instantiate the rocket on ALL clients
 	var rocket_projectile = RocketProjectile.instantiate()
-	
-	# Set up multiplayer authority - the firing player's client controls this rocket
+
+	# Give the rocket a stable, unique name to avoid @Node3D@XX path issues
+	var rocket_name = "Rocket_%d_%d" % [firing_peer_id, rocket_count]
+	rocket_projectile.name = rocket_name
+
+	# Add custom network data to track ownership BEFORE adding to tree
 	var rocket_inner = rocket_projectile.get_node("RocketProjectileInner")
-	rocket_inner.set_multiplayer_authority(firing_peer_id)
-	rocket_projectile.set_multiplayer_authority(firing_peer_id)
-	
-	# Add custom network data to track ownership
-	# Use a unique network ID that will be the same across all clients
 	var network_id = str(firing_peer_id) + "_" + str(rocket_count)
 	rocket_inner.set_meta("network_rocket_id", network_id)
 	rocket_inner.set_meta("firing_player_number", player_number)
 	rocket_inner.set_meta("firing_peer_id", firing_peer_id)
-	
-	# Set transform and add to tree
+
+	# Set transform and add to tree FIRST (before setting authority)
 	rocket_projectile.global_transform = launcher_transform
-	get_tree().get_root().add_child(rocket_projectile)
-	
+	add_child(rocket_projectile)  # Add under MultiplayerRocketManager for stable paths
+
+	# THEN set up multiplayer authority after node is in tree
+	# This ensures the MultiplayerSynchronizer properly registers with the correct authority
+	rocket_projectile.set_multiplayer_authority(firing_peer_id)
+	rocket_inner.set_multiplayer_authority(firing_peer_id)
+
+	# Also set authority on the NetworkSync node itself
+	var network_sync = rocket_projectile.get_node_or_null("NetworkSync")
+	if network_sync:
+		network_sync.set_multiplayer_authority(firing_peer_id)
+
+	# Re-run network authority setup now that authority is properly set
+	# (The initial setup in _ready() ran before authority was assigned)
+	if rocket_inner.has_method("setup_network_authority"):
+		rocket_inner.setup_network_authority()
+
 	# Setup rocket on this client
 	setup_rocket_local(rocket_inner, player_number, rocket_count, launch_power)
 

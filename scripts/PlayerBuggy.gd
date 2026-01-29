@@ -111,6 +111,11 @@ var is_on_corner_ramp := false  # Add this to track corner ramp contact
 		if is_rocket_diarrhea_armed != value:
 			is_rocket_diarrhea_armed = value
 			_apply_rocket_diarrhea_shader_for_remote_player()
+@export var is_invincible_visual: bool = false:  # Synced across network - shows shiny shader
+	set(value):
+		if is_invincible_visual != value:
+			is_invincible_visual = value
+			_apply_invincibility_shader_for_remote_player()
 var input_player_number: int  # The player number to use for input (1 for network local player, player_number for offline)
 
 # State sync variables
@@ -978,27 +983,32 @@ func activate_rocket_diarrhea():
 	_apply_rocket_diarrhea_shader(false)
 	$RocketLauncher.activate_diarrhea()
 	is_invincible = true
+	is_invincible_visual = true  # Sync visual to other players
 	collision_layer = 0
-	apply_invincibility_shader()
+	_apply_invincibility_shader(true)
 	# start special invincibility music?
 
 	var diarrhea_timer = get_tree().create_timer(10)
 	await diarrhea_timer.timeout
 
 	$RocketLauncher.deactivate_diarrhea()
-	$Body/MeshInstance3D.material_override = null # remove the shader
+	is_invincible_visual = false  # Sync visual removal to other players
+	_apply_invincibility_shader(false)
 	collision_layer = 1 # poptential issue?
-	
+
 	var invincibility_buffer_timer = get_tree().create_timer(0.5)
 	await invincibility_buffer_timer.timeout
 	is_invincible = false
 
-func apply_invincibility_shader ():
-	var invincibility_shader = preload("res://resources/invincibility_shader.tres")
-	var shader_material = ShaderMaterial.new()
-	# can we make the shader glow more?
-	shader_material.shader = invincibility_shader
-	$Body/MeshInstance3D.material_override = shader_material
+func _apply_invincibility_shader(enabled: bool):
+	# Apply or remove the invincibility shader on the car body
+	if enabled:
+		var invincibility_shader = preload("res://resources/invincibility_shader.tres")
+		var shader_material = ShaderMaterial.new()
+		shader_material.shader = invincibility_shader
+		$Body/MeshInstance3D.material_override = shader_material
+	else:
+		$Body/MeshInstance3D.material_override = null
 
 func set_new_spawn_point (point):
 	spawn_point = point.position
@@ -1270,6 +1280,11 @@ func _apply_rocket_diarrhea_shader(armed: bool):
 			rocket_mesh.set_surface_override_material(0, shader_material)
 		else:
 			rocket_mesh.set_surface_override_material(0, null)
+
+func _apply_invincibility_shader_for_remote_player():
+	# Apply/remove invincibility shader on car body for remote players
+	if NetworkManager.is_multiplayer_active() and not is_local_player:
+		_apply_invincibility_shader(is_invincible_visual)
 
 func switch_on_obstacle_course_mode ():
 	playing_obstacle_course_mode = true

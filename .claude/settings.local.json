@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Read(//Users/jojmartin/Code/**)",
-      "Bash(lsof:*)"
+      "Bash(lsof:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []
