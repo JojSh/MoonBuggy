@@ -13,7 +13,7 @@ const MAX_CLIENTS = 3  # Host + 3 clients = 4 players total
 
 # Relay (WebSocket) configuration
 #const DEFAULT_RELAY_URL = "ws://localhost:9080"
-const DEFAULT_RELAY_URL = "wss://semidomesticated-verona-oozily.ngrok-free.dev" # should be updated if relay ngrok address changes
+const DEFAULT_RELAY_URL = "wss://moonbuggy-relay.fly.dev" # Fly.io hosted relay server
 
 var is_hosting: bool = false
 var connected_players: Dictionary = {}  # peer_id -> player_data

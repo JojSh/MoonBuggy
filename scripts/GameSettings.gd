@@ -26,5 +26,5 @@ var current_map_index: int = 0
 var enable_periodic_state_sync: bool = true  # Enable/disable periodic state verification and correction
 
 func is_portrait_mode() -> bool:
-	return display_orientation == DisplayOrientation.PORTRAIT
-	#return display_orientation == DisplayOrientation.LANDSCAPE
+	#return display_orientation == DisplayOrientation.PORTRAIT
+	return display_orientation == DisplayOrientation.LANDSCAPE

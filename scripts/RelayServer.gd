@@ -1,7 +1,7 @@
 extends Node
 
-# Minimal WebSocket relay server using Godot's high-level multiplayer
-# One shared room per server instance (simple and works for web)
+# WebSocket relay server for MoonBuggy multiplayer
+# Deployed on Fly.io at wss://moonbuggy-relay.fly.dev
 
 const PORT := 9080
 const MAX_CLIENTS = 3
@@ -10,51 +10,35 @@ var connected_players: Dictionary = {}  # peer_id -> player_data
 
 func _ready():
 	var peer := WebSocketMultiplayerPeer.new()
-	var err := peer.create_server(PORT)
+	var err = peer.create_server(PORT, "0.0.0.0")
 	if err != OK:
-		printerr("Failed to start relay server on port ", PORT, ": ", err)
-		get_tree().quit(1)
+		printerr("Failed to start relay server: ", err)
 		return
+
 	multiplayer.multiplayer_peer = peer
-	print("Relay server listening on ws://0.0.0.0:", PORT)
-	print("Server is peer ID 1 and manages player connections")
-	
-	# Connect to multiplayer signals
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+	print("Relay server listening on port ", PORT)
 
 func _on_peer_connected(id: int):
-	print("Player ", id, " connected to relay")
-	
-	# Assign player number
 	var player_number = _get_next_player_number()
 	if player_number == -1:
-		print("Max players reached, disconnecting ", id)
 		multiplayer.multiplayer_peer.disconnect_peer(id)
 		return
-	
-	# Store player data on server
-	connected_players[id] = {
-		"peer_id": id,
-		"player_number": player_number,
-		"name": "Player " + str(player_number)
-	}
-	
-	print("Assigned player number ", player_number, " to peer ", id)
-	# Note: Clients handle their own peer announcements via _announce_player RPC
+	connected_players[id] = {"peer_id": id, "player_number": player_number}
+	print("Player ", id, " connected (slot ", player_number, ")")
 
 func _on_peer_disconnected(id: int):
-	print("Player ", id, " disconnected from relay")
+	print("Player ", id, " disconnected")
 	connected_players.erase(id)
 
 func _get_next_player_number() -> int:
-	# Find the lowest available player number (1-4)
 	for i in range(1, 5):
-		var number_taken = false
-		for player_data in connected_players.values():
-			if player_data.player_number == i:
-				number_taken = true
+		var taken = false
+		for data in connected_players.values():
+			if data.player_number == i:
+				taken = true
 				break
-		if not number_taken:
+		if not taken:
 			return i
-	return -1  # No slots available
+	return -1

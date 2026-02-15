@@ -3,7 +3,27 @@
     "allow": [
       "Read(//Users/jojmartin/Code/**)",
       "Bash(lsof:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(flyctl deploy:*)",
+      "Bash(flyctl auth whoami:*)",
+      "Bash(flyctl logs:*)",
+      "Bash(flyctl status:*)",
+      "Bash(flyctl machine start:*)",
+      "Bash(\"/Users/jojmartin/Downloads/Godot 4.5.app/Contents/MacOS/Godot\" --headless --export-release \"RelayServer\" ./relay-build/moonbuggy-relay.x86_64)",
+      "Bash(flyctl ssh console:*)",
+      "WebSearch",
+      "Bash(flyctl machine stop:*)",
+      "Bash(1 <<'EOF'\n/app/moonbuggy-relay --headless res://scenes/relay_server.tscn &\nPID=$!\nsleep 3\nkill $PID 2>/dev/null\nEOF)",
+      "Bash(curl:*)",
+      "Bash(python3:*)",
+      "Bash(pip3 install:*)",
+      "Bash(timeout 5 npx wscat:*)",
+      "Bash(gtimeout 5 npx wscat:*)",
+      "Bash(pkill:*)",
+      "Bash(flyctl config show:*)",
+      "Bash(node:*)",
+      "Bash(npm install:*)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []

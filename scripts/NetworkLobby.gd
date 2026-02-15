@@ -12,6 +12,8 @@ signal lobby_closed
 signal start_local_game
 signal start_network_game
 
+var connection_attempts: int = 0
+
 func _ready():
 	# CRITICAL: Set process mode to work when paused
 	process_mode = Node.PROCESS_MODE_WHEN_PAUSED
@@ -36,6 +38,7 @@ func _ready():
 	_auto_connect()
 
 func _auto_connect():
+	connection_attempts += 1
 	status_label.text = "Connecting to server..."
 
 	# Try to join the default relay
@@ -96,6 +99,7 @@ func _on_player_disconnected(peer_id: int):
 	status_label.text = "A player left the game"
 
 func _on_connection_succeeded():
+	connection_attempts = 0  # Reset for next time
 	status_label.text = "Connected! Enter your name and click Play."
 
 	# Show name input now that we're connected
@@ -145,8 +149,19 @@ func _assign_initial_network_authority(player, local_player_data):
 					break
 
 func _on_connection_failed():
-	status_label.text = "Failed to connect to server!"
+	if connection_attempts <= 1:
+		status_label.text = "Server is waking up - tap to retry"
+		# Make status label clickable for retry
+		if not status_label.gui_input.is_connected(_on_status_label_clicked):
+			status_label.gui_input.connect(_on_status_label_clicked)
+			status_label.mouse_filter = Control.MOUSE_FILTER_STOP
+	else:
+		status_label.text = "Failed to connect to server!"
 	start_game_button.disabled = true
+
+func _on_status_label_clicked(event: InputEvent):
+	if event is InputEventMouseButton and event.pressed:
+		_auto_connect()
 
 func _on_server_disconnected():
 	status_label.text = "Disconnected from server"
