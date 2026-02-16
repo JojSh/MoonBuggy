@@ -49,7 +49,7 @@ func setup_rocket_local(rocket_inner: RigidBody3D, player_number: int, rocket_co
 	if multiplayer.is_server():
 		var spectator_manager = get_node_or_null("/root/RootNode/SpectatorManager")
 		if spectator_manager:
-			var should_register = GameSettings.debug_mode_on or (rocket_count % 3 == 0)
+			var should_register = GameSettings.debug_mode_on or (rocket_count % 4 == 0)
 			if should_register:
 				spectator_manager.register_rocket(rocket_inner)
 	

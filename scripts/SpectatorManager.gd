@@ -41,8 +41,9 @@ func _on_rocket_out_of_bounds(rocket: RigidBody3D):
 		available_rockets.erase(rocket)
 
 func attempt_rocket_assignments():
-	# Skip rocket assignments in network games to avoid sync issues
-	if multiplayer.has_multiplayer_peer():
+	# Skip rocket assignments in online network games to avoid sync issues
+	# (but allow in offline local multiplayer)
+	if NetworkManager.is_multiplayer_active():
 		return
 	
 	if eliminated_players.is_empty() or available_rockets.is_empty():

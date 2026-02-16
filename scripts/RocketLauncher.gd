@@ -93,7 +93,7 @@ func spawn_local_rocket(launcher_transform: Transform3D):
 	var spectator_manager = get_node_or_null("/root/RootNode/SpectatorManager")
 	if spectator_manager:
 		var rocket_inner = rocket_projectile.get_node("RocketProjectileInner")
-		var should_register = GameSettings.debug_mode_on or (rocket_count % 3 == 0)
+		var should_register = GameSettings.debug_mode_on or (rocket_count % 4 == 0)
 		if should_register:
 			spectator_manager.register_rocket(rocket_inner)
 	
