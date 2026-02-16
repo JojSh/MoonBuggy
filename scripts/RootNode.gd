@@ -247,11 +247,18 @@ func restart_game ():
 
 func _on_play_again_button_pressed ():
 	if NetworkManager.is_multiplayer_active():
-		# In network mode on web, refresh the browser to fully reset
-		if OS.has_feature("web"):
-			JavaScriptBridge.eval("location.reload();")
-			return
+		# In network mode, tell all players to return to lobby
+		return_to_lobby_for_all.rpc()
+		return
 	restart_game()
+
+@rpc("any_peer", "call_local", "reliable")
+func return_to_lobby_for_all():
+	# All players receive this and reload to return to lobby
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("location.reload();")
+	else:
+		restart_game()
 
 func _on_return_to_main_menu_button_pressed():
 	GameSettings.should_skip_main_menu = false
